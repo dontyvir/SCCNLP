@@ -9,10 +9,17 @@ angular.module('sccnlp.main')
 })
 
 .controller('MenuCtrl', ['$scope', 'sessionService', '$state', function ($scope, sessionService, $state) {
+	
 	$scope.logout = function(){
 		
 		sessionService.logout();
 		$state.go('login');
 	}
-}]);
+	
+	$scope.getUserName = function(){
+		$scope.userData = sessionService.getUserData();
+		return $scope.userData.username;
+	}
+}])
+
 

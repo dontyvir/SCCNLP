@@ -18,10 +18,10 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Relacion laboral">Relacion laboral<b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/template-categories/all"><i class="glyphicon glyphicon-plus"></i> Ingresar relacion laboral</a>
+                                <a ui-sref="main.composite.ingresoRL"><i class="glyphicon glyphicon-plus"></i> Ingresar relacion laboral</a>
                             </li>
                             <li>
-                                <a href="/template-categories/popular"><i class="glyphicon glyphicon-search"></i> Consultar relacion laboral</a>
+                                <a ui-sref="main.composite.consultaRL"><i class="glyphicon glyphicon-search"></i> Consultar relacion laboral</a>
                             </li>
 
 
@@ -64,8 +64,8 @@
                             
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Mi cuenta</a></li>
-                            <li><a href="#"><span class="glyphicon glyphicon-home"></span> Inicio</a></li>
+                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ getUserName() }}</a></li>
+                            <li><a ui-sref="main.composite"><span class="glyphicon glyphicon-home"></span> Inicio</a></li>
                             <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Cerrar Sesion</a></li>
                         </ul>
 </div>

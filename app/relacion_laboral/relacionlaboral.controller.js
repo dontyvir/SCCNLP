@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('sccnlp.relacionlaboral')
+angular.module('sccnlp.ingresoRL')
 
-.controller('RelacionIndividualTabController', ['$scope', function ($scope) {
+.controller('RelacionLaboralController', ['$scope', function ($scope) {
 
-    }]);
+
+}]);

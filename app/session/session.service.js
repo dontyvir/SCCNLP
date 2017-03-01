@@ -6,20 +6,32 @@ angular
 		.config(function(localStorageServiceProvider) {
 
 			localStorageServiceProvider.setPrefix('sccnlp');
-
 		})
 
 .factory(
 		'sessionService',['localStorageService', 'AuthEmpresa', 'jwtHelper',
 		function(localStorageService, AuthEmpresa, jwtHelper) {
 
+		//TODO : estandarizar modelo
 		var _sessData = {
 			username : "",
-			profile : -1,
+			givenName : "",
+			surname : "",
+			email : "",
+			role : -1,
 			token : null,
-			session_expiry : -1
+			session_expiry : -1,
 		};
 
+		function _fillUserData(access_token) {
+			
+			/* TODO: estandarizar modelo de datos de usuario */
+			var decodedToken = jwtHelper.decodeToken(access_token);
+			_sessData.username = decodedToken.GivenName+" "+decodedToken.Surname;
+			_sessData.role = decodedToken.Role;
+			_sessData.email = decodedToken.Email;
+		}
+		
 		function _isLoggedIn() {
 			return (_sessData.username && _sessData.username != "");
 		};
@@ -30,6 +42,8 @@ angular
 			   AuthEmpresa.get(function(tokenData) {
 
 				if (tokenData.access_token) {
+					
+					_fillUserData(tokenData.access_token);
 					
 					localStorageService.set('id_token', tokenData.access_token);
 					callback_fn(true);
@@ -52,19 +66,24 @@ angular
 			_sessData.session_expiry = -1;
 
 			return localStorageService.remove('id_token');
-			
 		};
 		
 		function _getIdToken() { // recupera token
 
 			return localStorageService.get('id_token');
 		};
-
+		
+		function _getUserData() {
+			
+			_fillUserData(_getIdToken());
+			return _sessData;
+		};
 
 	return {
 		login_empresa : _login_empresa,
 		getIdToken : _getIdToken,
 		isLoggedIn : _isLoggedIn,
-		logout : _logout
+		logout : _logout,
+		getUserData : _getUserData
 	};
 } ]);

@@ -9,7 +9,7 @@ angular.module('sccnlp.main',['ui.router', 'sccnlp.session'])
 	.state('main',{
 		url : '/',
 		abstract : true,
-		templateUrl : 'main/main.view.html',
+		templateUrl : 'main/composite.view.html',
 		data: { requiresLogin: true }
 	})
 
@@ -20,14 +20,14 @@ angular.module('sccnlp.main',['ui.router', 'sccnlp.session'])
 			"footer" : {
 				template : '<p>footer</p>'
 			},
-			"main" : {
-				template : '<p>main</p>'
-			},
 			"menu" : {
 		    	templateUrl: 'menu/menu.view.html',
 			    controller: 'MenuCtrl',
 			    controllerAs: 'menu'
-			}
+			},
+            "": {
+                templateUrl : 'main/main.default.view.html'
+            }
 		}
 
 	})

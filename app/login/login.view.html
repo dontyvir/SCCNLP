@@ -1,0 +1,47 @@
+﻿<div class="row">
+
+        <h3>Bienvenido al Sistema de Control de Cumplimiento de la Normativa Laboral Portuaria de DTI</h3>
+        <p>El nuevo SCCNLP está enfocado en facilitar la operación a los usuarios, dando esta característica
+             tanto al trabajador, empresas y entes fiscalizadores (Dirección del Trabajo y Autoridad Marítima),
+             lo anterior por medio de una operatoria segura, estable y de fácil uso, donde los actores involucrados
+             no solo tengan una herramienta web de alta disponibilidad sino que también cuenten con otros métodos
+             de integración como servicios web.</p>
+
+    <div class="row" ng-show="true">
+
+
+        <div class="col-md-4">
+            <h2 class="form-signin-heading">Clave Empresa</h2>
+            <form name="form" class="form-signin" ng-submit="ingresarClaveEmpresa()">
+                <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+                    <input type="text" name="rut" id="rutEmpresa" class="form-control" ng-model="loginData.username" placeholder="Rut Empresa" required />
+                    <span ng-show="form.loginData.userName.$dirty && form.loginData.userName.$error.required" class="help-block">Rut es requerido</span>
+                </div>
+
+                <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+                    <input type="password" name="password" id="password" class="form-control" ng-model="loginData.password" placeholder="Clave Empresa" required />
+                    <span ng-show="form.loginData.password.$dirty && form.loginData.password.$error.required" class="help-block">Password is required</span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" ng-disabled="form.$invalid || logctl.dataLoading" class="btn btn-primary">Ingresar &raquo;</button>
+                </div>
+                <div class="col-md-10 alert alert-danger" ng-show="bAlertaError">
+                    <p ng-bind-html="renderHtml(msgError)"></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <h2 class="form-signin-heading">Clave Unica</h2>
+            <div class="login">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="claveUnicaRut" name="claveUnicaRut" placeholder="Rut de la empresa">
+                    </div>
+                    <!--<button type="submit" class="btn btn-primary" ui-sref="ClaveUnica">Ingresar por Clave Unica &raquo;</button>-->
+                    <button type="submit" class="btn btn-primary" ng-click="ingresarClaveUnica()">Ingresar por Clave Unica &raquo;</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

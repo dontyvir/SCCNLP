@@ -1,0 +1,27 @@
+{
+  "name": "SCCNLP_Front",
+  "description": "",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.1",
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.1.1",
+    "angular-ui-router": "^0.4.2",
+    "angular-animate": "^1.6.1",
+    "angular-resource": "^1.6.1",
+    "angular-cookies": "^1.6.1",
+    "angular-bootstrap": "^2.5.0",
+    "angular-local-storage": "^0.5.2",
+    "angular-jwt": "^0.1.9"
+  }
+}

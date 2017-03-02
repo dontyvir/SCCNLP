@@ -1,43 +1,57 @@
 'use strict';
 
-angular
-		.module('sccnlp.session')
+angular.module('sccnlp.session')
 
-		.config(function(localStorageServiceProvider) {
-
+.config(function(localStorageServiceProvider) {
+	
 			localStorageServiceProvider.setPrefix('sccnlp');
-		})
+})
 
 .factory(
 		'sessionService',['localStorageService', 'AuthEmpresa', 'jwtHelper',
 		function(localStorageService, AuthEmpresa, jwtHelper) {
 
-		//TODO : estandarizar modelo
-		var _sessData = {
-			username : "",
-			givenName : "",
-			surname : "",
-			email : "",
-			role : -1,
-			token : null,
-			session_expiry : -1,
+		/**
+		 * 
+		 * Modelo de las propiedades del usuario
+		 * {
+			  "sub": "5",
+			  "role": "Administrador",
+			  "nombre": "pepito perez",
+			  "menus": "[Relacion laboral, Nombradas, Jornadas, Administracion]",
+			  "iss": "http://localhost:54919",
+			  "aud": "414e1927a3884f68abc79f7283837fd1",
+			  "exp": 1488575707,
+			  "nbf": 1488489307
+			}
+		 * 
+		 */
+
+		/* model interno datos de usuario */
+		var _userData = {
+				username : null,
+				role : null,
+				permissions : []
 		};
 
 		function _fillUserData(access_token) {
+
+			var tokenPayload = jwtHelper.decodeToken(access_token);
 			
-			/* TODO: estandarizar modelo de datos de usuario */
-			var decodedToken = jwtHelper.decodeToken(access_token);
-			_sessData.username = decodedToken.GivenName+" "+decodedToken.Surname;
-			_sessData.role = decodedToken.Role;
-			_sessData.email = decodedToken.Email;
+			_userData.username = tokenPayload.nombre;
+			_userData.role     = tokenPayload.menus;
+			
 		}
 		
 		function _isLoggedIn() {
-			return (_sessData.username && _sessData.username != "");
+			return (_userData.username && _userData.username != ""); //TODO: improve this
 		};
 
-		function _login_empresa(username, password,
-				callback_fn) {
+		/**
+		 * Función para autenticar un par usuario/contraseña en BD de backend local
+		 */
+		
+		function _login_empresa(username, password, callback_fn) {
 
 			   AuthEmpresa.get(function(tokenData) {
 
@@ -53,6 +67,10 @@ angular
 			});
 		};
 
+		/**
+		 * Función para manejar la itegración con clave única
+		 */
+		
 		function _login_clave_unica(token) {
 
 			localStorageService.set('id_token', token);
@@ -60,26 +78,25 @@ angular
 
 		function _logout() {
 
-			_sessData.username = "";
-			_sessData.profile = -1;
-			_sessData.token = null;
-			_sessData.session_expiry = -1;
+			_userData.username = null;
+			_userData.role = null;
+			_userData.permissions = null;
 
 			return localStorageService.remove('id_token');
 		};
-		
-		function _getIdToken() { // recupera token
+
+		function _getIdToken() { // recupera token del storage local
 
 			return localStorageService.get('id_token');
 		};
-		
+
 		function _getUserData() {
-			
-			_fillUserData(_getIdToken());
-			return _sessData;
+
+			return _userData;
 		};
 
 	return {
+
 		login_empresa : _login_empresa,
 		getIdToken : _getIdToken,
 		isLoggedIn : _isLoggedIn,

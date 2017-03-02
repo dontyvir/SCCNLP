@@ -1,1 +1,26 @@
-<h1>Relación laboral View</h1>
+<div class="container-fluid">      
+    <ul id="tabsMenu" class="container nav nav-tabs nav-justified " >
+        <li id="liTabOne" role="presentation" class="active" ><a data-target="#tabOne" ng-click=" setCurrentTab('tabOne')"  data-toggle='tab'>{{tabHeaderOne}}</a></li>
+        <li id="liTabTwo" role="presentation"  ><a data-target="#tabTwo" ng-click="setCurrentTab('tabTwo')"    data-toggle='tab'>{{tabHeaderTwo}}</a></li>
+        <li id="liTabThree" role="presentation" ><a data-target="#tabThree" ng-click="setCurrentTab('tabThree')"  data-toggle='tab'>{{tabHeaderThree}}</a></li>   
+    </ul> 
+
+    <div class="container-fluid tab-content ">
+        <div class="tab-pane active" id="tabOne" ng-include="'relacion_laboral/tab_views/RelacionIndividualTab1.html'"></div>
+        <div class="tab-pane " id="tabTwo" ng-include="'relacion_laboral/tab_views/RelacionIndividualTab2.html'"></div>
+        <div class="tab-pane " id="tabThree" ng-include="'relacion_laboral/tab_views/RelacionIndividualTab3.html'"></div>
+
+        <div class="container-fluid col-lg-6  pull-right">   
+            <div class="pull-right">                
+                <button ng-show="!compareCurrentTab('tabOne')" class="btn btn-default " type="button" ng-click="cleanForm()">{{BTN_limpiar}}</button>                               
+                <button class="btn btn-default" type="submit">{{BTN_cancelar}}</button>                               
+                <a  ng-show="compareCurrentTab('tabOne')" href="#tabTwo" class="btn  btn-default " id="BTN_continuar-next" ng-click="changeTabByButton('liTabOne', 'liTabTwo')" data-toggle="tab">{{BTN_continuar}}</a>
+                <a ng-show="compareCurrentTab('tabTwo')" href="#tabThree" class="btn  btn-default " id="BTN_continuar-next2" ng-click="changeTabByButton('liTabTwo', 'liTabThree')" data-toggle="tab">{{BTN_continuar}}</a>
+                <a href="#" class="btn  btn-default" id="BTN_finish"  data-toggle="tab">{{BTN_finalizar}}</a>                
+            </div>
+        </div>
+    
+    </div>
+    
+</div>
+

@@ -1,14 +1,12 @@
 'use strict';
 
-// referenciamos al módulo padre sccnlp.main
-angular.module('sccnlp.main')
+// definición de módulo menu
+angular.module('sccnlp.menu', ['sccnlp.session', 'ui.router'])
 
-.config(function($stateProvider) {
-
-
-})
-
-.controller('MenuCtrl', ['$scope', 'sessionService', '$state', function ($scope, sessionService, $state) {
+.controller('MenuCtrl', ['$scope', 'sessionService', '$state', 'menuMessages',
+	function ($scope, sessionService, $state, menuMessages) {
+	
+	$scope.messages = menuMessages; // conexión del servicio messages
 	
 	$scope.logout = function(){
 		
@@ -17,6 +15,7 @@ angular.module('sccnlp.main')
 	}
 	
 	$scope.getUserName = function(){
+		
 		$scope.userData = sessionService.getUserData();
 		return $scope.userData.username;
 	}

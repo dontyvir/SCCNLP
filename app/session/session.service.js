@@ -7,6 +7,10 @@ angular.module('sccnlp.session')
 			localStorageServiceProvider.setPrefix('sccnlp');
 })
 
+/**
+ * Servicio para manejo de sesión y autenticación
+ */
+
 .factory(
 		'sessionService',['localStorageService', 'AuthEmpresa', 'jwtHelper',
 		function(localStorageService, AuthEmpresa, jwtHelper) {
@@ -39,7 +43,7 @@ angular.module('sccnlp.session')
 			var tokenPayload = jwtHelper.decodeToken(access_token);
 			
 			_userData.username = tokenPayload.nombre;
-			_userData.role     = tokenPayload.menus;
+			_userData.permissions     = tokenPayload.menus;
 			
 		}
 		
@@ -73,6 +77,8 @@ angular.module('sccnlp.session')
 		
 		function _login_clave_unica(token) {
 
+			//TODO: implement this
+			
 			localStorageService.set('id_token', token);
 		};
 
@@ -91,7 +97,16 @@ angular.module('sccnlp.session')
 		};
 
 		function _getUserData() {
-
+			
+			// Inicialización del objeto usuario, en caso de estar logeado
+			var token = _getIdToken();
+			
+			if(token && !_userData.username && 
+			   !jwtHelper.isTokenExpired(token)){
+				
+				_fillUserData(token);
+			}
+			
 			return _userData;
 		};
 

@@ -1,74 +1,103 @@
 <div>
-    <div>
-        <nav class="navbar navbar-default">
+	<div>
+		<nav class="navbar navbar-default">
 
-            <div class="collapse navbar-collapse" id="sccnlpNavbar">
-                <ul class="nav navbar-nav">
-                
-				     <li uib-dropdown on-toggle="toggled(open)" class="dropdown">
-				      <a href id="relacion-laboral" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-				        Relación laboral  <span class="caret"></span>
-				      </a>
-				      <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="relacion-laboral">
-                            <li>
-                                <a ui-sref="main.composite.ingresoRL"><i class="glyphicon glyphicon-plus"></i> Ingresar relacion laboral</a>
-                            </li>
-                            <li>
-                                <a ui-sref="main.composite.consultaRL"><i class="glyphicon glyphicon-search"></i> Consultar relacion laboral</a>
-                            </li>
-				      </ul>
-				    </li>
+			<div class="collapse navbar-collapse" id="sccnlpNavbar">
+				<ul class="nav navbar-nav">
 
-                    <li uib-dropdown on-toggle="toggled(open)" class="dropdown">
-                      <a href id="nombradas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-				        Nombradas  <span class="caret"></span>
-				      </a> 
-				      <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="nombradas">
-                            <li>
-                                <a href="/template-categories/all"><i class="glyphicon glyphicon-plus"></i> Ingresar nombrada</a>
-                            </li>
+					<li uib-dropdown on-toggle="toggled(open)" class="dropdown">
+						
+						<a href id="relacion-laboral"
+							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+							 {{messages.REL_LAB_DROPDOWN}}<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" uib-dropdown-menu
+							aria-labelledby="relacion-laboral">
 
-                        </ul>
-                    </li>
+							<li uib-dropdown on-toggle="toggled(open)"
+								class="dropdown-submenu">
+							<a href id="ingresar-relacion-laboral"
+								class="dropdown-toggle" data-toggle="dropdown"
+								uib-dropdown-toggle> {{messages.REL_LAB_INGRESAR}}
+							</a>
+								<ul class="dropdown-menu" uib-dropdown-menu>
+									<li>
+									<a ui-sref="main.composite.ingresoRL"><i
+											class="glyphicon glyphicon-plus"></i> 
+											{{messages.REL_LAB_ING_INDIV}}</a></li>
+									<li><a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
+											{{messages.REL_LAB_ING_MASIVA}}</a></li>
+								</ul></li>
 
-                    <li uib-dropdown on-toggle="toggled(open)" class="dropdown">
-                      <a href id="jornadas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-				        Jornadas  <span class="caret"></span>
-				      </a>
-						<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="jornadas">
-                            <li>
-                                <a href="/template-categories/all"><i class="glyphicon glyphicon-plus"></i> Ingresar jornada</a>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                    <li uib-dropdown on-toggle="toggled(open)" class="dropdown" permission="['Administracion']">
-                        <a href id="administracion" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-				        Administración  <span class="caret"></span>
-				      	</a>
-                        
-                        <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="administracion">
+							<li><a ui-sref="main.composite.consultaRL"><i
+									class="glyphicon glyphicon-search"></i> 
+									{{messages.REL_LAB_CONSULTAR}}</a></li>
+						</ul></li>
 
-                           <li uib-dropdown on-toggle="toggled(open)" class="dropdown-submenu">
-                                <a href id="jornadas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-						          Usuarios
-						        </a>
-                                <ul class="dropdown-menu" uib-dropdown-menu>
-                                    <li><a href="#"><i class="glyphicon glyphicon-plus"></i> Ingresar Usuario</a></li>
-                                    <li><a href="#"><i class="glyphicon glyphicon-search"></i> Consultar Usuarios</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                      </li>
-                            
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ getUserName() }}</a></li>
-                            <li><a ui-sref="main.composite"><span class="glyphicon glyphicon-home"></span> Inicio</a></li>
-                            <li><a href="#" ng-click="logout()"><span class="glyphicon glyphicon-log-out"></span> Cerrar Sesion</a></li>
-                        </ul>
+					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
+						permission="['Nombradas']">
+						<a href id="nombradas"
+							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+							 {{messages.NOMBRADAS_DROPDOWN}}<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" uib-dropdown-menu
+							aria-labelledby="nombradas">
+							<li><a ui-sref="main.composite">
+							<i class="glyphicon glyphicon-plus"></i> {{messages.NOMBRADAS_INGRESAR}}</a>
+							</li>
+
+						</ul>
+					</li>
+
+					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
+						permission="['Jornadas']">
+						<a href id="jornadas"
+							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+							{{messages.JORNADAS_DROPDOWN}} <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu" uib-dropdown-menu
+							aria-labelledby="jornadas">
+							<li><a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
+								{{messages.JORNADAS_INGRESAR}}</a></li>
+						</ul>
+					</li>
+
+					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
+						permission="['Administracion']">
+						<a href id="administracion"
+							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+							{{messages.ADMIN_DROPDOWN}}<span class="caret"></span>
+						</a>
+
+						<ul class="dropdown-menu" uib-dropdown-menu
+							aria-labelledby="administracion">
+
+							<li uib-dropdown on-toggle="toggled(open)"
+								class="dropdown-submenu">
+								<a href id="usuarios"
+								class="dropdown-toggle" data-toggle="dropdown"
+								uib-dropdown-toggle> {{messages.ADMIN_USUARIOS}} </a>
+								<ul class="dropdown-menu" uib-dropdown-menu>
+									<li><a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
+										{{messages.ADMIN_USR_INGRESAR}}</a></li>
+									<li><a ui-sref="main.composite"><i
+											class="glyphicon glyphicon-search"></i> {{messages.ADMIN_USR_CONSULTAR}}</a></li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a ui-sref="main.composite"><span class="glyphicon glyphicon-user"></span>
+							{{ getUserName() }}</a></li>
+					<li><a ui-sref="main.composite"><span
+							class="glyphicon glyphicon-home"></span> {{messages.INICIO}}</a></li>
+					<li><a href ng-click="logout()"><span
+							class="glyphicon glyphicon-log-out"></span> {{messages.LOGOUT}}</a></li>
+				</ul>
 			</div>
-        </nav>
-    </div>
+		</nav>
+	</div>
 </div>
 

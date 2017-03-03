@@ -2,6 +2,10 @@
 
 angular.module('sccnlp.authorization')
 
+/**
+ * Servicio de autorización de vistas
+ */
+
 .factory('authService', function($rootScope, sessionService, $q){
 	
 	var auth = {};
@@ -25,8 +29,7 @@ angular.module('sccnlp.authorization')
          
         return auth.userHasPermission(view.permissions);
     };
-     
-     
+    
     auth.userHasPermission = function(permissions){
     	    	
         if(!sessionService.isLoggedIn()){

@@ -1,12 +1,20 @@
 'use strict';
 
+/* definición del módulo de autorización */
 angular.module('sccnlp.authorization', ['sccnlp.session']);
 
 
-// directive para mostrar y ocultar elementos del menu sobre el módulo base
-
 angular.module('sccnlp')
+
+/**
+ * directive para mostrar y ocultar elementos del menu sobre el módulo base
+ */
+
 .directive('permission', ['authService', 'sessionService', function(authService, sessionService) {
+	
+	/** para todos los elementos que tengan el altributo 'permission'(array de strings)
+	 *  se ejecuta la función 'link'
+	 */ 
 	   return {
 	       restrict: 'A',
 	       scope: {
@@ -19,8 +27,8 @@ angular.module('sccnlp')
 	            	
                     var obj = elem[0];	            	
 	            	
-	                if (Auth.userHasPermission(scope.permission)) {
-	                    obj.style.display=null; //TODO: improve
+	                if (authService.userHasPermission(scope.permission)) {
+	                    obj.style.display=null; //TODO: reliability of this
 	                } else {
 	                	 obj.style.display="none";
 	                }
@@ -28,6 +36,10 @@ angular.module('sccnlp')
 	       }
 	   }
 }])
+
+/**
+ * Listener para autorización de vistas según rol del usuario
+ */
 
 .run(['$rootScope', '$state', 'authService', function ($rootScope, $state, authService) {
      

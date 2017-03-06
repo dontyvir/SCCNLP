@@ -55,9 +55,12 @@ angular.module('sccnlp.session')
 		 * Función para autenticar un par usuario/contraseña en BD de backend local
 		 */
 		
-		function _login_empresa(username, password, callback_fn) {
+		function _login_empresa(_username, _password, callback_fn) {
 
-			   AuthEmpresa.get(function(tokenData) {
+			   AuthEmpresa.query({},
+					{grant_type : "password", username: _username, password: _password},
+					
+					function(tokenData) {
 
 				if (tokenData.access_token) {
 					

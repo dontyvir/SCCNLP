@@ -2,12 +2,21 @@
 
 angular.
   module('sccnlp.session').
-  factory('AuthEmpresa', ['$resource',
-    function($resource) {
-      return $resource('/services/rest/:auth.json', {auth: 'auth_empresa'}, {
+  factory('AuthEmpresa', ['$resource', '$httpParamSerializer',
+	  
+    function($resource , $httpParamSerializer) {
+	  
+      return $resource('http://10.212.129.34/sccnlp/token',{}, {
+
         query: {
-          method: 'GET',
-          isArray: false
+          method: 'POST',
+          isArray: false,
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          transformRequest: function(data){
+        	 return $httpParamSerializer(data);
+          }
         }
       });
     }

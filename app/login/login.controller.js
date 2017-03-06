@@ -17,14 +17,19 @@ angular.module('sccnlp.login')
 		
 		$scope.dataLoading = true;
 		
-		sessionService.login_empresa($scope.loginData.username, $scope.loginData.password, function(loginSuccessful){
+		sessionService.login_empresa($scope.loginData.username, $scope.loginData.password,
+				function(loginSuccessful, error_data){
 			
 			$scope.dataLoading = false;
 			if(loginSuccessful)
 				$state.go('main.composite');
 			else {
-				$state.go('login');
-				$scope.alert.show("Error : usuario o clave incorrecta"); //TODO: mensajes de error
+
+				if(error_data && error_data.error_description)
+					$scope.alert.show(error_data.error_description);
+				else {
+					$scope.alert.show("Error: favor intentar nuevamente");
+				}
 			}
 		});
 	};

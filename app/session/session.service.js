@@ -71,6 +71,8 @@ angular.module('sccnlp.session')
 				} else
 					callback_fn(false);
 
+			}, function(error_data){
+				callback_fn(false, error_data);
 			});
 		};
 

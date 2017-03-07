@@ -6,10 +6,10 @@ angular.
 	  
     function($resource , $httpParamSerializer) {
 	  
-      return $resource('http://10.212.129.34/sccnlp/token',{}, {
-
-        query: {
-          method: 'POST',
+      //return $resource('http://10.212.129.34/sccnlp/token',{}, {
+	  return $resource('/services/rest/auth_empresa.json',{}, {
+        get: {
+          method: 'GET',
           isArray: false,
           headers: {
               'Content-Type': 'application/x-www-form-urlencoded'

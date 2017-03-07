@@ -17,8 +17,8 @@ angular.module('sccnlp.main',['ui.router', 'sccnlp.session'])
 		// para los submódulos las url tienen que escribirse sin el / inicial
 		url : 'main',
 		views : {
-			"footer" : {
-				template : '<p>footer</p>'
+			"header" : {
+				templateUrl : 'main/main.header.view.html'
 			},
 			"menu" : {
 		    	templateUrl: 'menu/menu.view.html',
@@ -27,7 +27,10 @@ angular.module('sccnlp.main',['ui.router', 'sccnlp.session'])
 			},
             "": {
                 templateUrl : 'main/main.default.view.html'
-            }
+            },
+			"footer" : {
+				templateUrl : 'main/main.footer.view.html'
+			}
 		}
 
 	})

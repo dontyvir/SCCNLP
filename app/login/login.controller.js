@@ -13,6 +13,8 @@ angular.module('sccnlp.login')
 	
 	$scope.dataLoading = false;
 	
+	$scope.loginData = {username: null, password: null};
+	
 	$scope.ingresarClaveEmpresa = function() {
 		
 		$scope.dataLoading = true;
@@ -25,8 +27,14 @@ angular.module('sccnlp.login')
 				$state.go('main.composite');
 			else {
 
-				if(error_data && error_data.error_description)
-					$scope.alert.show(error_data.error_description);
+				if(error_data){
+					
+					if(error_data.error_description)
+						$scope.alert.show(error_data.error_description);
+					else
+						$scope.alert.show("Error : status: "+error_data.status+", favor intentar nuevamente");
+
+				}
 				else {
 					$scope.alert.show("Error: favor intentar nuevamente");
 				}
@@ -52,7 +60,7 @@ angular.module('sccnlp.login')
 				$scope.alert.msg = _msg;
 				if(_type)
 					$scope.alert.type = _type;
-				$scope.alert.show = true;
+				$scope.alert.active = true;
 			}
 	};
 	

@@ -9,5 +9,6 @@ angular.module('sccnlp',
 		'sccnlp.menu',
 		'sccnlp.session',
 		'sccnlp.authorization',
-		'sccnlp.login'
+		'sccnlp.login',
+		'sccnlp.relacionLaboral.ingresoIndividual'
 		]);

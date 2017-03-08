@@ -1,0 +1,27 @@
+<uib-tabset active="active">
+
+<uib-tab index="0" heading="{{messages.tabHeaderOne}}">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab1.view.html'">
+				</div>
+		</div>	
+</uib-tab>
+		
+<uib-tab index="1" heading="{{messages.tabHeaderTwo}}">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab2.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+<uib-tab index="2" heading="{{messages.tabHeaderThree}}">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab3.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+</uib-tabset>

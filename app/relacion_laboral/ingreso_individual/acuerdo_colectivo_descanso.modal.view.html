@@ -1,0 +1,51 @@
+<div id='AcuerdoColectivo{{$index}}' class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" role="dialog" >
+
+    <div class="modal-dialog" role="document">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">{{acuerdoColectivoDescanso}}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="container-fluid">
+                    <div class="col-md-12">
+                        <div class="col-md-4"><h5>{{rutSindicato}}</h5></div>
+                        <form >
+                            <div class="col-md-4"><input ng-model="rutAcuerdoColectivoDescanso" class="form-control" type="text"> </div>
+                            <div class="col-md-4"><button type="submit" ng-click="getRutAcuerdoColectivoDescanso()" class="btn btn-default">{{BTN_buscar}}</button> </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-12">
+                        <br>
+                        <div class="col-md-12"><h5>{{nombreSindicato}}</h5></div>
+                        <div class="col-md-12">{{nombreSindicatoValue}}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <br>
+                        <div class="col-md-12">{{representanteLegalSindicato}}</div>
+                        <div class="col-md-12">{{representanteLegalSindicatoValue}}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <br>
+                        <div class="col-md-12">{{acuerdo}}</div>
+                        <div class="col-md-12">{{acuerdoValue}}</div>                    
+                        <br>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" >{{BTN_limpiar}}</button>
+                <button type="reset"  class="btn btn-default" data-dismiss="modal">{{BTN_cancelar}}</button>
+                <button type="button" class="btn btn-default" ng-click="continueAcuerdoColectivoDescanso($index)" data-dismiss="modal">{{BTN_continuar}}</button>
+            </div>
+        </div>        
+    </div>
+</div>

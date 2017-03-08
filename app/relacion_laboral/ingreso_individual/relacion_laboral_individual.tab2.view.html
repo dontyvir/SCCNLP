@@ -1,0 +1,135 @@
+<div id="tabTwo">
+
+<form>
+
+	<h4>{{messages.informacionDelTrabajador}}</h4>
+
+        <div class="form-check">
+        
+          <label class="form-check-label">            
+            <input class="form-check-input" type="radio" name="identificadorTrabajador" ng-model="documentoIdentificador"
+            	id="identificadorTrabajador" value="rut"  ng-checked="true"/>
+            	{{messages.rut}} 
+          </label>
+          
+         <label class="form-check-label">  
+          	<input type="radio" style="margin-left: 30px;" value="pasaporte" ng-model="documentoIdentificador"
+           		   name="identificadorTrabajador" ng-checked='false'/>
+           		   {{messages.pasaporteTrabajador}}
+          </label>
+        </div>
+
+    <div class="col-md-12 text-left">
+
+
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left" style="margin-left: -15px;">
+            <form id="formRut">
+                <div class="col-md-8" >
+                    <input id="inputRut" onpaste="return false" oncopy="return false" oncut="return false" ng-model="rutConsulta" minlength="8" required="true"  type="text" class="form-control form-control-sm">
+                    <!--<input id="inputRut" ng-model="rutConsulta" onpaste="return false" oncopy="return false" oncut="return false" type="text" ng-keyup="validateRut(rutConsulta)"   minlength="8" required="true" class="form-control form-control-sm">-->
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-default" ng-disabled="!formRutButtonEnabled" ng-click="loadDataFromRutService(rutConsulta)" type="button">{{messages.BTN_buscar}}</button>
+                    <p>value:{{rutConsulta}}</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-3 text-left"><strong>{{messages.nombreCompletoTrabajador}}</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <input type="text" class="form-control" ng-show ="documentoIdentificador === 'pasaporte'" ng-model="nombreCompletoTrabajadorData">            
+            <strong ng-show="documentoIdentificador === 'rut'">{{nombreCompletoTrabajadorData}}</strong>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-3 text-left"><strong>{{messages.nacionalidadTrabajador}}</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">                       
+            <select ng-model="nacionalidadTrabajadorData" ng-show ="documentoIdentificador === 'pasaporte'" ng-options="operator.value as operator.displayName for operator in getAFP()" class="form-control form-control-sm col-md-12"></select>
+            <strong ng-show ="documentoIdentificador === 'rut'">{{nacionalidadTrabajadorData}}</strong>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-3 text-left"><strong>{{messages.lugarDeNacimientoTrabajador}}</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <select ng-model="lugarDeNacimientoTrabajadorData" ng-show ="documentoIdentificador === 'pasaporte'" ng-options="operator.value as operator.displayName for operator in getAFP()" class="form-control form-control-sm col-md-12"></select>
+            <strong ng-show ="documentoIdentificador === 'rut'">{{lugarDeNacimientoTrabajadorData}}</strong>        
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-3 text-left"><strong>{{messages.fechaDeNacimientoTrabajador}}</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <div id="datetimepicker0" ng-show ="documentoIdentificador === 'pasaporte'" data-date-format="dd-mm-yyyy" ng-model="fechaDeNacimientoTrabajadorData" ng-init="initDatePicker(0)" class="col-md-8 input-group form-control-sm text-left date">
+                <input type="datetime" ng-readonly="true" ng-model="fechaDeNacimientoTrabajadorData" class="form-control" >
+                <span class="input-group-btn" >        
+                    <button style="position: static" class=" btn btn-default glyphicon glyphicon-calendar "  type="button"></button>
+                </span>
+            </div>
+            <strong ng-show ="documentoIdentificador === 'rut'">{{fechaDeNacimientoTrabajadorData}}</strong>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-3 text-left"><strong>{{messages.estadoCivilTrabajador}}</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <select ng-model="estadoCivilTrabajadorData" ng-show ="documentoIdentificador === 'pasaporte'" ng-options="operator.value as operator.displayName for operator in getAFP()" class="form-control form-control-sm col-md-12"></select>
+            <strong ng-show ="documentoIdentificador === 'rut'">{{estadoCivilTrabajadorData}}</strong>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="text-left col-md-3"><strong>{{messages.domicilio}}*</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <div class="col-md-12" style="margin-left: -15px;">
+                <input ng-model="domicilioData" id="domicilioGoogleMaps" googleplace type="text" class="form-control form-control-sm">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="text-left col-md-3"><strong>{{messages.email}}*</strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left">
+            <div class="col-md-12" style="margin-left: -15px;">
+                <input ng-model="emailTrabajadorData"  type="email" class="form-control form-control-sm">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="text-left col-md-3">
+            <strong>{{messages.AFPTrabajador}} <span ng-show="documentoIdentificador === 'rut'" >*</span></strong>            
+        </div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left ">
+            <select ng-model="AFPSelected"  ng-options="operator.value as operator.displayName for operator in getAFP()" class="form-control form-control-sm col-md-12"></select>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="text-left col-md-3"><strong>{{messages.ISAPRETrabajador}}<span ng-show="documentoIdentificador === 'rut'" >*</span></strong></div>
+        <div class="col-md-1 text-left"><strong>:</strong></div>
+        <div class="col-md-8 text-left ">
+            <select ng-model="ISAPRESelected" ng-options="operator.value as operator.displayName for operator in getIsapre()" class="form-control form-control-sm col-md-12"></select>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="col-md-12 text-left"><strong>{{messages.mandatoryFields}}</strong></div>                    
+    </div>
+
+
+</form>
+</div>

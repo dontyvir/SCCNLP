@@ -1,8 +1,10 @@
+'use strict';
+
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages',
+.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal',
 	
-	function($scope, ingIndivMessages) {
+	function($scope, ingIndivMessages, $uibModal) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -25,7 +27,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.gPlace;
     $scope.documentoIdentificador = '';
     $scope.rutConsulta ='';
-    
+
     //getters
 
     $scope.setCurrentTab = function (currentTab) {
@@ -73,40 +75,19 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.ISAPRE = [{value: 'ISAPRE1', displayName: 'COLMENA'},
         {value: 'ISAPRE2', displayName: 'BANMEDICA'}];
 
-    $scope.tipoContrato = [{value: 'Contrato1', displayName: 'TipoContrato1'},
-        {value: 'Contrato2', displayName: 'TipoContrato2'}];
+    $scope.tipoContrato = [{value: 'plazoFijo', displayName: 'Plazo Fijo'},
+        {value: 'indefinido', displayName: 'Indefinido'}];
 
     $scope.diasDePago = [{value: '1', displayName: 'Primero'},
         {value: '5', displayName: 'Cinco'}];
 
-    $scope.tableDatosLaboresAsociadasContratoModel = [{laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''},
-        {laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''}];
+    $scope.tableDatosLaboresAsociadasContratoModel = [
+    	{laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''},
+        {laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''}
+    	];
 
-    // Funciones de las tabs
-
-    /* changeTabByButton
-     * Funcion utilizada para cambiar los tab mediante un boton.
-     * Utiliza las propiedades de los tab para cambiar a show/hide
-     *
-     * Input: 
-     *      param1:  ID del actual tab <li>
-     *      param2:  ID del nuevo tab <li>
-     *      
-     */
     $scope.changeTabByButton = function (currentTab, newTab) {
-//        var isFormValid = true;
-//        if (currentTab === 'liTabTwo') {
-//            isFormValid = $scope.validateTabTwo();
-//            if (isFormValid === true) {
-//                $('[href=#' +newTab.charAt(2).toLowerCase() + newTab.slice(3, newTab.length) + ']').tab('show');
-//            }
-//        }
-//
-//        if (isFormValid === true) {
-//            $scope.setCurrentTab(newTab.charAt(2).toLowerCase() + newTab.slice(3, newTab.length));
-//            $('#' + currentTab).removeClass('active');
-//            $('#' + newTab).addClass('active');
-//        }
+
 
     };
 
@@ -167,10 +148,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     };
 
     $scope.updateTotal = function () {
-//        $scope.totalData = parseInt(0);
-//        for (i in $scope.tableDatosLaboresAsociadasContratoModel) {
-//            $scope.totalData = parseInt($scope.totalData) + parseInt($scope.tableDatosLaboresAsociadasContratoModel[i].salaryData);
-//        }
+
     };
 
     
@@ -188,6 +166,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
   
     $scope.dateFormat = 'dd-MM-yyyy';
     
+    $scope.popupFecNacTrab   = {opened : false};
     $scope.popupFecCelebCont = {opened : false};
     $scope.popupFecIniCont   = {opened : false};
     $scope.popupFecTerCont   = {opened : false};
@@ -283,6 +262,32 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
                 $scope.formRutButtonEnabled = false;
         }
 
+    };
+    
+    var $parentCtl = this;
+    
+    $scope.loadAcuerdoJornadaLaboral = function (acuerdoData) {
+
+	    var modalInstance = $uibModal.open({
+
+	      ariaLabelledBy: 'modal-title',
+	      ariaDescribedBy: 'modal-body',
+	      templateUrl: 'relacion_laboral/acuerdo_jornada_laboral/acuerdo_jornada_laboral.modal.view.html',
+	      controller: 'AcuerdoJornadaLaboralController',
+	      controllerAs: '$ctrl',
+	      resolve: {
+	        items: function () {
+	          return $parentCtl.items;
+	        }
+	      }
+	    
+	    });
+
+	    modalInstance.result.then(function (selectedItem) {
+	    	$parentCtl.selected = selectedItem;
+	    }, function () {
+	      $log.info('Modal dismissed at: ' + new Date());
+	    });
     };
 
 }])

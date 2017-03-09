@@ -16,6 +16,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    BTN_buscar : 'Buscar',
 	    BTN_addLabor : 'Añadir Labor',
 	    BTN_finalizar : 'Finalizar',
+	    BTN_aceptar : 'Aceptar',
 
 	    // Labels Tab 1
 	    tabHeaderOne : 'Paso 1 de 3: Datos de la empresa',

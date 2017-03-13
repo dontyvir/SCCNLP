@@ -14,16 +14,17 @@
                    <th><small>{{messages.horaTermino}}</small></th>
                </tr>
            </thead>
-           <tbody ng-controller="AcuerdoJornadaLaboralController">
-               <tr  ng-repeat="acuerdoJornadaLaboral in AcuerdoJornadaLaboralModel" >
-                   <td ><input type="checkbox" ng-model="acuerdoJornadaLaboral.selected"  
-                               ng-click="addRemoveAcuerdoJornadaLaboral($parent.$index, acuerdoJornadaLaboral.selected, acuerdoJornadaLaboral.dayOfWeek, acuerdoJornadaLaboral.initialSchedule, acuerdoJornadaLaboral.endSchedule)"  aria-label="false"></td>
-                   <td><h5>{{acuerdoJornadaLaboral.dayOfWeek}}</h5></td>
-                   <td>                                
-                       <input required="true"  ng-model="acuerdoJornadaLaboral.initialSchedule" type="time" pattern="HH:mm" class="form-control bootstrap-timepicker timepicker">                                                                
+           <tbody>
+               <tr ng-repeat="jornada in acuerdoJornadaLaboralModel">
+               
+                   <td ><input type="checkbox" ng-model="jornada.selected" aria-label="false"></td>
+                   
+                   <td><h5>{{jornada.dayLabel}}</h5></td>
+                   <td>
+                        <div uib-timepicker ng-model="jornada.scheduleStart" show-meridian="false" show-spinners="false"></div>                                                                
                    </td>
                    <td>
-                       <input required="true" ng-model="acuerdoJornadaLaboral.endSchedule" type="time" class="form-control bootstrap-timepicker timepicker">                                
+                        <div uib-timepicker ng-model="jornada.scheduleEnd" show-meridian="false" show-spinners="false"></div>
                    </td>
                </tr>
            </tbody>
@@ -32,6 +33,6 @@
    </div>
  <div class="form-inline modal-footer">
     <button type="button" ng-click="cleanAcuerdoJornadaLaboral()" class="btn btn-default">{{messages.BTN_limpiar}}</button>
-    <button type="reset" ng-click="cleanAcuerdoJornadaLaboral()" class="btn btn-danger">{{messages.BTN_cancelar}}</button>
-    <button type="button" ng-click="saveAcuerdoJornadaLaboral($parent.$index)" class="btn btn-primary">{{messages.BTN_aceptar}}</button>
+    <button type="reset" ng-click="dismissModal()" class="btn btn-danger">{{messages.BTN_cancelar}}</button>
+    <button type="button" ng-click="saveAcuerdoJornadaLaboral()" class="btn btn-primary">{{messages.BTN_aceptar}}</button>
 </div>

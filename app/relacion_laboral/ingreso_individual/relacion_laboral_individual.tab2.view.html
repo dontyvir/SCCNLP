@@ -1,8 +1,7 @@
-<div id="tabTwo">
-
 <form>
 
 	<h4>{{messages.informacionDelTrabajador}}</h4>
+	<hr/>
 
 	<!-- Rut / Pasaporte -->
 	
@@ -10,13 +9,13 @@
        <div class="form-check col-md-3">
        
          <label class="form-check-label">            
-           <input class="form-check-input" type="radio" name="identificadorTrabajador" ng-model="documentoIdentificador"
-           	id="identificadorTrabajador" value="rut"  ng-checked="true"/>
+           <input class="form-check-input" type="radio" name="identificadorTrabajador" ng-model="trabajador.documentoIdentificador"
+           	      id="identificadorTrabajador" value="rut"  ng-checked="true"/>
            	{{messages.rut}} 
          </label>
          
         <label class="form-check-label">  
-         	<input type="radio" value="pasaporte" ng-model="documentoIdentificador"
+         	<input type="radio" value="pasaporte" ng-model="trabajador.documentoIdentificador"
           		   name="identificadorTrabajador" ng-checked='false'/>
           		   {{messages.pasaporteTrabajador}}
          </label>
@@ -24,7 +23,7 @@
        </div>
        
 		<div class="col-md-8 form-inline">
-			<input id="inputRut" ng-model="rutConsulta" minlength="8" required="true"  type="text" class="form-control">
+			<input id="inputRut" ng-model="trabajador.rutConsulta" minlength="8" required="true"  type="text" class="form-control">
 			<button class="btn btn-default" ng-disabled="!formRutButtonEnabled" ng-click="loadDataFromRutService(rutConsulta)" type="button">{{messages.BTN_buscar}}</button>
 		</div>
     </div>
@@ -35,9 +34,9 @@
 		<label for="nombre-completo" class="col-md-3 col-form-label">{{messages.nombreCompletoTrabajador}}</label>
 		
 		<div class="col-md-4">
-			<input id="nombre-completo" ng-model="nombreCompletoTrabajadorData" type="text" ng-required="true"
+			<input id="nombre-completo" ng-model="trabajador.nombreCompleto" type="text" ng-required="true"
 			       class="form-control" placeholder="{{messages.nombreCompletoTrabajador}}"
-			       ng-readonly="documentoIdentificador == 'rut'">
+			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
 		</div>
 	</div>
 
@@ -49,9 +48,9 @@
 		<div class="col-md-4">
 
 			<!-- Autocomplete list -->
-			<input id="nacionalidad-trabajador" ng-model="nacionalidadTrabajadorData" type="text" ng-required="true"
+			<input id="nacionalidad-trabajador" ng-model="trabajador.nacionalidad" type="text" ng-required="true"
 			       class="form-control" placeholder="{{messages.nacionalidadTrabajador}}"
-			       ng-readonly="documentoIdentificador == 'rut'">
+			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
 		</div>
 	</div>	
 	
@@ -65,9 +64,9 @@
 		<div class="col-md-4">
 
 			<!-- Autocomplete list -->
-			<input id="lugar-nacimiento-trabajador" ng-model="lugarDeNacimientoTrabajadorData" type="text" ng-required="true"
+			<input id="lugar-nacimiento-trabajador" ng-model="trabajador.lugarDeNacimiento" type="text" ng-required="true"
 			       class="form-control" placeholder="{{messages.lugarDeNacimientoTrabajador}}"
-			       ng-readonly="documentoIdentificador == 'rut'">
+			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
 		</div>
 	</div>	
 
@@ -78,13 +77,13 @@
 		
 		<div class="col-md-4">
 		    <p class="input-group">
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="fechaDeNacimientoTrabajadorData"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="trabajador.fechaDeNacimiento"
 		       is-open="popupFecNacTrab.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fecha-nac-trabajador" ng-readonly="documentoIdentificador == 'rut'"/>
+		       id="fecha-nac-trabajador" ng-readonly="trabajador.documentoIdentificador == 'rut'"/>
 		       
 		      <span class="input-group-btn" >
 		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecNacTrab)"
-		        		ng-disabled="documentoIdentificador == 'rut'">
+		        		ng-disabled="trabajador.documentoIdentificador == 'rut'">
 		        	<i class="glyphicon glyphicon-calendar"></i>
 		        </button>
 		      </span>
@@ -99,12 +98,12 @@
 		
 		<div class="col-md-4">
 
-			 <select ng-model="estadoCivilTrabajadorData" ng-show ="documentoIdentificador == 'pasaporte'" class="form-control">
+			 <select ng-model="trabajador.estadoCivil" ng-show ="trabajador.documentoIdentificador == 'pasaporte'" class="form-control">
 			 	<option value="casado">Casado</option>
 				<option value="soltero">Soltero</option>
 			 </select>
 			 
-			 <span ng-show ="documentoIdentificador === 'rut'">{{estadoCivilTrabajadorData}}</span>
+			 <span ng-show ="trabajador.documentoIdentificador === 'rut'">{{estadoCivilTrabajadorData}}</span>
 		</div>
 	</div>	
 
@@ -115,7 +114,7 @@
 		
 		<div class="col-md-4">
 
-                <input ng-model="domicilioData" id="domicilioGoogleMaps" googleplace type="text" class="form-control"
+                <input ng-model="trabajador.domicilio" id="domicilioGoogleMaps" googleplace type="text" class="form-control"
                 placeholder="{{messages.domicilio}}">
 		</div>
 	</div>	
@@ -126,7 +125,7 @@
 		<label for="email" class="col-md-3 col-form-label">{{messages.email}}*</label>
 		
 		<div class="col-md-4">
-                <input id="email" ng-model="emailTrabajadorData" type="email" class="form-control"
+                <input id="email" ng-model="trabajador.email" type="email" class="form-control"
                 placeholder="{{messages.email}}">
 		</div>
 	</div>	
@@ -137,7 +136,7 @@
 		<label for="afp-trabajador" class="col-md-3 col-form-label">{{messages.AFPTrabajador}}*</label>
 		
 		<div class="col-md-4">
-                <select ng-model="AFPSelected"  ng-options="operator.value as operator.displayName for operator in getAFP()"
+                <select ng-model="trabajador.AFPSelected"  ng-options="operator.value as operator.displayName for operator in getAFP()"
                  		class="form-control form-control-sm col-md-12" id="afp-trabajador">
                 </select>
 		</div>
@@ -149,7 +148,7 @@
 		<label for="isapre-trabajador" class="col-md-3 col-form-label">{{messages.ISAPRETrabajador}}*</label>
 		
 		<div class="col-md-4">
-			<select ng-model="ISAPRESelected" ng-options="operator.value as operator.displayName for operator in getIsapre()"
+			<select ng-model="trabajador.ISAPRESelected" ng-options="operator.value as operator.displayName for operator in getIsapre()"
  					class="form-control form-control-sm col-md-12" id="isapre-trabajador">
  			</select>
 		</div>
@@ -162,12 +161,11 @@
 	    
 	    <div class="col-md-3 form-inline">
 	    
-        	<button class="btn btn-warning" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>
+        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>
         	<button class="btn btn-danger" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
-        	<button class="btn btn-primary" ng-click="ingresoContinue('Tab2')">{{messages.BTN_continuar}}</button>
+        	<button class="btn btn-primary" ng-click="ingresoContinue(2)">{{messages.BTN_continuar}}</button>
         	        	        
         </div>
 	</div>
 
 </form>
-</div>

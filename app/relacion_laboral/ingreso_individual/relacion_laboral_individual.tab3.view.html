@@ -1,7 +1,8 @@
 <form>
 
         <!--Informacion del Tab-->
-        <h4>{{messages.informacionDelTrabajador}}</h4><br/>
+        <h4>{{messages.informacionDelTrabajador}}</h4>
+        <hr/>
 
 
 		<!-- Lugar de celebración del contrato -->
@@ -10,7 +11,7 @@
 			<label for="lugarDeCelebracionDelContrato" class="col-md-3 col-form-label">{{messages.lugarDeCelebracionDelContrato}}</label>
 			
 			<div class="col-md-4">
-				<input id="lugarDeCelebracionDelContrato" ng-model="lugarDeCelebracionDelContratoData" type="text" ng-required="true"
+				<input id="lugarDeCelebracionDelContrato" ng-model="contrato.lugarDeCelebracionDelContrato" type="text" ng-required="true"
 				       class="form-control form-control-sm" placeholder="{{messages.lugarDeCelebracionDelContrato}}">
 			</div>
 		</div>
@@ -23,7 +24,7 @@
 			<div class="col-md-4">
 				<p class="input-group">
 		    
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="fechaDeCelebracionDelContratoData"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaDeCelebracionDelContrato"
 		       is-open="popupFecCelebCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
 		       id="fechaDeCelebracionDelContrato" />
 		       
@@ -40,7 +41,7 @@
 			<label for="tipoContrato" class="col-md-3 col-form-label">{{messages.tipoDeContrato}}</label>
 			
 			<div class="col-md-4">
-				<select ng-model="tipoContratoSelected"  ng-options="operator.value as operator.displayName for operator in getTipoContrato()"
+				<select ng-model="contrato.tipoContratoSelected"  ng-options="operator.value as operator.displayName for operator in getTipoContrato()"
 				 class="form-control col-md-8 form-control-sm" id="tipoContrato" ng-required="true"></select>
 			</div>
 		</div>
@@ -53,7 +54,7 @@
 			<div class="col-md-4">
 				<p class="input-group">
 		    
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="fechaDeInicioDelContratoData"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaDeInicioDelContrato"
 		       is-open="popupFecIniCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
 		       id="fechaDeInicioDelContrato" />
 		       
@@ -73,12 +74,12 @@
 			<div class="col-md-4">
 				<p class="input-group">
 		    
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="fechaTerminoDelContratoData"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaTerminoDelContrato"
 		       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
 		       id="fechaTerminoDelContrato" ng-disabled="tipoContratoSelected == 'indefinido'"/>
 		       
 		      <span class="input-group-btn">
-		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="tipoContratoSelected == 'indefinido'">
+		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="!contrato.tipoContratoSelected">
 		        	<i class="glyphicon glyphicon-calendar"></i>
 		        </button>
 		      </span>
@@ -92,7 +93,7 @@
 			<label for="diaDePago" class="col-md-3 col-form-label">{{messages.diaDePago}}</label>
 			
 			<div class="col-md-4">
-				<select ng-model="diaDePagoSelected"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()"
+				<select ng-model="contrato.diaDePagoSelected"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()"
 				 class="form-control col-md-8 form-control-sm" id="diaDePago" ng-required="true"></select>
 				 <span>{{messages.deCadaMes}}</span>
 			</div>
@@ -110,6 +111,7 @@
             <table class="table table-striped table-bordered table-responsive table-hover">
                 <thead>
                     <tr>
+                        <th><small>{{messages.eliminarFila}}</small></th>
                         <th><small>{{messages.labor}}</small></th>
                         <th><small>{{messages.funcion}}</small></th>
                         <th><small>{{messages.lugarDePresentacionDelosServicios}}</small></th>
@@ -120,56 +122,73 @@
                         <th><small>{{messages.remuneracionBruta}}</small></th>                                
                     </tr>
                 </thead>
+                <tfoot class="table-no-bordered">
+                    <tr>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;"></td>
+                        <td style="border: none;" class="table-no-bordered col-md-2">{{messages.total}}</td>
+                        <td style="border: none;" class="text-right input-group">
+                            <span class="input-group-addon ">$</span>
+                            <input ng-model="contrato.total" type="text" disabled="true" class="form-control  text-right col-md-2">
+                        </td> 
+                    </tr>
+                </tfoot>
                 <tbody>
-                    <tr ng-repeat="datosLaborales in getTableDatosLaboresAsociadasContratoModel()">
+                    <tr ng-repeat="datosLaborales in contrato.datosLabores">
+                    	<td>
+                    	<button type="button" class="btn btn-danger" ng-click="deleteRow(datosLaborales)">
+ 							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+                    	</td>
                         <td>
-                            <select ng-model="datosLaborales.laborSelect"   ng-options="operator.value as operator.displayName for operator in getDiaDePago()" class="form-control"></select>                            
+                            <select ng-model="datosLaborales.laborSelect"   ng-options="elem.value as elem.displayName for elem in labores" class="form-control"></select>                            
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.functionSelect"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()" class="form-control"></select>
+                            <select ng-model="datosLaborales.funcionSelect"  ng-options="elem.value as elem.displayName for elem in funciones" class="form-control"></select>
                         </td>
                         <td>
-                            <input ng-model="datosLaborales.servicePresentationData" type="text" class="form-control">                
+                            <input ng-model="datosLaborales.lugarPrestacionServicios" type="text" class="form-control">                
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.workingDaySelect"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()" class="form-control"></select>
+                            <select ng-model="datosLaborales.tipoJornada"  ng-options="elem.value as elem.displayName for elem in tiposJornada" class="form-control"></select>
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.paymentDateSelect"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()" class="form-control"></select>
+                            <select ng-model="datosLaborales.sisTurno"  ng-options="elem.value as elem.displayName for elem in tiposTurno" class="form-control"></select>
                         </td>
-                        <td>                 
-                                <input ng-model="datosLaborales.scheduleData"  type="text" class="form-control"
-                                ng-click="loadAcuerdoJornadaLaboral(datosLaborales)"/>
+                        <td>      
+                                <input ng-model="datosLaborales.horario"  type="hidden" class="form-control" />
+                                
+                                <div></div>
+                                
+                                <button class="btn btn-link" ng-click="loadAcuerdoJornadaLaboral(datosLaborales)">
+                                
+                                	<span class="glyphicon glyphicon-plus" ng-show="!datosLaborales.horario"> {{messages.ingresar}}</span>
+                                	<span class="glyphicon glyphicon-pencil" ng-show="datosLaborales.horario"> {{messages.edit}}</span>
+                                </button>
                         </td>
                         <td>
                             <div >
-                                <input ng-model="datosLaborales.agreementData" type="text"  class="form-control " style="width: 100px">                
-                                <a style="margin-left: 5px" href="#" data-toggle="modal" data-target="#AcuerdoColectivo{{$index}}">ver+</a>
+                                <input ng-model="datosLaborales.acuerdoDescanso" type="hidden"  class="form-control"/>                
 
+                                <div></div>
 
+                                <button class="btn btn-link" ng-click="loadAcuerdoDescanso(datosLaborales)">
+                					<span class="glyphicon glyphicon-plus" ng-show="!datosLaborales.acuerdoDescanso"> {{messages.ingresar}}</span>
+                                	<span class="glyphicon glyphicon-pencil" ng-show="datosLaborales.acuerdoDescanso"> {{messages.edit}}</span>
+                                </button>
                             </div>
                         </td>
                         <td class="input-group">
                             <span class="input-group-addon ">$</span>
-                            <input ng-model="datosLaborales.salaryData" ng-init="datosLaborales.salaryData = 0" ng-change="updateTotal()" type="number" min="0" class="form-control text-right">
+                            <input ng-model="datosLaborales.remunBruta" ng-change="updateTotal()" type="number" min="0" class="form-control text-right">
                         </td>
                     </tr>
                 </tbody>
-                <tfoot class="">
-                    <tr class="table-no-bordered">
-                        <th style="border: none;"></th>
-                        <th style="border: none;"></th>
-                        <th style="border: none;"></th>
-                        <th style="border: none;"></th>
-                        <th style="border: none;"></th>
-                        <th style="border: none;"></th>
-                        <th style="border: none;" class="table-no-bordered col-md-2">{{messages.total}}</th>
-                        <th style="border: none;" class="text-right input-group">
-                            <span class="input-group-addon ">$</span>
-                            <input ng-model="totalData" type="text" disabled="true" class="form-control  text-right col-md-2">
-                        </th> 
-                    </tr>
-                </tfoot>
             </table>
         </div>
         </div>
@@ -183,15 +202,14 @@
         
         <div class="row">
 		    <div class="col-md-9">
-		       <small>{{messages.mandatoryFields}}</small>                 
+		       <small>{{messages.mandatoryFields}}</small> 
 		    </div>
 		    
 		    <div class="col-md-3 form-inline">
-	        	<button class="btn btn-warning" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>	        
+	        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>	        
 	        	<button class="btn btn-danger" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
 	        	<button class="btn btn-primary" ng-click="ingresoSubmit()">{{messages.BTN_finalizar}}</button>
 	        	        	        
 	        </div>
-        
 		</div>
 </form>

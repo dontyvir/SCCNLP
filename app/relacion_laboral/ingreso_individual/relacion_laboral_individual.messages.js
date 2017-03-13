@@ -63,8 +63,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    lugarDePresentacionDelosServicios : 'Lugar de Presentación de los servicios',
 	    tipoDeJornada : 'Tipo de Jornada',
 	    sistemaDeTurno : 'Sistema de Turno',
-	    horario : 'Horario',
+	    editHorario : 'Editar Acuerdo Horario',
+	    horario : 'Acuerdo de Jornada',
 	    acuerdoDeDescanso : 'Acuerdo de Descanso',
+	    editAcuerdoDescanso : 'Editar Acuerdo Descanso',
+	    edit : 'Editar',
+	    ingresar : 'Ingresar',
+	    eliminarFila : 'Eliminar Labor',
 	    remuneracionBruta : 'Remuneración Bruta (CLP)',
 	    total : 'Total'
 	    

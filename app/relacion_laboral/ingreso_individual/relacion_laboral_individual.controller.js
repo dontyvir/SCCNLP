@@ -8,66 +8,100 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	
 	$scope.messages = ingIndivMessages;
 	
-    //  Data en duro
+	//tabs
+	$scope.tabsActive = 0;
+	$scope.tabs = [
+		{disable : false}, //tab datos de la empresa
+	    {disable : true}, // tab datos del trabajador
+	    {disable : true} // tab datos del contrato
+	]
+	
+	// Datos del empleador Model
+	
+	$scope.empleador = {
+			
+			rutEmpleador : null,
+			nombreEmpresa :null,
+			tipoEmpresa : null,
+			domicilio : null,
+			email : null,
+			terminoDeVigencia : null,
+			rutRepresentanteLegal : null,
+			nombreCompletoRepresentanteLegal :null,
+			
+			// data de usuario?
+			rutUsuarioQueRegistra : null,
+			nombreCompletoUsuarioQueRegistraData : null,
+			cargoEnLaEmpresaQueRegistraData : null
+			
+	};
+	
+    // Datos del trabajador Model
+	
+	$scope.trabajador = {
 
-    $scope.AFPSelected = '';
-    $scope.ISAPRESelected = '';
-    $scope.domicilioData = '';
-    $scope.emailTrabajadorData = '';
-
-    $scope.lugarDeCelebracionDelContratoData = '';
-    $scope.fechaDeCelebracionDelContratoData = '';
-    $scope.tipoContratoSelected = '';
-    $scope.fechaDeInicioDelContratoData = '';
-    $scope.fechaTerminoDelContratoData = '';
-    $scope.diaDePagoSelected = '';
-    $scope.totalData = Number(0);
-    $scope.acuerdoJornadaLaboralValues = [];
-    $scope.formRutButtonEnabled = false;
-    $scope.gPlace;
-    $scope.documentoIdentificador = '';
-    $scope.rutConsulta ='';
-
-    //getters
-
-    $scope.setCurrentTab = function (currentTab) {
-        $scope.currentTab = currentTab;
-    };
-
-    $scope.getCurrentTab = function () {
-        return $scope.currentTab;
-    };
-
-    $scope.compareCurrentTab = function (text) {
-        if ($scope.currentTab === text)
-            return true;
-        return false;
-    };
-
-    $scope.getAFP = function () {
-        return $scope.AFP;
-    };
-
-    $scope.getIsapre = function () {
-        return $scope.ISAPRE;
-    };
-
-    $scope.getTipoContrato = function () {
-        return $scope.tipoContrato;
-    };
-
-    $scope.getDiaDePago = function () {
-        return $scope.diasDePago;
-    };
+			AFPSelected : null,
+			ISAPRESelected : null,
+			domicilio : null,
+			email : null,
+			documentoIdentificador : null,
+			rutConsulta : null,
+			
+			nombreCompleto : null,
+			nacionalidad : null,
+			lugarDeNacimiento : null,
+			fechaDeNacimiento : null,
+			estadoCivil : null
+			
+	};
+	
+	
+	// prototipo datos Labores
+	
+	function DatosLabores(_id) {
+		
+		this.id = _id,
+		this.laborSelect = null;
+		this.funcionSelect = null;
+		this.lugarPrestacionServicios = null;
+		this.sisTurno = null;
+		this.horario = null;
+		this.acuerdoDescanso = null;
+		this.remunBruta = null;
+		this.tipoJornada = null;
+		
+	}
+	
+	// información del contrato Model
+	
+	$scope.contrato = {
+			
+		    lugarDeCelebracionDelContrato : null,
+		    fechaDeCelebracionDelContrato : null,
+		    tipoContratoSelected : null,
+		    fechaDeInicioDelContrato : null,
+		    fechaTerminoDelContrato : null,
+		    diaDePagoSelected : null,
+		    total : 0,
+		    datosLabores : [new DatosLabores(0)]
+			
+	};
 
     $scope.addRow = function () {
-        $scope.tableDatosLaboresAsociadasContratoModel.push({value: '', displayName: ''});
+    	var id = $scope.contrato.datosLabores.length;
+    	$scope.contrato.datosLabores.push(new DatosLabores(id));
     };
-
-    $scope.getTableDatosLaboresAsociadasContratoModel = function () {
-        return $scope.tableDatosLaboresAsociadasContratoModel;
-    };
-
+    
+    $scope.deleteRow = function(rowModel) {
+    	
+    	var datos = $scope.contrato.datosLabores;
+    	
+    	datos.splice(rowModel.id, 1); // remove 1 element from index rowModel.id
+    	
+    	for(var i=rowModel.id;i<datos.length;i++){
+    		datos[i].id--;
+    	}
+    }
 
     $scope.AFP = [{value: 'AFP1', displayName: 'Modelo'},
         {value: 'AFP2', displayName: 'Habitat'}];
@@ -80,16 +114,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
     $scope.diasDePago = [{value: '1', displayName: 'Primero'},
         {value: '5', displayName: 'Cinco'}];
-
-    $scope.tableDatosLaboresAsociadasContratoModel = [
-    	{laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''},
-        {laborSelect: '', functionSelect: '', servicePresentationData: '', workingDaySelect: '', paymentDateSelect: '', scheduleData: '', agreementData: '', salaryData: ''}
-    	];
-
-    $scope.changeTabByButton = function (currentTab, newTab) {
-
-
-    };
+    
+    $scope.labores = [{value:'labor1', displayName :'Labor 1'}];
+    $scope.funciones = [{value:'funcion1', displayName :'Función 1'}];
+    $scope.tiposJornada = [{value:'jornada1', displayName :'Jornada 1'}];
+    $scope.tiposTurno = [{value:'turno1', displayName :'Turno 1'}];
+    
 
     /*
      * Validate the tab 2 form if all mandatory elements are completed by
@@ -140,23 +170,28 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
      * @returns {undefined}
      */
     $scope.cleanForm = function () {
-        $scope.rutEmpleadorValueData = '';
+       
     };
 
     $scope.validateInfo = function () {
-        //:todo Validate fo         
+     
     };
 
     $scope.updateTotal = function () {
 
+    	var total = 0;
+    	var length = $scope.contrato.datosLabores.length;
+    	
+    	for(var i=0; i < length; i++) {
+    		
+    		var remun = $scope.contrato.datosLabores[i].remunBruta;
+    		if(remun && !isNaN(remun))
+    		total += remun;
+    	}
+    	
+    	$scope.contrato.total = total;
     };
 
-    
-    /*
-     * Initialize the date picker for tab 3
-     * @param {type} p_index
-     * @returns {undefined}
-     */
     $scope.dateOptions = {
     	    formatYear: 'yy',
     	    maxDate: new Date(2020, 5, 22),
@@ -180,19 +215,20 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
      * @returns {undefined}
      */
     $scope.loadDataFromDTPlus = function () {
+    	
         //: TODO connect to DTPlus to fill all the following data
 
-        $scope.rutEmpleadorValueData = '16.161.785-3';
-        $scope.nombreEmpresaEmpleadorData = "everis";
-        $scope.tipoEmpresaEmpleadorData = 'Consultoria';
-        $scope.domicilioEmpleadorData = 'Alameda';
-        $scope.emailEmpleadorData = 'everis@everis.com';
-        $scope.terminoDeVigenciaEmpleadorData = '10/12/2018';
-        $scope.rutRepresentanteLegalData = '8.478.213-1';
-        $scope.nombreCompletoRepresentanteLegalData = 'Guillermo Fredez';
-        $scope.rutUsuarioQueRegistraData = '1.789.456-K';
-        $scope.nombreCompletoUsuarioQueRegistraData = 'Pablo Muñoz';
-        $scope.cargoEnLaEmpresaQueRegistraData = 'Apoderado';
+        $scope.empleador.rutEmpleador = '16.161.785-3';
+        $scope.empleador.nombreEmpresa = "everis";
+        $scope.empleador.tipoEmpresa = 'Consultoria';
+        $scope.empleador.domicilio = 'Alameda';
+        $scope.empleador.email = 'everis@everis.com';
+        $scope.empleador.terminoDeVigencia = new Date(2018,1,3);
+        $scope.empleador.rutRepresentanteLegal = '8.478.213-1';
+        $scope.empleador.nombreCompletoRepresentanteLegal = 'Guillermo Fredez';
+        $scope.empleador.rutUsuarioQueRegistra = '1.789.456-K';
+        $scope.empleador.nombreCompletoUsuarioQueRegistra = 'Pablo Muñoz';
+        $scope.empleador.cargoEnLaEmpresaQueRegistra = 'Apoderado';
     };
 
     /**
@@ -202,12 +238,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
      * @returns {undefined}
      */
     $scope.loadDataFromRutService = function (p_rut) {
+    	
         //:TODO search the user information
-        $scope.nombreCompletoTrabajadorData = 'Fernando Salgado Muñoz';
-        $scope.nacionalidadTrabajadorData = 'Chilena';
-        $scope.lugarDeNacimientoTrabajadorData = 'Iquique';
-        $scope.fechaDeNacimientoTrabajadorData = '04/02/1982';
-        $scope.estadoCivilTrabajadorData = 'Casado';
+        $scope.trabajador.nombreCompleto = 'Fernando Salgado Muñoz';
+        $scope.trabajador.nacionalidad = 'Chilena';
+        $scope.trabajador.lugarDeNacimiento = 'Iquique';
+        $scope.trabajador.fechaDeNacimiento = new Date(1982,1,3);
+        $scope.trabajador.estadoCivil = 'Casado';
     };
 
     /**
@@ -264,9 +301,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
     };
     
-    var $parentCtl = this;
+    var $parentCtl = $scope;
     
-    $scope.loadAcuerdoJornadaLaboral = function (acuerdoData) {
+    $scope.loadAcuerdoJornadaLaboral = function (datosLaborales) {
 
 	    var modalInstance = $uibModal.open({
 
@@ -276,18 +313,68 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	      controller: 'AcuerdoJornadaLaboralController',
 	      controllerAs: '$ctrl',
 	      resolve: {
-	        items: function () {
-	          return $parentCtl.items;
-	        }
+	          datosLaborales: function () { return datosLaborales; }
 	      }
-	    
 	    });
 
-	    modalInstance.result.then(function (selectedItem) {
-	    	$parentCtl.selected = selectedItem;
+	    modalInstance.result.then(function (acuerdos_jornada) {
+	    	
+	    	if(acuerdos_jornada.length == 0)
+	    		datosLaborales.horario = null;
+	    	else
+		    	datosLaborales.horario = acuerdos_jornada;
+	    	
 	    }, function () {
-	      $log.info('Modal dismissed at: ' + new Date());
+	    	
+	      console.log('Modal dismissed at: ' + new Date());
 	    });
     };
+    
+    $scope.loadAcuerdoDescanso = function (datosLaborales){
+    	
+	    var modalInstance = $uibModal.open({
 
+		      ariaLabelledBy: 'modal-title',
+		      ariaDescribedBy: 'modal-body',
+		      templateUrl: 'relacion_laboral/acuerdo_colectivo_descanso/acuerdo_colectivo_descanso.modal.view.html',
+		      controller: 'AcuerdoDescansoController',
+		      controllerAs: '$ctrl',
+		      resolve: {
+		          datosLaborales: function () { return datosLaborales; }
+		      }
+		    });
+
+		    modalInstance.result.then(function (acuerdos_descanso) {
+		    	
+		    	if(!acuerdos_descanso)
+		    		datosLaborales.acuerdoDescanso = null;
+		    	else
+		    		datosLaborales.acuerdoDescanso = acuerdos_descanso;
+		    	
+		    }, function () {
+		    	
+		      console.log('Modal dismissed at: ' + new Date());
+		    });
+	    };
+
+	    $scope.printSchedule = function(data){
+	    	return data;
+	    };
+	    
+	    $scope.printAgreement = function(data){
+	    	return data;
+	    };
+	    
+	    $scope.ingresoContinue = function(tab) {
+	    	
+	    	if(!tab || tab < 1 || tab > 2)
+	    		return;
+
+	    	
+
+	    	$scope.tabs[tab].disable = false;
+	    	$scope.tabsActive = tab;
+	    	
+	    };
+	    
 }])

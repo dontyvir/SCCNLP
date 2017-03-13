@@ -1,0 +1,44 @@
+
+<form>
+ <div class="modal-header">
+     <h4 class="modal-title" id="acuerdo-colectivo-descanso-modal">{{messages.acuerdoColectivoDescanso}}</h4>
+ </div>
+ <div class="modal-body container-fluid">
+
+         <div class="col-md-12">
+             <div class="col-md-4"><h5>{{messages.rutSindicato}}</h5></div>
+
+                 <div class="col-md-8">
+                 	       
+                 	<input type="text" ng-model="acuerdoDescanso" placeholder="{{messages.ingreseRut}}"
+	                 	  uib-typeahead="acuerdo as acuerdo.rutSindicato for acuerdo in acuerdos | filter:{rutSindicato:$viewValue}"
+	                 	  class="form-control" typeahead-show-hint="true" typeahead-min-length="0">
+                 </div>
+         </div>
+
+         <div class="col-md-12">
+             <br>
+             <div class="col-md-12"><h5>{{messages.nombreSindicato}}</h5></div>
+             <div class="col-md-12">{{acuerdoDescanso.nombreSindicato}}</div>
+         </div>
+
+         <div class="col-md-12">
+             <br>
+             <div class="col-md-12">{{messages.representanteLegalSindicato}}</div>
+             <div class="col-md-12">{{acuerdoDescanso.representanteLegalSindicato}}</div>
+         </div>
+
+         <div class="col-md-12">
+             <br>
+             <div class="col-md-12">{{messages.acuerdo}}</div>
+             <div class="col-md-12">{{acuerdoDescanso.acuerdo}}</div>                    
+             <br>
+         </div>
+
+ </div>
+ <div class="modal-footer">
+     <button type="button" class="btn btn-default" ng-click="clearSelected()">{{messages.BTN_limpiar}}</button>
+     <button type="reset"  class="btn btn-danger" ng-click="dismissModal()">{{messages.BTN_cancelar}}</button>
+     <button type="button" class="btn btn-primary" ng-click="saveAcuerdoColectivoDescanso()">{{messages.BTN_guardar}}</button>
+ </div>
+ </form>

@@ -14,17 +14,17 @@
            	{{messages.rut}} 
          </label>
          
-        <label class="form-check-label">  
+        <label class="form-check-label">
          	<input type="radio" value="pasaporte" ng-model="trabajador.documentoIdentificador"
-          		   name="identificadorTrabajador" ng-checked='false'/>
+          		   name="identificadorTrabajador" ng-checked="false"/>
           		   {{messages.pasaporteTrabajador}}
          </label>
     
        </div>
        
-		<div class="col-md-8 form-inline">
-			<input id="inputRut" ng-model="trabajador.rutConsulta" minlength="8" required="true"  type="text" class="form-control">
-			<button class="btn btn-default" ng-disabled="!formRutButtonEnabled" ng-click="loadDataFromRutService(rutConsulta)" type="button">{{messages.BTN_buscar}}</button>
+		<div class="col-md-4">
+			<input id="inputRut" ng-model="trabajador.numDocIdentificador" required="true"  type="text" class="form-control">
+			 <span ng-show="trabajador.loading"><i class="glyphicon glyphicon-refresh glyphicon-refresh-animate""></i> Cargando... </span>
 		</div>
     </div>
     
@@ -98,12 +98,11 @@
 		
 		<div class="col-md-4">
 
-			 <select ng-model="trabajador.estadoCivil" ng-show ="trabajador.documentoIdentificador == 'pasaporte'" class="form-control">
-			 	<option value="casado">Casado</option>
-				<option value="soltero">Soltero</option>
+			 <select ng-model="trabajador.estadoCivil" ng-show ="trabajador.documentoIdentificador == 'pasaporte'"
+			  class="form-control" ng-options="operator.id as operator.glosa for operator in estadoCivil">
 			 </select>
 			 
-			 <span ng-show ="trabajador.documentoIdentificador === 'rut'">{{estadoCivilTrabajadorData}}</span>
+			 <span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.estadoCivil}}</span>
 		</div>
 	</div>	
 
@@ -136,7 +135,7 @@
 		<label for="afp-trabajador" class="col-md-3 col-form-label">{{messages.AFPTrabajador}}*</label>
 		
 		<div class="col-md-4">
-                <select ng-model="trabajador.AFPSelected"  ng-options="operator.value as operator.displayName for operator in getAFP()"
+                <select ng-model="trabajador.AFPSelected"  ng-options="operator.id as operator.glosa for operator in AFP"
                  		class="form-control form-control-sm col-md-12" id="afp-trabajador">
                 </select>
 		</div>
@@ -148,7 +147,7 @@
 		<label for="isapre-trabajador" class="col-md-3 col-form-label">{{messages.ISAPRETrabajador}}*</label>
 		
 		<div class="col-md-4">
-			<select ng-model="trabajador.ISAPRESelected" ng-options="operator.value as operator.displayName for operator in getIsapre()"
+			<select ng-model="trabajador.ISAPRESelected" ng-options="operator.id as operator.glosa for operator in ISAPRE"
  					class="form-control form-control-sm col-md-12" id="isapre-trabajador">
  			</select>
 		</div>

@@ -24,7 +24,7 @@
     </div>
     <div class="row">
         <div class="col-md-3"><strong>{{messages.terminoDeVigencia}}</strong></div>
-        <div class="col-md-5"><strong>{{empleador.terminoDeVigencia}}</strong></div>
+        <div class="col-md-5"><strong>{{empleador.terminoDeVigencia | date : dateFormat}}</strong></div>
     </div>
 
 	<br/>
@@ -57,10 +57,10 @@
     </div>
     
     <div class="row">
-    	<div class="col-4 form-inline">
+        <div class="col-md-9"></div>
+    	<div class="col-3 form-inline">
         	<button class="btn btn-danger" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
-        	<button class="btn btn-primary" ng-click="ingresoContinue(1)">{{messages.BTN_continuar}}</button>
-        	        	        
+        	<button class="btn btn-primary" ng-click="ingresoContinue(1)">{{messages.BTN_continuar}}</button>        	        
     	</div>
     </div>
        

@@ -10,5 +10,6 @@ angular.module('sccnlp',
 		'sccnlp.session',
 		'sccnlp.authorization',
 		'sccnlp.login',
+		'sccnlp.common',
 		'sccnlp.relacionLaboral.ingresoIndividual'
 		]);

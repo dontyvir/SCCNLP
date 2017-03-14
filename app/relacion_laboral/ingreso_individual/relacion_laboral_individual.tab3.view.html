@@ -41,7 +41,7 @@
 			<label for="tipoContrato" class="col-md-3 col-form-label">{{messages.tipoDeContrato}}</label>
 			
 			<div class="col-md-4">
-				<select ng-model="contrato.tipoContratoSelected"  ng-options="operator.value as operator.displayName for operator in getTipoContrato()"
+				<select ng-model="contrato.tipoContratoSelected"  ng-options="operator.id as operator.glosa for operator in tipoContrato"
 				 class="form-control col-md-8 form-control-sm" id="tipoContrato" ng-required="true"></select>
 			</div>
 		</div>
@@ -76,10 +76,10 @@
 		    
 		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaTerminoDelContrato"
 		       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fechaTerminoDelContrato" ng-disabled="tipoContratoSelected == 'indefinido'"/>
+		       id="fechaTerminoDelContrato" ng-disabled="contrato.tipoContratoSelected == 'indefinido'"/>
 		       
 		      <span class="input-group-btn">
-		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="!contrato.tipoContratoSelected">
+		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="contrato.tipoContratoSelected == 'indefinido'">
 		        	<i class="glyphicon glyphicon-calendar"></i>
 		        </button>
 		      </span>
@@ -93,7 +93,7 @@
 			<label for="diaDePago" class="col-md-3 col-form-label">{{messages.diaDePago}}</label>
 			
 			<div class="col-md-4">
-				<select ng-model="contrato.diaDePagoSelected"  ng-options="operator.value as operator.displayName for operator in getDiaDePago()"
+				<select ng-model="contrato.diaDePagoSelected"  ng-options="operator for operator in diasDePago"
 				 class="form-control col-md-8 form-control-sm" id="diaDePago" ng-required="true"></select>
 				 <span>{{messages.deCadaMes}}</span>
 			</div>
@@ -146,19 +146,19 @@
 						</button>
                     	</td>
                         <td>
-                            <select ng-model="datosLaborales.laborSelect"   ng-options="elem.value as elem.displayName for elem in labores" class="form-control"></select>                            
+                            <select ng-model="datosLaborales.laborSelect"   ng-options="elem.id as elem.glosa for elem in labores" class="form-control"></select>                            
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.funcionSelect"  ng-options="elem.value as elem.displayName for elem in funciones" class="form-control"></select>
+                            <select ng-model="datosLaborales.funcionSelect"  ng-options="elem.id as elem.glosa for elem in funciones" class="form-control"></select>
                         </td>
                         <td>
                             <input ng-model="datosLaborales.lugarPrestacionServicios" type="text" class="form-control">                
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.tipoJornada"  ng-options="elem.value as elem.displayName for elem in tiposJornada" class="form-control"></select>
+                            <select ng-model="datosLaborales.tipoJornada"  ng-options="elem.id as elem.glosa for elem in tiposJornada" class="form-control"></select>
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.sisTurno"  ng-options="elem.value as elem.displayName for elem in tiposTurno" class="form-control"></select>
+                            <select ng-model="datosLaborales.sisTurno"  ng-options="elem.id as elem.glosa for elem in tiposTurno" class="form-control"></select>
                         </td>
                         <td>      
                                 <input ng-model="datosLaborales.horario"  type="hidden" class="form-control" />

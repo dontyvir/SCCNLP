@@ -1,0 +1,1 @@
+angular.module('sccnlp.common', ['sccnlp.session']);

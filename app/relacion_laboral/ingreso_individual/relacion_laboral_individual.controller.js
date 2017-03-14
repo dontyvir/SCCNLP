@@ -2,9 +2,9 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal',
+.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient',
 	
-	function($scope, ingIndivMessages, $uibModal) {
+	function($scope, ingIndivMessages, $uibModal, RestClient) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -39,13 +39,15 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     // Datos del trabajador Model
 	
 	$scope.trabajador = {
+		
+			loading : false, // flag para elemento en pantalla
 
 			AFPSelected : null,
 			ISAPRESelected : null,
 			domicilio : null,
 			email : null,
-			documentoIdentificador : null,
-			rutConsulta : null,
+			documentoIdentificador : 'rut', // opción por defecto
+			numDocIdentificador : null,
 			
 			nombreCompleto : null,
 			nacionalidad : null,
@@ -86,6 +88,23 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		    datosLabores : [new DatosLabores(0)]
 			
 	};
+	
+    /**
+     * Variables para recibir listados en combobox
+     */
+    $scope.AFP = [];
+    $scope.ISAPRE = [];
+    $scope.tipoContrato = [];
+    $scope.diasDePago = [];
+    $scope.labores = [];
+    $scope.funciones = [];
+    $scope.tiposJornada = [];
+    $scope.tiposTurno = [];
+    
+    
+    /**
+     * Métodos
+     */
 
     $scope.addRow = function () {
     	var id = $scope.contrato.datosLabores.length;
@@ -103,66 +122,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	}
     }
 
-    $scope.AFP = [{value: 'AFP1', displayName: 'Modelo'},
-        {value: 'AFP2', displayName: 'Habitat'}];
-
-    $scope.ISAPRE = [{value: 'ISAPRE1', displayName: 'COLMENA'},
-        {value: 'ISAPRE2', displayName: 'BANMEDICA'}];
-
-    $scope.tipoContrato = [{value: 'plazoFijo', displayName: 'Plazo Fijo'},
-        {value: 'indefinido', displayName: 'Indefinido'}];
-
-    $scope.diasDePago = [{value: '1', displayName: 'Primero'},
-        {value: '5', displayName: 'Cinco'}];
-    
-    $scope.labores = [{value:'labor1', displayName :'Labor 1'}];
-    $scope.funciones = [{value:'funcion1', displayName :'Función 1'}];
-    $scope.tiposJornada = [{value:'jornada1', displayName :'Jornada 1'}];
-    $scope.tiposTurno = [{value:'turno1', displayName :'Turno 1'}];
-    
-
     /*
      * Validate the tab 2 form if all mandatory elements are completed by
      * the user
-     * @returns {undefined}
+     * @returns {boolean}
      */
     $scope.validateTabTwo = function () {
-        var formFull = true;
-
-        if ($scope.rutConsulta === '')
-            formFull = false;
-
-        if ($scope.nombreCompletoTrabajadorData === '')
-            formFull = false;
-        if ($scope.nacionalidadTrabajadorData === '')
-            formFull = false;
-
-        if ($scope.lugarDeNacimientoTrabajadorData === '')
-            formFull = false;
-
-        if ($scope.fechaDeNacimientoTrabajadorData === '')
-            formFull = false;
-
-        if ($scope.estadoCivilTrabajadorData === '')
-            formFull = false;
-
-        if ($scope.domicilioData === '')
-            formFull = false;
-
-        if ($scope.emailTrabajadorData === '')
-            formFull = false;
-        if ($scope.documentoIdentificador === 'rut') {
-            if ($scope.AFPSelected === '')
-                formFull = false;
-            if ($scope.ISAPRESelected === '')
-                formFull = false;
-        }
-
-        if (formFull === false) {
-            alert('Complete todos los campos');
-            return formFull;
-        }
-        return formFull;
+        return true;
     };
 
     /**
@@ -199,7 +165,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	    startingDay: 1
     	  };
   
-    $scope.dateFormat = 'dd-MM-yyyy';
+    $scope.dateFormat = 'dd/MM/yyyy';
     
     $scope.popupFecNacTrab   = {opened : false};
     $scope.popupFecCelebCont = {opened : false};
@@ -210,42 +176,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     		popup.opened = true;
     };
 
-    /**
-     * Load the information from tab 1. The data is getted from DTPlus
-     * @returns {undefined}
-     */
-    $scope.loadDataFromDTPlus = function () {
-    	
-        //: TODO connect to DTPlus to fill all the following data
 
-        $scope.empleador.rutEmpleador = '16.161.785-3';
-        $scope.empleador.nombreEmpresa = "everis";
-        $scope.empleador.tipoEmpresa = 'Consultoria';
-        $scope.empleador.domicilio = 'Alameda';
-        $scope.empleador.email = 'everis@everis.com';
-        $scope.empleador.terminoDeVigencia = new Date(2018,1,3);
-        $scope.empleador.rutRepresentanteLegal = '8.478.213-1';
-        $scope.empleador.nombreCompletoRepresentanteLegal = 'Guillermo Fredez';
-        $scope.empleador.rutUsuarioQueRegistra = '1.789.456-K';
-        $scope.empleador.nombreCompletoUsuarioQueRegistra = 'Pablo Muñoz';
-        $scope.empleador.cargoEnLaEmpresaQueRegistra = 'Apoderado';
-    };
-
-    /**
-     * This section will search the user information and will load it in the
-     * tab 2
-     * @param p_rut will receive the rut to search the information and load
-     * @returns {undefined}
-     */
-    $scope.loadDataFromRutService = function (p_rut) {
-    	
-        //:TODO search the user information
-        $scope.trabajador.nombreCompleto = 'Fernando Salgado Muñoz';
-        $scope.trabajador.nacionalidad = 'Chilena';
-        $scope.trabajador.lugarDeNacimiento = 'Iquique';
-        $scope.trabajador.fechaDeNacimiento = new Date(1982,1,3);
-        $scope.trabajador.estadoCivil = 'Casado';
-    };
 
     /**
      * Function to validate the rut if typed in the form. Will validate
@@ -370,11 +301,88 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	if(!tab || tab < 1 || tab > 2)
 	    		return;
 
-	    	
-
 	    	$scope.tabs[tab].disable = false;
 	    	$scope.tabsActive = tab;
 	    	
 	    };
+
+	    $scope.ingresoSubmit = function() {
+	    	
+	    	//RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato);
+
+	    }
 	    
+	    /**
+	     * Métodos de carga dinámica de datos
+	     */
+	    
+
+	    /**
+	     * This section will search the user information and will load it in the
+	     * tab 2
+	     * @param p_rut will receive the rut to search the information and load
+	     * @returns {undefined}
+	     */
+	    $scope.loadDataUsuario = function (p_rut) {
+	    	
+	        //:TODO search the user information
+	        $scope.trabajador.nombreCompleto = 'Fernando Salgado Muñoz';
+	        $scope.trabajador.nacionalidad = 'Chilena';
+	        $scope.trabajador.lugarDeNacimiento = 'Iquique';
+	        $scope.trabajador.fechaDeNacimiento = new Date(1982,1,3);
+	        $scope.trabajador.estadoCivil = 'Casado';
+	    };
+	    
+	    $scope.loadEmpleador = function(){
+	    	
+	        var dat = RestClient.getDatosEmpresa("1","0", function(){
+	        	
+		        $scope.empleador.rutEmpleador = dat.rutEmpresa+"-"+dat.dvEmpresa;
+		        $scope.empleador.nombreEmpresa = dat.razonSocial;
+		        $scope.empleador.tipoEmpresa = dat.actividades[dat.idActividadPrincipal].glosaActividad;
+		        
+		        for(var i=0;i<dat.direcciones.length;i++){
+		        	if(dat.direcciones[i].esCasaMatriz)
+		    	        $scope.empleador.domicilio = dat.direcciones[i].direccion;
+		        }
+
+		        $scope.empleador.rutRepresentanteLegal = dat.representante.rut+"-"+dat.representante.dv;
+		        $scope.empleador.nombreCompletoRepresentanteLegal = dat.representante.glosa;	        	
+
+	        });
+	    	
+	        $scope.empleador.email = '';
+	        $scope.empleador.terminoDeVigencia = null;
+	        
+	        $scope.empleador.rutUsuarioQueRegistra = '1.789.456-K';
+	        $scope.empleador.nombreCompletoUsuarioQueRegistra = 'Pablo Muñoz';
+	        $scope.empleador.cargoEnLaEmpresaQueRegistra = 'Apoderado';
+	    }
+	    
+	    $scope.init = function() {
+	    	
+	    	$scope.estadoCivil = RestClient.getEstadoCivil();
+	    	
+	        $scope.AFP = RestClient.getAFP();
+
+	        $scope.ISAPRE = RestClient.getIsapre();
+
+	        $scope.tipoContrato = RestClient.getTipoContrato();
+
+	        $scope.diasDePago = [];
+	        for(var i=1;i<31;i++)
+	        	$scope.diasDePago.push(i);
+	        
+	        $scope.labores = RestClient.getLabor();
+	        $scope.funciones = RestClient.getFuncion();
+	        $scope.tiposJornada = [{id:1,glosa:"Jornada 1"}];
+	        $scope.tiposTurno = RestClient.getTurno();
+	        
+	        $scope.loadEmpleador();
+
+	    	
+	    };
+	    
+	    // se llaman las funciones de inicialización dinámicas
+	    $scope.init();
 }])

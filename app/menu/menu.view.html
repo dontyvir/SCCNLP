@@ -1,108 +1,116 @@
-<div>
-	<div>
-		<nav class="navbar navbar-default">
+<header class="navbar navbar-default navbar-inner">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="isCollapsed = !isCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand visible-xs" href="#">SCCNLP</a>
+        </div>
+        
+        <nav class="hidden-xs">
+            <ul class="nav navbar-nav">
+                <a href="#top" role="button" class="navbar-brand">SCCNLP</a>
+                
+                <li class="dropdown" uib-dropdown="">
+                <a href id="relacion-laboral" data-toggle="dropdown" uib-dropdown-toggle> {{messages.REL_LAB_DROPDOWN}}<span class="caret"></span></a>
+                
+                <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="relacion-laboral">
 
-			<div class="collapse navbar-collapse" id="sccnlpNavbar">
-				<ul class="nav navbar-nav">
+					<li class="dropdown-header">{{messages.REL_LAB_INGRESAR}}</li>
 
-					<li uib-dropdown on-toggle="toggled(open)" class="dropdown">
-						
-						<a href id="relacion-laboral"
-							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-							 {{messages.REL_LAB_DROPDOWN}}<span class="caret"></span>
+					<li><a ui-sref="main.composite.relindividual">
+						<i class="glyphicon glyphicon-plus"></i>
+							 {{messages.REL_LAB_ING_INDIV}}
 						</a>
-						<ul class="dropdown-menu" uib-dropdown-menu
-							aria-labelledby="relacion-laboral">
-
-							<li uib-dropdown on-toggle="toggled(open)"
-								class="dropdown-submenu">
-							<a href id="ingresar-relacion-laboral"
-								class="dropdown-toggle" data-toggle="dropdown"
-								uib-dropdown-toggle> {{messages.REL_LAB_INGRESAR}}
+					</li>
+					<li>
+							<a ui-sref="main.composite">
+							<i class="glyphicon glyphicon-plus"></i>
+								{{messages.REL_LAB_ING_MASIVA}}
 							</a>
-								<ul class="dropdown-menu" uib-dropdown-menu>
-									<li>
-									<a ui-sref="main.composite.relindividual">
-									<i class="glyphicon glyphicon-plus"></i>
-									 {{messages.REL_LAB_ING_INDIV}}
-									 </a>
-									 </li>
-									<li>
-									<a ui-sref="main.composite"><i class="glyphicon glyphicon-plus">
-									
-									</i>
-											{{messages.REL_LAB_ING_MASIVA}}</a></li>
-								</ul></li>
-
-							<li><a ui-sref="main.composite"><i
-									class="glyphicon glyphicon-search"></i> 
-									{{messages.REL_LAB_CONSULTAR}}</a></li>
-						</ul></li>
-
-					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
-						permission="['Nombradas']">
-						<a href id="nombradas"
-							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-							 {{messages.NOMBRADAS_DROPDOWN}}<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu" uib-dropdown-menu
-							aria-labelledby="nombradas">
-							<li><a href ui-sref="main.composite">
-							<i class="glyphicon glyphicon-plus"></i> {{messages.NOMBRADAS_INGRESAR}}</a>
-							</li>
-
-						</ul>
 					</li>
-
-					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
-						permission="['Jornadas']">
-						<a href id="jornadas"
-							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-							{{messages.JORNADAS_DROPDOWN}} <span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu" uib-dropdown-menu
-							aria-labelledby="jornadas">
-							<li><a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
-								{{messages.JORNADAS_INGRESAR}}</a></li>
-						</ul>
+					<li class="dropdown-header">{{messages.REL_LAB_CONSULTAR}}</li>
+					<li>
+					<a ui-sref="main.composite"><i class="glyphicon glyphicon-search"></i> 
+						{{messages.REL_LAB_CONSULTAR}}</a>
 					</li>
+				</ul>
+                
+                </li>
 
-					<li uib-dropdown on-toggle="toggled(open)" class="dropdown"
-						permission="['Administracion']">
-						<a href id="administracion"
-							class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-							{{messages.ADMIN_DROPDOWN}}<span class="caret"></span>
+			<li uib-dropdown class="dropdown" permission="['Nombradas']">
+				<a href id="nombradas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+					 {{messages.NOMBRADAS_DROPDOWN}}<span class="caret"></span>
+				</a>
+				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="nombradas">
+					<li>
+						<a href ui-sref="main.composite">
+						  <i class="glyphicon glyphicon-plus"></i>
+						  {{messages.NOMBRADAS_INGRESAR}}
 						</a>
-
-						<ul class="dropdown-menu" uib-dropdown-menu
-							aria-labelledby="administracion">
-
-							<li uib-dropdown on-toggle="toggled(open)"
-								class="dropdown-submenu">
-								<a href id="usuarios"
-								class="dropdown-toggle" data-toggle="dropdown"
-								uib-dropdown-toggle> {{messages.ADMIN_USUARIOS}} </a>
-								<ul class="dropdown-menu" uib-dropdown-menu>
-									<li><a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
-										{{messages.ADMIN_USR_INGRESAR}}</a></li>
-									<li><a ui-sref="main.composite"><i
-											class="glyphicon glyphicon-search"></i> {{messages.ADMIN_USR_CONSULTAR}}</a></li>
-								</ul>
-							</li>
-						</ul>
 					</li>
 
 				</ul>
-				<ul class="nav navbar-nav navbar-right">
-					<li><a ui-sref="main.composite"><span class="glyphicon glyphicon-user"></span>
-							{{ getUserName() }}</a></li>
-					<li><a ui-sref="main.composite"><span
-							class="glyphicon glyphicon-home"></span> {{messages.INICIO}}</a></li>
-					<li><a href ng-click="logout()"><span
-							class="glyphicon glyphicon-log-out"></span> {{messages.LOGOUT}}</a></li>
-				</ul>
-			</div>
-		</nav>
-	</div>
-</div>
+			</li>
 
+			<li uib-dropdown class="dropdown" permission="['Jornadas']">
+				<a href id="jornadas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+					{{messages.JORNADAS_DROPDOWN}} <span class="caret"></span>
+				</a>
+				
+				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="jornadas">
+					<li>
+						<a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
+							{{messages.JORNADAS_INGRESAR}}
+						</a>
+					</li>
+				</ul>
+			</li>
+			
+			<li uib-dropdown class="dropdown" permission="['Administracion']">
+				<a href id="administracion" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
+					{{messages.ADMIN_DROPDOWN}}<span class="caret"></span>
+				</a>
+
+				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="administracion">
+
+						    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
+						
+							<li>
+								<a ui-sref="main.composite">
+								  <i class="glyphicon glyphicon-plus"></i>
+								  {{messages.ADMIN_USR_INGRESAR}}
+								</a>
+							</li>
+							<li>
+							  <a ui-sref="main.composite">
+							    <i class="glyphicon glyphicon-search"></i>
+							     {{messages.ADMIN_USR_CONSULTAR}}
+							  </a>
+							</li>
+				</ul>
+			</li>
+			
+            </ul>
+        </nav>
+        
+        <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;" aria-expanded="false" aria-hidden="true">
+            <ul class="nav navbar-nav">
+                <li><a href="#getting_started" ng-click="isCollapsed = !isCollapsed">Getting started</a></li>
+                <li><a href="#directives_small" ng-click="isCollapsed = !isCollapsed">Directives</a></li>
+            </ul>
+        </nav>
+        
+        <ul class="nav navbar-nav navbar-right">
+			<li><a ui-sref="main.composite"><span class="glyphicon glyphicon-user"></span>
+					{{ getUserName() }}</a></li>
+			<li><a ui-sref="main.composite"><span
+					class="glyphicon glyphicon-home"></span> {{messages.INICIO}}</a></li>
+			<li><a href ng-click="logout()"><span
+					class="glyphicon glyphicon-log-out"></span> {{messages.LOGOUT}}</a></li>
+		</ul>
+    </div>
+</header>

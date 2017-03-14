@@ -52,8 +52,29 @@
 						  {{messages.NOMBRADAS_INGRESAR}}
 						</a>
 					</li>
+					
+					<li>
+						<a href ui-sref="main.composite.nombradas_individual">
+						<i class="glyphicon glyphicon-plus"></i> 
+								{{messages.NOMBRADAS_INDIVIDUAL}}
+						</a>
+					</li>
+					<li>
+						<a href ui-sref="main.composite.nombradas_masiva">
+						<i class="glyphicon glyphicon-plus-sign"></i>
+								{{messages.NOMBRADAS_MASIVA}}
+						</a>
+					</li>
+					
+					<li>
+						<a ui-sref="main.composite.nombradas_consultar">
+						<i class="glyphicon glyphicon-search"></i> 
+						 {{messages.NOMBRADAS_CONSULTAR}}
+						</a>
+					</li>
 
 				</ul>
+
 			</li>
 
 			<li uib-dropdown class="dropdown" permission="['Jornadas']">
@@ -80,16 +101,23 @@
 						    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
 						
 							<li>
-								<a ui-sref="main.composite">
+								<a ui-sref="main.composite.crear_usuario">
 								  <i class="glyphicon glyphicon-plus"></i>
 								  {{messages.ADMIN_USR_INGRESAR}}
 								</a>
 							</li>
 							<li>
-							  <a ui-sref="main.composite">
+							  <a ui-sref="main.composite.buscar_usuario">
 							    <i class="glyphicon glyphicon-search"></i>
 							     {{messages.ADMIN_USR_CONSULTAR}}
 							  </a>
+							</li>
+							
+							<li>
+								<a ui-sref="main.composite.clave_empresa">
+								<i class="glyphicon glyphicon-briefcase"></i>
+									Clave empresa
+								</a>
 							</li>
 				</ul>
 			</li>

@@ -21,4 +21,3 @@ angular.module('sccnlp.menu', ['sccnlp.session', 'ui.router'])
 	}
 }])
 
-

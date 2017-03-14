@@ -6,10 +6,14 @@ angular.module('sccnlp',
 		'ui.bootstrap',
 		'angular-jwt',
 		'sccnlp.main',
+		'sccnlp.common',
 		'sccnlp.menu',
 		'sccnlp.session',
 		'sccnlp.authorization',
+		'sccnlp.relacionLaboral.ingresoIndividual',
 		'sccnlp.login',
-		'sccnlp.common',
-		'sccnlp.relacionLaboral.ingresoIndividual'
+		'sccnlp.clave_empresa',
+		'sccnlp.crear_usuario',
+		'sccnlp.buscar_usuario',
+		'sccnlp.nombradas'
 		]);

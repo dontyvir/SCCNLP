@@ -1,0 +1,49 @@
+<div class="container-fluid col-lg-12">
+    <br>
+    <p>Se ha ingresado de forma correcta su Nombrada <b>ID: {{idNombrada}}, quedando en estado aporbada</b></p>
+    <p>{{messages.messageResolucion}}</p>
+    <button class="btn btn-success" ng-click="">{{messages.BTN_ExportarExcel}} <span class="glyphicon glyphicon-cloud-download"></span></button>
+</div>
+<div class="container-fluid" style="overflow: auto;">
+    <br>
+    <table datatable="ng" dt-options="options" class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px">
+        <thead>
+            <tr style="background-color: #D3D3D3">
+                <th><small>N°</small></th>
+                <th><small>Rut o Pasaporte</small></th>
+                <th><small>Nombres</small></th>
+                <th><small>Apellidos</small></th>
+                <th><small>Turno</small></th>
+                <th><small>Fecha inicio de nombrada</small></th>
+                <th><small>Fecha termino de jornada</small></th>
+                <th><small>Nave</small></th>
+                <th><small>Sitio</small></th>
+                <th><small>Lugar</small></th>
+                <th><small>Estado de Trabajador</small></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="datosTrabajadorNombrada in gettrabajadoresIncluidosNombrada()">
+                <td>{{$index+1}}</td>
+                <td>{{datosTrabajadorNombrada.rutPasaporteTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.nombresTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.apellidosTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.turnoTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.fechaInicioJornadaTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.fechaTerminoJornadaTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.naveTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.sitioTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.LugarTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.EstadoTrabajador}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container-fluid col-lg-6 pull-left">
+    <label class="control-label">{{messages.camposObligatorios}}</label>
+</div>
+<div class="container-fluid col-lg-6 pull-right">
+    <div class="pull-right">
+        <button href class="btn btn-primary" data-toggle="tab">{{messages.BTN_finalizar}}</button>
+    </div>
+</div>

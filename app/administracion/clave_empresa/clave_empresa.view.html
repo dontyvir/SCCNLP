@@ -1,0 +1,140 @@
+﻿<div class="container-fluid">
+    <legend class="scheduler-border col-lg-12">{{messages.CLAVE_EMPRESA_TITULO}}</legend>
+        <form name="form" ng-submit="generarClaveEmpresa()">
+             <div class="col-md-10">
+            <legend class="scheduler-border col-lg-9"><h4>{{messages.CLAVE_EMPRESA_SUBTITULO_EMPRESA}}</h4>
+            </legend>
+            </div>
+            <div class="form-group col-md-8">
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_RUT}}</label>      
+                <div class="col-md-4" ng-class="{ 'has-error' : trysubmit && data.CLAVE_EMPRESA_RUT=='' }">
+                    <input type="text" name="rutEmpresa" id="rutEmpresa" class="form-control" ng-model="data.CLAVE_EMPRESA_RUT" placeholder="{{messages.CLAVE_EMPRESA_RUT_PLACEHOLDER}}"/>
+                    <span class="text-danger" 
+                          data-ng-show="trysubmit && data.CLAVE_EMPRESA_RUT==''">{{messages.CLAVE_EMPRESA_RUT_REQ}}
+                    </span>
+                </div>
+                <!--<button class="btn btn-primary" ng-disabled="!form.rutEmpresa.$dirty" >Buscar</button>-->
+            </div>
+            
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_RAZON_SOCIAL}}</label>  
+                <div class="col-md-6">
+                    <label class="">{{data.CLAVE_EMPRESA_RAZON_SOCIAL}}</label>
+
+                </div>
+                <input class="col-md-1 pull-left" 
+                        type="checkbox" name="chkRazonSocial" id="chkRazonSocial"  
+                        ng-model="data.CLAVE_EMPRESA_RAZON_SOCIAL_CHK"/>
+                
+            </div>
+            <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_RAZON_SOCIAL_CHK==0">{{messages.CLAVE_EMPRESA_RAZON_SOCIAL_CHK}}
+            </span>
+
+            
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_DIRECCION_CM}}</label>  
+                <div class="col-md-6" data-ng-class="{ 'has-error' : data.CLAVE_EMPRESA_DIRECCION_CM==null }">
+                    <select class="form-control" name="rutEmpresa" id="rutEmpresa" ng-model="data.CLAVE_EMPRESA_DIRECCION_CM"  
+                            ng-options="item as item.texto for item in listaDirecciones">
+                            <option value="">Seleccionar</option>
+                    </select>
+                    <span class="text-danger" 
+                          data-ng-show="data.CLAVE_EMPRESA_DIRECCION_CM==null">{{messages.CLAVE_EMPRESA_DIRECCION_CM_REQ}}
+                    </span>
+                </div>
+                 <input class="col-md-1 pull-left" type="checkbox" name="chkDireccionCM" id="chkDireccionCM"  
+                        ng-model="data.CLAVE_EMPRESA_DIRECCION_CM_CHK"/>
+            </div>
+             <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_DIRECCION_CM_CHK==0">{{messages.CLAVE_EMPRESA_DIRECCION_CM_CHK}}
+            </span>
+
+            
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_ACTIV_ECONOMICA}}</label>  
+                <div class="col-md-6" ng-class="{ 'has-error': data.CLAVE_EMPRESA_ACTIV_ECONOMICA==null }">
+                    <select class="select form-control" ng-model="data.CLAVE_EMPRESA_ACTIV_ECONOMICA"  
+                            ng-options="item as item.texto for item in listaActividades">
+                            <option value="">Seleccionar</option>
+                    </select>
+                     <span class="text-danger" 
+                          data-ng-show="data.CLAVE_EMPRESA_ACTIV_ECONOMICA==null">{{messages.CLAVE_EMPRESA_ACTIV_ECONOMICA_REQ}}
+                    </span>
+
+                </div>
+                 <input class="col-md-1 pull-left" type="checkbox" name="chkActEconomica" id="chkActEconomica"  
+                        ng-model="data.CLAVE_EMPRESA_ACTIV_ECONOMICA_CHK"/>
+            </div>
+            <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_ACTIV_ECONOMICA_CHK==0">{{messages.CLAVE_EMPRESA_ACTIV_ECONOMICA_CHK}}
+            </span>
+
+            
+            <div class="col-md-10">
+            <legend class="scheduler-border col-lg-9"><h4>{{messages.CLAVE_EMPRESA_SUBTITULO_REPRESENTANTE}}</h4>
+            </legend>
+              
+            </div>
+
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_RUT_REP_LEGAL}}</label>  
+                <div class="col-md-6" ng-class="{ 'has-error': !form.chkRazonSocial }">
+                    <label>{{data.CLAVE_EMPRESA_RUT_REP_LEGAL}}</label>
+                </div>
+                <input class="col-md-1 pull-left" type="checkbox" name="chkRazonSocial" id="chkRazonSocial"  
+                ng-model="data.CLAVE_EMPRESA_RUT_REP_LEGAL_CHK"/>
+            </div>
+            <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_RUT_REP_LEGAL_CHK==0">{{messages.CLAVE_EMPRESA_RUT_REP_LEGAL_CHK}}
+            </span>
+
+
+
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_NOMBRE_REP_LEGAL}}</label>  
+                <div class="col-md-6" ng-class="{ 'has-error': !form.chkRazonSocial }">
+                    <label>{{data.CLAVE_EMPRESA_NOMBRE_REP_LEGAL}}</label>
+                </div>
+                <input class="col-md-1 pull-left" type="checkbox" name="chkRazonSocial" id="chkRazonSocial"  
+                ng-model="data.CLAVE_EMPRESA_NOMBRE_REP_LEGAL_CHK"/>
+            </div>
+            <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_NOMBRE_REP_LEGAL_CHK==0">{{messages.CLAVE_EMPRESA_NOMBRE_REP_LEGAL_CHK}}
+            </span>
+
+
+            
+            <div class="form-group col-md-8"> 
+                <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_FECHANAC_REP_LEGAL}}</label>  
+                <div class="col-md-6" ng-class="{ 'has-error': !form.chkRazonSocial }">
+                    <label>{{data.CLAVE_EMPRESA_FECHANAC_REP_LEGAL}}</label>
+                </div>
+                <input class="col-md-1 pull-left" type="checkbox" name="chkRazonSocial" id="chkRazonSocial"  
+                ng-model="data.CLAVE_EMPRESA_FECHANAC_REP_LEGAL_CHK"/>
+            </div>
+            <span   class="col-md-4 text-danger" 
+                    ng-show="data.CLAVE_EMPRESA_FECHANAC_REP_LEGAL_CHK==0">{{messages.CLAVE_EMPRESA_FECHANAC_REP_LEGAL_CHK}}
+            </span>
+
+            
+
+            <div class="form-group col-md-10 ">
+                <div class="col-md-6 pull-right">
+                    <button type="submit" ng-disabled="dataLoading" class="btn btn-default">{{messages.CLAVE_EMPRESA_BTNCANCELAR}}</button>
+
+                    <button type="submit" ng-disabled="dataLoading" 
+                            class="btn btn-primary">{{messages.CLAVE_EMPRESA_BTNGENERAR}}
+                    </button>
+                </div>
+            </div>
+            <!--
+                <div uib-alert class="col-md-10 alert alert-danger" ng-show="alert.active" dismiss-on-timeout="5000"
+                	ng-class="'alert-' + (alert.type || 'warning')" close="alert.close()">
+                	{{alert.msg}}
+                </div>
+                -->
+            </form>
+        </div>
+    </div>
+</div>

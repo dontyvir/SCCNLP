@@ -1,0 +1,61 @@
+<style>
+.modal-body {
+    max-height: 500px; /* adjust to your needs */
+    overflow-y: auto;
+}
+</style>
+<div class="modal-header">
+	<h3 class="modal-title" id="modal-title">{{mensajes.LAB_TITULO_EDITAR}}</h3>
+</div>
+<div class="modal-body" id="modal-body" client-height="400">
+	 <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{mensajes.LAB_RUT}}</label>   
+                    <div class="col-md-4">
+                       <label>{{usuarioSel.RUT}}</label>
+                    </div>
+    </div>
+
+     <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{mensajes.LAB_NOMBRE}}</label>   
+                    <div class="col-md-4">
+                       <label>{{usuarioSel.NOMBRES}}</label>
+                    </div>
+    </div>
+
+   
+        <table datatable="ng" dt-options="options" class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 200px" >
+                        <thead>
+                            <tr style="background-color: #D3D3D3">
+                                <th><small>Modulo</small></th>
+                                <th><small></small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="dato in usuarioSel.MODULOS track by $index">
+                                <!--<td ng-model="id">{{$index+1}}</td>-->
+                                <td>{{dato.nombreModulo}}</td>
+                                
+                                <td> <input class="" 
+                                            type="checkbox" name="chkActivo" id="chkActivo"  
+                                            ng-model="dato.seleccionado"/>
+                                            </td>
+                               
+                            </tr>
+                        </tbody>
+        </table>
+   
+     <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{mensajes.HEADER_VIGENCIA}}</label>   
+                    <div class="col-md-4">
+                        <input type="checkbox" ng-model="usuarioSel.ACTIVO" />   
+                    </div>
+    </div>
+
+    
+     
+</div>
+<div class="modal-footer">
+	
+	<button class="btn btn-default" type="button" ng-click="cancel()">Cancelar</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()">Guardar</button>
+</div>

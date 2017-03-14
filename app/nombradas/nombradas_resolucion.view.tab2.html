@@ -1,0 +1,61 @@
+<div class="container-fluid col-lg-12">
+    <br>
+    <p>Se ha ingresado de forma correcta su Nombrada <b>ID: {{messages.idNombrada}}</b>, quedando en estado aporbada</p>
+    <p>{{messages.messageResolucion}}</p>
+    <a class="btn btn-success" title="Export Table" ng-click="csv.generate()" ng-href="{{ csv.link() }}" download="ResolucionNombrada.csv">
+      {{messages.BTN_ExportarExcel}} <i class="glyphicon glyphicon-cloud-download"></i>
+    </a>
+</div>
+<div class="container-fluid" style="overflow: auto;">
+    <br>
+    <table ng-init='configPages()' class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px" export-csv="csv" 
+    separator=";" export-csv-ignore="ignore">
+        <thead>
+            <tr style="background-color: #D3D3D3">
+                <th><small>N°</small></th>
+                <th><small>Rut o Pasaporte</small></th>
+                <th><small>Nombres</small></th>
+                <th><small>Apellidos</small></th>
+                <th><small>Turno</small></th>
+                <th><small>Fecha inicio de nombrada</small></th>
+                <th><small>Fecha termino de jornada</small></th>
+                <th><small>Nave</small></th>
+                <th><small>Sitio</small></th>
+                <th><small>Lugar</small></th>
+                <th><small>Estado de Trabajador</small></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="datosTrabajadorNombrada in gettrabajadoresIncluidosNombrada()">
+                <td>{{$index+1}}</td>
+                <td>{{datosTrabajadorNombrada.rutPasaporteTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.nombresTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.apellidosTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.turnoTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.fechaInicioJornadaTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.fechaTerminoJornadaTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.naveTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.sitioTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.LugarTrabajador}}</td>
+                <td>{{datosTrabajadorNombrada.EstadoTrabajador}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="btn-group pull-right">
+        <button type='button' class='btn btn-default' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+        <button type='button' class='btn btn-default' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
+        <button type='button' class='btn btn-default' ng-disabled='currentPage >= tableDatosTrabajadores.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+    </div>
+</div>
+<br>
+<br>
+<div class="container-fluid col-lg-6 pull-left">
+    <label class="control-label">{{messages.camposObligatorios}}</label>
+</div>
+<div class="container-fluid col-lg-6 pull-right">
+    <div class="pull-right">
+        <button class="btn btn-primary" id="BTN_continuar-next2" data-toggle="tab" href ui-sref="main.composite">{{messages.BTN_finalizar}}</button>
+    </div>
+</div>
+<br>
+<br>

@@ -1,0 +1,61 @@
+﻿<div class="container-fluid">
+        <legend class="scheduler-border col-lg-12">{{messages.USUARIO_TITULO}}</legend>
+        <form name="form" ng-submit="crearUsuarios()">
+            <div class="form-group col-md-12">
+                <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{messages.USUARIO_RUT}}</label>      
+                    <div class="col-md-4" ng-class="{ 'has-error' : trysubmit && USUARIO_RUT=='' }">
+                        <input type="text" name="rut" id="rut" class="form-control" ng-model="USUARIO_RUT" 
+                               placeholder="{{messages.USUARI0_RUT_PLACEHOLDER}}"/>
+                        <!--<span class="text-danger" 
+                              data-ng-show="tryAdd && data.USUARIO_RUT==''">{{messages.USUARIO_RUT_REQ}}
+                        </span>-->
+                    </div>
+                    <button class="btn btn-primary" ng-disabled="USUARIO_RUT==''" 
+                            ng-click="agregarUsuario()">{{messages.USUARIO_BTN_AGREGAR}}</button>
+                </div>
+            </div>
+            <div class="container-fluid" style="overflow: auto;">
+                <br>
+                <table datatable="ng" dt-options="options" class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px" ng-enabled="verTablaTrabajador">
+                    <thead>
+                        <tr style="background-color: #D3D3D3">
+                            <th><small>N°</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_RUT}}</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_NOMBRES}}</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_APELLIDOS}}</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_MODULOS}}</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_MODIFICAR}}</small></th>
+                            <th><small>{{messages.USUARIO_HEADER_ELIMINAR}}</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="datosUsuario in getTableDatosUsuarios() track by $index">
+                            <td ng-model="id">{{$index+1}}</td>
+                            <td>{{datosUsuario.USUARIO_RUT}}</td>
+                            <td>{{datosUsuario.USUARIO_NOMBRES}}</td>
+                            <td>{{datosUsuario.USUARIO_APELLIDOS}}</td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                            <button class="btn btn-danger" type="button" ng-really-message="¿Está seguro eliminar el registro?"         ng-really-click="eliminarUsuario($index)">
+                                     <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                            </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pull-right">
+                
+                    <button type="submit" ng-disabled="dataLoading" 
+                            class="btn btn-default">{{messages.USUARIO_BTN_CANCELAR}}
+                    </button>
+                    <button type="submit" ng-disabled="dataLoading" 
+                            class="btn btn-primary">{{messages.USUARIO_BTN_GUARDAR}}
+                    </button>
+             
+            </div>
+        </form>
+</div>

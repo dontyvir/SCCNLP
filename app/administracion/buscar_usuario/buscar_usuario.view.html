@@ -1,0 +1,84 @@
+﻿<div class="container-fluid">
+        <legend class="scheduler-border col-lg-12">{{messages.LAB_TITULO}}</legend>
+        <form name="form" ng-submit="crearUsuarios()">
+            <div class="form-group col-md-12">
+                <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{messages.LAB_RUT}}</label>      
+                    <div class="col-md-4">
+                        <input type="text" name="rut" id="rut" class="form-control" ng-model="RUT" 
+                               placeholder="{{messages.RUT_PLACEHOLDER}}"/>
+                        <!--<span class="text-danger" 
+                              data-ng-show="tryAdd && data.USUARIO_RUT==''">{{messages.USUARIO_RUT_REQ}}
+                        </span>-->
+                    </div>
+                   
+                </div>
+
+                <div class="form-group col-md-9">
+                    <label class="control-label col-md-2">{{messages.LAB_NOMBRE}}</label>      
+                    <div class="col-md-4" ng-class="{ 'has-error' : trysubmit && USUARIO_RUT=='' }">
+                        <input type="text" name="rut" id="rut" class="form-control" ng-model="USUARIO_RUT" 
+                               placeholder="{{messages.LAB_NOMBRE}}"/>
+                        <!--<span class="text-danger" 
+                              data-ng-show="tryAdd && data.USUARIO_RUT==''">{{messages.USUARIO_RUT_REQ}}
+                        </span>-->
+                    </div>
+                    
+                </div>
+                <div class="form-group col-md-9">
+                    <div class="form-group col-md-6 ">
+                        <button class="btn btn-primary pull-right"  
+                            ng-click="buscar()">{{messages.BTN_BUSCAR}}
+                        </button>    
+                    </div>   
+                             
+                </div>   
+
+            </div>
+            <div class="container-fluid" style="overflow: auto;">
+                <br>
+                <table datatable="ng" dt-options="options" class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px" ng-enabled="verTablaTrabajador">
+                    <thead>
+                        <tr style="background-color: #D3D3D3">
+                            <th><small>N°</small></th>
+                            <th><small>{{messages.HEADER_RUT}}</small></th>
+                            <th><small>{{messages.HEADER_NOMBRES}}</small></th>
+                            <th><small>{{messages.HEADER_APELLIDOS}}</small></th>
+                            <th><small>{{messages.HEADER_MODULOS}}</small></th>
+                            <th><small>{{messages.HEADER_MODIFICAR}}</small></th>
+                            <th><small>{{messages.HEADER_VIGENCIA}}</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="datosUsuario in getTableDatosUsuarios() track by $index">
+                            <td ng-model="id">{{$index+1}}</td>
+                            <td>{{datosUsuario.RUT}}</td>
+                            <td>{{datosUsuario.NOMBRES}}</td>
+                            <td>{{datosUsuario.APELLIDOS}}</td>
+                            <td></td>
+                            <td> 
+                                <button class="btn btn-primary" type="button" ng-click="modificar($index)">
+                                     <i class="glyphicon glyphicon-pencil" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <input class="col-md-1 pull-left" 
+                                        type="checkbox" name="chkActivo" id="chkActivo"  
+                                        ng-model="datosUsuario.ACTIVO"/>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pull-right">
+                
+                    
+                    <button type="submit" ng-disabled="dataLoading" 
+                            class="btn btn-default">{{messages.BTN_SALIR}}
+                    </button>
+             
+            </div>
+        </form>
+</div>

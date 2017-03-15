@@ -1,20 +1,8 @@
-<form>
+<form name="formTab3">
 
         <!--Informacion del Tab-->
         <h4>{{messages.informacionDelTrabajador}}</h4>
         <hr/>
-
-
-		<!-- Lugar de celebración del contrato -->
-		
-		<div class="form-group row">
-			<label for="lugarDeCelebracionDelContrato" class="col-md-3 col-form-label">{{messages.lugarDeCelebracionDelContrato}}</label>
-			
-			<div class="col-md-4">
-				<input id="lugarDeCelebracionDelContrato" ng-model="contrato.lugarDeCelebracionDelContrato" type="text" ng-required="true"
-				       class="form-control form-control-sm" placeholder="{{messages.lugarDeCelebracionDelContrato}}">
-			</div>
-		</div>
 
 		<!-- Fecha de celebración del contrato -->
 		
@@ -90,12 +78,11 @@
 		<!-- Día de pago -->
 		
 		<div class="form-group row">
-			<label for="diaDePago" class="col-md-3 col-form-label">{{messages.diaDePago}}</label>
+			<label for="modalidadDePago" class="col-md-3 col-form-label">{{messages.modalidadDePago}}</label>
 			
 			<div class="col-md-4">
-				<select ng-model="contrato.diaDePagoSelected"  ng-options="operator for operator in diasDePago"
-				 class="form-control col-md-8 form-control-sm" id="diaDePago" ng-required="true"></select>
-				 <span>{{messages.deCadaMes}}</span>
+				<select ng-model="contrato.modalidadDePagoSelected"  ng-options="operator.id as operator.glosa for operator in modalidadDePago"
+				 class="form-control col-md-8 form-control-sm" id="modalidadDePago" ng-required="true"></select>
 			</div>
 		</div>
  
@@ -152,20 +139,17 @@
                             <select ng-model="datosLaborales.funcionSelect"  ng-options="elem.id as elem.glosa for elem in funciones" class="form-control"></select>
                         </td>
                         <td>
-                            <input ng-model="datosLaborales.lugarPrestacionServicios" type="text" class="form-control">                
+                            <select ng-model="datosLaborales.lugarPrestacionServicios"  ng-options="elem.id as elem.glosa for elem in lugares" class="form-control"></select>         
                         </td>
                         <td>
                             <select ng-model="datosLaborales.tipoJornada"  ng-options="elem.id as elem.glosa for elem in tiposJornada" class="form-control"></select>
-                        </td>
-                        <td>
-                            <select ng-model="datosLaborales.sisTurno"  ng-options="elem.id as elem.glosa for elem in tiposTurno" class="form-control"></select>
                         </td>
                         <td>      
                                 <input ng-model="datosLaborales.horario"  type="hidden" class="form-control" />
                                 
                                 <div></div>
                                 
-                                <button class="btn btn-link" ng-click="loadAcuerdoJornadaLaboral(datosLaborales)">
+                                <button class="btn btn-link" type="button" ng-click="loadAcuerdoJornadaLaboral(datosLaborales)">
                                 
                                 	<span class="glyphicon glyphicon-plus" ng-show="!datosLaborales.horario"> {{messages.ingresar}}</span>
                                 	<span class="glyphicon glyphicon-pencil" ng-show="datosLaborales.horario"> {{messages.edit}}</span>
@@ -177,7 +161,7 @@
 
                                 <div></div>
 
-                                <button class="btn btn-link" ng-click="loadAcuerdoDescanso(datosLaborales)">
+                                <button class="btn btn-link" type="button" ng-click="loadAcuerdoDescanso(datosLaborales)">
                 					<span class="glyphicon glyphicon-plus" ng-show="!datosLaborales.acuerdoDescanso"> {{messages.ingresar}}</span>
                                 	<span class="glyphicon glyphicon-pencil" ng-show="datosLaborales.acuerdoDescanso"> {{messages.edit}}</span>
                                 </button>
@@ -207,8 +191,8 @@
 		    
 		    <div class="col-md-3 form-inline">
 	        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>	        
-	        	<button class="btn btn-danger" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
-	        	<button class="btn btn-primary" ng-click="ingresoSubmit()">{{messages.BTN_finalizar}}</button>
+	        	<button class="btn btn-danger" type="button" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
+	        	<button class="btn btn-primary" type="submit" ng-click="ingresoSubmit(formTab3)">{{messages.BTN_finalizar}}</button>
 	        	        	        
 	        </div>
 		</div>

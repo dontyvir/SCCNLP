@@ -57,7 +57,7 @@ angular.module('sccnlp.session')
 		
 		function _login_empresa(_username, _password, callback_fn) {
 
-			   AuthEmpresa.get({},
+			   AuthEmpresa.save({},
 					{grant_type : "password", username: _username, password: _password},
 					
 					function(tokenData) {

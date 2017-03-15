@@ -8,7 +8,7 @@ angular.
 
 	return $resource('http://7.212.100.165/sccnlp/token',{}, {
 
-        query: {
+        save: {
           method: 'POST',
           isArray: false,
           headers: {

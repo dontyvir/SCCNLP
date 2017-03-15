@@ -45,8 +45,8 @@ function($resource) {
 		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'});
 	}
 	
-	wrapper.getDatosUsuario = function(_id_usuario){
-		return wrapper.baseResource.query({serviceName : 'Administracion/getDatosUsuario/'+_id_usuario});
+	wrapper.getDatosUsuario = function(_id_usuario, _callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosUsuario/'+_id_usuario},{}, _callback_fn);
 	}
 	
 	wrapper.getAcuerdoDescanso = function(_rut, _dv){

@@ -27,6 +27,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         	this.dayLabel = _dayLabel;
         	this.scheduleStart = null;
         	this.scheduleEnd = null;
+        	this.tooltipOpen = false;
         }
 
         $scope.acuerdoJornadaLaboralModel = [
@@ -39,6 +40,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		new DaySchedule("Sábado"),
         		new DaySchedule("Domingo"),
         ];
+        
+        // mensaje para el tooltip de error
+        $scope.tooltipMSG = "";
+        $scope.tooltipOpen = false;
         
         // si ya existían datos en el modelo padre, se llenan
         if(datosLaborales.horario){
@@ -82,9 +87,65 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         }
 
         /**
+         * Validación del formulario
+         */
+        $scope.validarForm = function(form){
+        	
+        	var total_horas_semanales = 0;
+        	
+        	var model = $scope.acuerdoJornadaLaboralModel;
+        	
+        	$scope.tooltipOpen = false;
+        	
+        	for(var i=0;i<model.length;i++){
+        		
+        		model[i].tooltipOpen = false;
+        		
+        		if(model[i].selected){
+        			
+        			if(!model[i].scheduleStart || !model[i].scheduleEnd){
+        				
+        				$scope.tooltipMSG = "Debe ingresar ambas horas";
+        				model[i].tooltipOpen = true;
+        				return false;
+        			}
+        			
+        			if(model[i].scheduleStart.getTime() >= model[i].scheduleEnd.getTime()){
+        				
+        				$scope.tooltipMSG = "La hora de inicio debe ser menor a la de término";
+        				model[i].tooltipOpen = true;
+        				return false;
+        			}
+        			
+        			var date_diff = Math.abs(model[i].scheduleEnd - model[i].scheduleStart);
+        			total_horas_semanales += date_diff/(3600 * 1000);
+        		}	
+        	}
+        	
+        	if(total_horas_semanales > 45){
+ 
+        		$scope.tooltipMSG = "El total de horas trabajadas semanalmente no puede superar las 45";
+        		$scope.tooltipOpen = true;
+        		return false;
+        	}
+        	
+        	if(total_horas_semanales <= 0){
+
+        		$scope.tooltipMSG = "Debe asignar horas trabajadas";
+        		$scope.tooltipOpen = true;
+        		return false;
+        	}
+        	
+        	return true;
+        }
+        
+        /**
          * Se devuelven items seleccionados
          */
-        $scope.saveAcuerdoJornadaLaboral = function () {
+        $scope.saveAcuerdoJornadaLaboral = function (form) {
+        	
+        	if(!$scope.validarForm(form))
+        		return;
         	
         	var selectedItems = [];
         	

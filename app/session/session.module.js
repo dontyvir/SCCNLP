@@ -32,7 +32,7 @@ angular.module('sccnlp.session',
     	   return token;
       }],
     
-      whiteListedDomains: ['10.212.129.38'] // For development purposes
+      whiteListedDomains: ['7.212.100.165'] // For development purposes
     
     });
     

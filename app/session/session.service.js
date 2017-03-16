@@ -12,16 +12,18 @@ angular.module('sccnlp.session')
  */
 
 .factory(
-		'sessionService',['localStorageService', 'AuthEmpresa', 'jwtHelper',
-		function(localStorageService, AuthEmpresa, jwtHelper) {
+		'sessionService',['localStorageService', 'RestClient', 'jwtHelper',
+		function(localStorageService, RestClient, jwtHelper) {
 
 		/**
 		 * 
 		 * Modelo de las propiedades del usuario
 		 * {
-			  "sub": "5",
+			  "idUsuario": "5",
 			  "role": "Administrador",
 			  "nombre": "pepito perez",
+			  "rutEmpresa": "1",
+			  "dvEmpresa": "0",
 			  "menus": "[Relacion laboral, Nombradas, Jornadas, Administracion]",
 			  "iss": "http://localhost:54919",
 			  "aud": "414e1927a3884f68abc79f7283837fd1",
@@ -33,7 +35,10 @@ angular.module('sccnlp.session')
 
 		/* model interno datos de usuario */
 		var _userData = {
+				id : null,
 				username : null,
+				rutEmpresa : null,
+				dvEmpresa : null,
 				role : null,
 				permissions : []
 		};
@@ -42,8 +47,11 @@ angular.module('sccnlp.session')
 
 			var tokenPayload = jwtHelper.decodeToken(access_token);
 			
-			_userData.username = tokenPayload.nombre;
-			_userData.permissions     = tokenPayload.menus;
+			_userData.id          = tokenPayload.idUsuario;
+			_userData.username    = tokenPayload.nombre;
+			_userData.rutEmpresa  = tokenPayload.rutEmpresa;
+			_userData.dvEmpresa   = tokenPayload.dvEmpresa;
+			_userData.permissions = tokenPayload.menus;
 			
 		}
 		
@@ -57,8 +65,7 @@ angular.module('sccnlp.session')
 		
 		function _login_empresa(_username, _password, callback_fn) {
 
-			   AuthEmpresa.save({},
-					{grant_type : "password", username: _username, password: _password},
+			   RestClient.authEmpresa(_username, _password,
 					
 					function(tokenData) {
 

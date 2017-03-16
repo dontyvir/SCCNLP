@@ -3,7 +3,7 @@
 /* Módulo para manejar la autenticación y la sessión del sistema */
 
 angular.module('sccnlp.session',
-		[ 'ngResource', 'angular-jwt', 'ui.router', 'LocalStorageModule' ])
+		[ 'ngResource', 'angular-jwt', 'ui.router', 'LocalStorageModule', 'sccnlp.common' ])
 
 /**
  * Inicialización de la redirección según estado de autenticación del usuario

@@ -1,18 +1,16 @@
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.factory('RegistrarContrato', ['$resource',
+.factory('RegistrarContrato', ['$resource', '$filter',
 	
-    function($resource) {
+    function($resource, $filter) {
+
+	var wrapper = {};
 	
-	 var registrarResource = $resource('http://10.212.129.34/sccnlp/ingresarContrato',{}, {
-	        post : {
-	          method: 'POST',
-	          isArray: false
-	        }
-	      });
+	wrapper.registrarResource = $resource('http://10.212.129.34/sccnlp/api/Relacionlab/guardarRelacionLaboral');
 	
+
 	
-	var registrar = function(trabajador, empleador, contrato){
+	wrapper.registrar = function(trabajador, empleador, contrato){
 		
 		// separación de rut / dv
 		
@@ -24,7 +22,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		
 		if(trabajador.documentoIdentificador == 'rut') {
 			
-			var splitRut =  trabjador.numDocIdentificador.split("-");
+			var splitRut =  trabajador.numDocIdentificador.split("-");
 			rut_trabajador = splitRut[0];
 			dv_trabajador = splitRut[1];
 			
@@ -42,7 +40,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		var _apellido_paterno = "";
 		var _apellido_materno = "";
 		
-		var split_nombre = trabajador.nombreCompleto(" ");
+		var split_nombre = trabajador.nombreCompleto.split(" ");
 		_apellido_materno = split_nombre.splice(split_nombre.length-1,1);
 		_apellido_paterno = split_nombre.splice(split_nombre.length-1,1);
 		_nombre_trabajador = split_nombre.join(" ");
@@ -82,7 +80,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
             IDTipoContrato      : contrato.tipoContratoSelected.value,
             FechaInicioContrato : $filter('date')(contrato.fechaDeInicioDelContrato, dateFormat),
             FechaTerminoContrato: fechaTermContrato,
-            DiaPago             : cotrato.diaDePagoSelected,
+            DiaPago             : contrato.diaDePagoSelected,
             ACTIVO              : 1,
             
             Labores: []
@@ -100,12 +98,18 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 				ID_Funcion             : datosLabor.funcionSelect.id,
 				LugarPrestacionServicio: datosLabor.lugarPrestacionServicios,
 				ID_Jornada             : datosLabor.tipoJornada.id,
-				ID_Turno               : datosLabor.sisTurno.id,
 				Horario                : datosLabor.horario
 			});		
 		}
 	
+		wrapper.registrarResource.save({},outFormat,function(response){
+			console.log(response);
+			return true;
+		}, function(error){
+			console.log(error);
+			return false;
+		});
 	}
-	
-    }
-  ]);
+
+	return wrapper;
+}]);

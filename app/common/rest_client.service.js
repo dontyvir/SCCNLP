@@ -1,12 +1,23 @@
 angular.module('sccnlp.common')
 
-.factory('RestClient', ['$resource',
+.factory('RestClient', ['$resource','$httpParamSerializer',
 	
-function($resource) {
+function($resource, $httpParamSerializer) {
 	
 	var wrapper = {};
 
-	wrapper.baseResource = $resource('http://7.212.100.165/sccnlp/api/:serviceName');
+	wrapper.baseResource = $resource('http://7.212.100.165/sccnlp/api/:serviceName',{},{
+
+		save : {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/x-www-form-urlencoded'
+	        },
+	        transformRequest: function(data){
+	        	return $httpParamSerializer(data);
+	        } 
+		}
+	});
 	
 	
 	wrapper.getIsapre = function() {
@@ -32,9 +43,19 @@ function($resource) {
 		
 	}
 	
+	wrapper.getDatosPersona = function(_rut, _dv, _pasaporte, _callback_fn) {
+		
+		return wrapper.baseResource.save({serviceName : 'RelacionLab/getDatosPersona'},{
+
+			rutTrabajador : _rut,
+			dvTrabajador : _dv,
+			pasaporteTrabajador : _pasaporte
+			
+		}, _callback_fn);		
+	}
+	
 	wrapper.getLabor = function(){
 		return wrapper.baseResource.query({serviceName : 'RelacionLab/getLabor'});
-		
 	}
 	
 	wrapper.getTipoContrato = function(){
@@ -59,6 +80,21 @@ function($resource) {
 	
 	wrapper.getDatosRepresentante = function(_rut, _dv){
 		return wrapper.baseResource.query({serviceName : 'Administracion/getDatosRepresentante/'+_rut+'/'+_dv});
+	}
+	
+	wrapper.getTipoJornada = function() {
+		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTipoJornada'});		
+	}
+	
+	wrapper.authEmpresa = function(_username, _password, _callback_fn, _callback_error){
+		
+		return wrapper.baseResource.save({serviceName : 'token'},{
+
+			grant_type : "password",
+			username : _username,
+			password : _password
+			
+		}, _callback_fn, _callback_error);		
 	}
 	
 	return wrapper;

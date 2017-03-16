@@ -19,7 +19,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    BTN_aceptar : 'Aceptar',
 
 	    // Labels Tab 1
-	    tabHeaderOne : 'Paso 1 de 3: Datos de la empresa',
+	    tabHeaderOne : 'Paso 1 de 4: Datos de la empresa',
 	    datosDelEmpleador : 'Datos del Empleador',
 	    rut : 'Rut',
 	    email : 'e-mail',
@@ -36,7 +36,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    cargoEnLaEmpresa : 'Cargo en la Empresa',
 
 	    //  Labels Tab 2
-	    tabHeaderTwo : 'Paso 2 de 3: Datos del Trabajador',
+	    tabHeaderTwo : 'Paso 2 de 4: Datos del Trabajador',
 	    informacionDelTrabajador : 'Información del Trabajador',
 	    pasaporteTrabajador : 'Pasaporte',
 	    nombreCompletoTrabajador : 'Nombre Completo',
@@ -49,13 +49,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    mandatoryFields : '* Campos Obligatorios',
 
 	    //  Labels Tab 3
-	    tabHeaderThree : 'Paso 3 de 3: Condiciones del Contrato',
+	    tabHeaderThree : 'Paso 3 de 4: Condiciones Relación Laboral',
 	    datosDelContrato : 'Datos del contrato',
 	    lugarDeCelebracionDelContrato : 'Lugar de celebración del contrato',
 	    fechaDeCelebracionDelContrato : 'Fecha de celebración del contrato',
 	    tipoDeContrato : 'Tipo de contrato',
-	    fechaDeInicioDelContrato : 'Fecha de inicio del contrato',
-	    fechaTerminoDelContrato : 'Fecha de término del contrato',
+	    fechaDeInicioDelContrato : 'Fecha de inicio relación laboral',
+	    fechaTerminoDelContrato : 'Fecha de término relación laboral',
 	    modalidadDePago : 'Modalidad de pago',
 	    deCadaMes : ' de cada mes',
 	    datosDeLasLaboresAsociadasAlContrato : 'Datos de las labores asociadas al contrato',
@@ -65,14 +65,19 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    tipoDeJornada : 'Tipo de Jornada',
 	    sistemaDeTurno : 'Sistema de Turno',
 	    editHorario : 'Editar Acuerdo Horario',
-	    horario : 'Acuerdo de Jornada',
+	    horario : 'Horario',
 	    acuerdoDeDescanso : 'Acuerdo de Descanso',
 	    editAcuerdoDescanso : 'Editar Acuerdo Descanso',
 	    edit : 'Editar',
 	    ingresar : 'Ingresar',
 	    eliminarFila : 'Eliminar Labor',
 	    remuneracionBruta : 'Remuneración Bruta (CLP)',
-	    total : 'Total'
-	    
+	    total : 'Total',
+	    selectElijaOpcion : '-- elija una opción --',
+	    estaSeguro : '¿Está seguro?',
+	    	
+	    // Labels 4
+	    tabHeaderFour : 'Paso 4 de 4: Finalización del Proceso',
+	    datosIngresadosOK : 'Relación laboral ingresada'
 	};
 });

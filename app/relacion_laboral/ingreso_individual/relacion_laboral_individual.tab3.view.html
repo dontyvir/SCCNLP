@@ -1,13 +1,13 @@
 <form name="formTab3">
 
         <!--Informacion del Tab-->
-        <h4>{{messages.informacionDelTrabajador}}</h4>
+        <h4>{{messages.datosDelContrato}}</h4>
         <hr/>
 
 		<!-- Fecha de celebración del contrato -->
 		
 		<div class="form-group row">
-			<label for="fechaDeCelebracionDelContrato" class="col-md-3 col-form-label">{{messages.fechaDeCelebracionDelContrato}}</label>
+			<label for="fechaDeCelebracionDelContrato" class="col-md-3 col-form-label">{{messages.fechaDeCelebracionDelContrato}} *</label>
 			
 			<div class="col-md-4">
 				<p class="input-group">
@@ -26,18 +26,20 @@
 		<!-- Tipo de contrato -->
 
 		<div class="form-group row">
-			<label for="tipoContrato" class="col-md-3 col-form-label">{{messages.tipoDeContrato}}</label>
+			<label for="tipoContrato" class="col-md-3 col-form-label">{{messages.tipoDeContrato}} *</label>
 			
 			<div class="col-md-4">
 				<select ng-model="contrato.tipoContratoSelected"  ng-options="operator.id as operator.glosa for operator in tipoContrato"
-				 class="form-control col-md-8 form-control-sm" id="tipoContrato" ng-required="true"></select>
+				 class="form-control col-md-8 form-control-sm" id="tipoContrato" ng-required="true">
+				 <option value="">{{messages.selectElijaOpcion}}</option>
+				 </select>
 			</div>
 		</div>
 
 		<!-- Fecha de inicio del contrato -->
 
 		<div class="form-group row">
-			<label for="fechaDeInicioDelContrato" class="col-md-3 col-form-label">{{messages.fechaDeInicioDelContrato}}</label>
+			<label for="fechaDeInicioDelContrato" class="col-md-3 col-form-label">{{messages.fechaDeInicioDelContrato}} *</label>
 			
 			<div class="col-md-4">
 				<p class="input-group">
@@ -57,17 +59,17 @@
 
 
 		<div class="form-group row">
-			<label for="fechaTerminoDelContrato" class="col-md-3 col-form-label">{{messages.fechaTerminoDelContrato}}</label>
+			<label for="fechaTerminoDelContrato" class="col-md-3 col-form-label">{{messages.fechaTerminoDelContrato}} *</label>
 			
 			<div class="col-md-4">
 				<p class="input-group">
 		    
 		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaTerminoDelContrato"
-		       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fechaTerminoDelContrato" ng-disabled="contrato.tipoContratoSelected == 'indefinido'"/>
+		       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats"
+		       id="fechaTerminoDelContrato" ng-disabled="fechaTerminoDisabled()"/>
 		       
 		      <span class="input-group-btn">
-		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="contrato.tipoContratoSelected == 'indefinido'">
+		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="fechaTerminoDisabled()">
 		        	<i class="glyphicon glyphicon-calendar"></i>
 		        </button>
 		      </span>
@@ -78,11 +80,13 @@
 		<!-- Día de pago -->
 		
 		<div class="form-group row">
-			<label for="modalidadDePago" class="col-md-3 col-form-label">{{messages.modalidadDePago}}</label>
+			<label for="modalidadDePago" class="col-md-3 col-form-label">{{messages.modalidadDePago}} *</label>
 			
 			<div class="col-md-4">
 				<select ng-model="contrato.modalidadDePagoSelected"  ng-options="operator.id as operator.glosa for operator in modalidadDePago"
-				 class="form-control col-md-8 form-control-sm" id="modalidadDePago" ng-required="true"></select>
+				 class="form-control col-md-8 form-control-sm" id="modalidadDePago" ng-required="true">
+				 <option value="">{{messages.selectElijaOpcion}}</option>
+				 </select>
 			</div>
 		</div>
  
@@ -99,19 +103,17 @@
                 <thead>
                     <tr>
                         <th><small>{{messages.eliminarFila}}</small></th>
-                        <th><small>{{messages.labor}}</small></th>
-                        <th><small>{{messages.funcion}}</small></th>
-                        <th><small>{{messages.lugarDePresentacionDelosServicios}}</small></th>
-                        <th><small>{{messages.tipoDeJornada}}</small></th>
-                        <th><small>{{messages.sistemaDeTurno}}</small></th>
-                        <th><small>{{messages.horario}}</small></th>
-                        <th><small>{{messages.acuerdoDeDescanso}}</small></th>
-                        <th><small>{{messages.remuneracionBruta}}</small></th>                                
+                        <th><small>{{messages.labor}} *</small></th>
+                        <th><small>{{messages.funcion}} *</small></th>
+                        <th><small>{{messages.lugarDePresentacionDelosServicios}} *</small></th>
+                        <th><small>{{messages.tipoDeJornada}} *</small></th>
+                        <th><small>{{messages.horario}} *</small></th>
+                        <th><small>{{messages.acuerdoDeDescanso}} *</small></th>
+                        <th><small>{{messages.remuneracionBruta}} *</small></th>                                
                     </tr>
                 </thead>
                 <tfoot class="table-no-bordered">
                     <tr>
-                        <td style="border: none;"></td>
                         <td style="border: none;"></td>
                         <td style="border: none;"></td>
                         <td style="border: none;"></td>
@@ -133,16 +135,24 @@
 						</button>
                     	</td>
                         <td>
-                            <select ng-model="datosLaborales.laborSelect"   ng-options="elem.id as elem.glosa for elem in labores" class="form-control"></select>                            
+                            <select ng-model="datosLaborales.laborSelect" ng-options="elem.id as elem.glosa for elem in labores" class="form-control" ng-required="true">
+                            	<option value="">{{messages.selectElijaOpcion}}</option>
+                            </select>                            
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.funcionSelect"  ng-options="elem.id as elem.glosa for elem in funciones" class="form-control"></select>
+                            <select ng-model="datosLaborales.funcionSelect" ng-options="elem.id as elem.glosa for elem in funciones" class="form-control" ng-required="true">
+                            	<option value="">{{messages.selectElijaOpcion}}</option>
+                            </select>
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.lugarPrestacionServicios"  ng-options="elem.id as elem.glosa for elem in lugares" class="form-control"></select>         
+                            <select ng-model="datosLaborales.lugarPrestacionServicios" ng-options="elem.id as elem.glosa for elem in lugares" class="form-control" ng-required="true">
+                            	<option value="">{{messages.selectElijaOpcion}}</option>
+                            </select>         
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.tipoJornada"  ng-options="elem.id as elem.glosa for elem in tiposJornada" class="form-control"></select>
+                            <select ng-model="datosLaborales.tipoJornada" ng-options="elem.id as elem.glosa for elem in tiposJornada" class="form-control" ng-required="true">
+                            	<option value="">{{messages.selectElijaOpcion}}</option>
+                            </select>
                         </td>
                         <td>      
                                 <input ng-model="datosLaborales.horario"  type="hidden" class="form-control" />

@@ -9,7 +9,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 //  Labels correspondientes al acuerdo jornada laboral
 	$scope.messages = {
 			
-		    acuerdoColectivoDescanso : 'Acuerdo Colectivo Descanso',
+		    acuerdoColectivoDescanso : 'Acuerdo Colectivo de Descanso',
 		    rutSindicato : 'Rut Sindicato',
 		    ingreseRut : 'Ingrese Rut del Sindicato',
 		    nombreSindicato : 'Nombre Sindicato',
@@ -18,36 +18,43 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		    BTN_buscar : 'Buscar',
 		    BTN_limpiar : 'Limpiar',
 		    BTN_cancelar : 'Cancelar',
-		    BTN_guardar : 'Guardar'
+		    BTN_guardar : 'Guardar',
+		    selectElijaOpcion : '-- elija opción --'
 	};
 	
 	//prototipo acuerdoDescanso
 	
-	function AcuerdoDescanso(_rut, _nombre,_repLegal, _acuerdo){
+	function AcuerdoDescanso(_rut, _nombre,_repLegal, _acuerdos){
 		
+		this.id = null;
 		this.rutSindicato = _rut;
 		this.nombreSindicato = _nombre,
 		this.representanteLegalSindicato = _repLegal;
-		this.acuerdo = _acuerdo;
+		this.acuerdos = _acuerdos;
+		this.iAcuerdoSelected = null;
+		this.horaDesde = null;
+		this.horaHasta = null;
 	};
 	
 	//listado de acuerdos
 	//TODO: implement dynamic loading
-	$scope.acuerdos = [new AcuerdoDescanso("123456-7", "Syn1","Rep1","Acuerdo1"),
-		               new AcuerdoDescanso("234567-8", "Syn2", "Rep2","Acuerdo2")];
+	$scope.sindicatos = [new AcuerdoDescanso("123456-7", "Syn1","Rep1",[{id:1,glosa:"Acuerdo 1"}]),
+		               new AcuerdoDescanso("234567-8", "Syn2", "Rep2",[{id:2,glosa:"Acuerdo 2"}])];
+	
+	$scope.sindicatoSelected = null;
 	
 	// init de Modelo
 	if(datosLaborales.acuerdoDescanso)
 		$scope.acuerdoDescanso = datosLaborales.acuerdoDescanso;
 	else
-		$scope.acuerdoDescanso = new AcuerdoDescanso('','','','');
+		$scope.acuerdoDescanso = new AcuerdoDescanso('','','',[]);
 
 	/**
 	 * Funciones modales
 	 */
     $scope.clearSelected = function () {
     	
-    	$scope.acuerdoDescanso = new AcuerdoDescanso('','','','');
+    	$scope.acuerdoDescanso = new AcuerdoDescanso('','','',[]);
     }
     
     $scope.dismissModal = function () {

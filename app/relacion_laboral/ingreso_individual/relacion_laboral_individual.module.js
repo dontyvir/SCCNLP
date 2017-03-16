@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sccnlp.relacionLaboral.ingresoIndividual', [ 'ui.router', 'sccnlp.common' ])
+angular.module('sccnlp.relacionLaboral.ingresoIndividual', [ 'ui.router', 'sccnlp.common', 'sccnlp.session' ])
 
 .config([ '$stateProvider', function($stateProvider) {
 

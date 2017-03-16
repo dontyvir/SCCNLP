@@ -2,18 +2,21 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient',
+.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient', 'sessionService','RegistrarContrato',
 	
-	function($scope, ingIndivMessages, $uibModal, RestClient) {
+	function($scope, ingIndivMessages, $uibModal, RestClient, sessionService,RegistrarContrato) {
 	
 	$scope.messages = ingIndivMessages;
+	
+	$scope.ingresoIdNum = null;
 	
 	//tabs
 	$scope.tabsActive = 0;
 	$scope.tabs = [
 		{disable : false}, //tab datos de la empresa
 	    {disable : true}, // tab datos del trabajador
-	    {disable : true} // tab datos del contrato
+	    {disable : true}, // tab datos del contrato
+	    {disable : true}  // tab finalización del proceso
 	]
 	
 	// Datos del empleador Model
@@ -28,10 +31,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			rutRepresentanteLegal : null,
 			nombreCompletoRepresentanteLegal :null,
 			emailRepresentanteLegal : null,
-			
-			// data de usuario?
+
 			rutUsuarioQueRegistra : null,
-			nombreCompletoUsuarioQueRegistraData : null,
+			nombreCompletoUsuarioQueRegistra : null,
 			cargoEnLaEmpresaQueRegistraData : null
 			
 	};
@@ -51,7 +53,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			
 			nombreCompleto : null,
 			nacionalidad : null,
-			lugarDeNacimiento : null,
 			fechaDeNacimiento : null,
 			estadoCivil : null
 			
@@ -104,13 +105,29 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
      * Métodos
      */
 
+    $scope.fechaTerminoDisabled = function(){
+    	
+    	if($scope.contrato.tipoContratoSelected &&
+    		$scope.contrato.tipoContratoSelected == 1) {
+    		
+    		$scope.contrato.fechaTerminoDelContrato = null;
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
     $scope.addRow = function () {
+    	    	
     	var id = $scope.contrato.datosLabores.length;
     	$scope.contrato.datosLabores.push(new DatosLabores(id));
     };
     
     $scope.deleteRow = function(rowModel) {
     	
+    	if(!confirm($scope.messages.estaSeguro))
+    		return;
+
     	var datos = $scope.contrato.datosLabores;
     	
     	datos.splice(rowModel.id, 1); // remove 1 element from index rowModel.id
@@ -118,10 +135,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	for(var i=rowModel.id;i<datos.length;i++){
     		datos[i].id--;
     	}
-    }
-
-    $scope.loadRutTrabajador = function(_rut){
     	
+    	if(datos.length == 0)
+    		$scope.addRow();
     }
 
     /**
@@ -284,7 +300,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    $scope.clearDataTrabajador = function(){
 			$scope.trabajador.nombreCompleto = null;
 			$scope.trabajador.nacionalidad = null;
-			$scope.trabajador.lugarDeNacimiento = null;
 			$scope.trabajador.fechaDeNacimiento = null;
 			$scope.trabajador.estadoCivil = null;
 	    }
@@ -317,39 +332,82 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    		return;
 	    	}
 	    	
-	    	//RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato);
+	    	//FIXME:
+	    	RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato);
+	    	$scope.ingresoIdNum = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+	    	
+		    var modalInstance = $uibModal.open({
 
+			      ariaLabelledBy: 'modal-title',
+			      ariaDescribedBy: 'modal-body',
+			      templateUrl: 'relacion_laboral/recordatorio_legal/recordatorio_legal.modal.view.html',
+			      controller: 'RecordatorioLegalController',
+			      controllerAs: '$ctrl'
+			    });
+
+			    modalInstance.result.then(function (_proceed) {
+			    	
+			    	//paso4
+			    	$scope.tabs[3].disable = false;
+			    	$scope.tabsActive = 3;
+			    	
+			    }, function () {
+			    	
+			      console.log('Modal dismissed at: ' + new Date());
+			    });
+	    	
 	    }
 	    
 	    /**
 	     * Métodos de carga dinámica de datos
 	     */
 
-	    $scope.loadDataUsuario = function (p_rut) {
+	    $scope.loadDataTrabajador = function (id_doc) {
 
-	        $scope.trabajador.nombreCompleto = '';
-	        $scope.trabajador.nacionalidad = '';
-	        $scope.trabajador.lugarDeNacimiento = '';
-	        $scope.trabajador.fechaDeNacimiento = null;
-	        $scope.trabajador.estadoCivil = '';
+	    	if(!id_doc)
+	    		return;
+	    	
+	    	var _rut = "";
+	    	var _dv = "";
+	    	var _pasaporte = "";
+	    	
+	    	if($scope.trabajador.documentoIdentificador == "rut"){
+	    		
+	    		var split = id_doc.split("-");
+	    		_rut = split[0];
+	    		_dv  = split[1];
+	    	} else {
+	    		_pasaporte = id_doc;
+	    	}
+	    	
+	    	RestClient.getDatosPersona(_rut, _dv, _pasaporte, function(data){
+
+		        $scope.trabajador.nombreCompleto = data.nombres+" "+data.apellidoPaterno+" "+data.apellidoMaterno;
+		        $scope.trabajador.nacionalidad = data.nombreNacionalidad;
+		        $scope.trabajador.fechaDeNacimiento = new Date(data.fechaNacimiento);
+		        $scope.trabajador.estadoCivil = data.estadoCivil;
+		        $scope.trabajador.email = data.email;
+		        $scope.trabajador.AFPSelected = data.idAFP;
+		        $scope.trabajador.ISAPRESelected = data.idISAPRE;
+	    	});
 	    };
 	    
-	    $scope.loadDataRegistrante = function() {
+	    $scope.loadDataUsuario = function(idUsuario) {
 	    	
-	    	 var dat = RestClient.getDatosUsuario("2", function(){
+	    	 var dat = RestClient.getDatosUsuario(idUsuario, function(){
 
 	    		if(dat.pasaporte) 
 	    			$scope.empleador.rutUsuarioQueRegistra = dat.pasaporte;
 	    		else
 	    			$scope.empleador.rutUsuarioQueRegistra = dat.rut+"-"+dat.dv;
 	    		
-		        $scope.empleador.nombreCompletoUsuarioQueRegistra = dat.nombreCompleto;
+		        $scope.empleador.nombreCompletoUsuarioQueRegistra = dat.nombres+" "+dat.apellidoPaterno+" "+dat.apellidoMaterno;
 	    	 });
 	    };
 	    
-	    $scope.loadEmpleador = function(){
+	    $scope.loadDataEmpresa = function(_rut, _dv){
 	    	
-	        var dat = RestClient.getDatosEmpresa("1","0", function(){
+	        var dat = RestClient.getDatosEmpresa(_rut,_dv, function(){
 	        	
 		        $scope.empleador.rutEmpleador = dat.rutEmpresa+"-"+dat.dvEmpresa;
 		        $scope.empleador.nombreEmpresa = dat.razonSocial;
@@ -357,12 +415,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		        		        
 		        for(var i=0;i<dat.direcciones.length;i++){
 		        	if(dat.direcciones[i].esCasaMatriz)
-		    	        $scope.empleador.domicilio = dat.direcciones[i].direccion;
+		    	        $scope.empleador.domicilio = dat.direcciones[i].calle+" "+dat.direcciones[i].numero;
 		        }
 		        
 		        // si ninguna dirección es casa matriz
 		        if(!$scope.empleador.domicilio && dat.direcciones.length > 0)
-		        	$scope.empleador.domicilio = dat.direcciones[0].direccion;
+		        	$scope.empleador.domicilio = dat.direcciones[0].calle+" "+dat.direcciones[0].numero;
 		        
 		        
 		        $scope.empleador.rutRepresentanteLegal = dat.representante.rut+"-"+dat.representante.dv;
@@ -372,29 +430,39 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        });
 	    	
 	        $scope.empleador.terminoDeVigencia = null;
-
-	        $scope.loadDataRegistrante();
 	    }
 	    
 	    $scope.init = function() {
 	    	
 	    	$scope.estadoCivil = RestClient.getEstadoCivil();
-	    	
 	        $scope.AFP = RestClient.getAFP();
-
 	        $scope.ISAPRE = RestClient.getIsapre();
-
 	        $scope.tipoContrato = RestClient.getTipoContrato();
-
-	        $scope.modalidadDePago = []; //TODO: client
-	        $scope.lugares = []; //TODO: client
-	        
 	        $scope.labores = RestClient.getLabor();
 	        $scope.funciones = RestClient.getFuncion();
-	        $scope.tiposJornada = [{id:1,glosa:"Jornada 1"}];
+	        $scope.tiposJornada = RestClient.getTipoJornada();
 	        
-	        $scope.loadEmpleador();
-	        $scope.loadDataRegistrante();
+
+	        $scope.modalidadDePago = [{id:1,glosa:"Diario"}]; //TODO: client
+	        $scope.lugares = [{id:1,glosa:"lugar1"}]; //TODO: client
+	        
+	        
+	        /**
+	         * traemos los datos de sesión
+	          
+	          	var _userData = {
+					id,
+					username,
+					rutEmpresa,
+					dvEmpresa,
+					role,
+					permissions
+				};
+	         */
+	        var session_data = sessionService.getUserData();
+
+	        $scope.loadDataEmpresa(session_data.rutEmpresa, session_data.dvEmpresa);
+	        $scope.loadDataUsuario(session_data.id);
 	    	
 	    };
 	    

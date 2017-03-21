@@ -8,7 +8,8 @@
             <div class="form-group col-md-8">
                 <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_RUT}}</label>      
                 <div class="col-md-4" ng-class="{ 'has-error' : trysubmit && data.CLAVE_EMPRESA_RUT=='' }">
-                    <input type="text" name="rutEmpresa" id="rutEmpresa" class="form-control" ng-model="data.CLAVE_EMPRESA_RUT" placeholder="{{messages.CLAVE_EMPRESA_RUT_PLACEHOLDER}}"/>
+                    <input type="text" name="rutEmpresa" id="rutEmpresa" class="form-control" ng-model="data.CLAVE_EMPRESA_RUT" placeholder="{{messages.CLAVE_EMPRESA_RUT_PLACEHOLDER}}"
+                    ng-blur="getDatosEmpresa($event)" />
                     <span class="text-danger" 
                           data-ng-show="trysubmit && data.CLAVE_EMPRESA_RUT==''">{{messages.CLAVE_EMPRESA_RUT_REQ}}
                     </span>
@@ -36,7 +37,7 @@
                 <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_DIRECCION_CM}}</label>  
                 <div class="col-md-6" data-ng-class="{ 'has-error' : data.CLAVE_EMPRESA_DIRECCION_CM==null }">
                     <select class="form-control" name="rutEmpresa" id="rutEmpresa" ng-model="data.CLAVE_EMPRESA_DIRECCION_CM"  
-                            ng-options="item as item.texto for item in listaDirecciones">
+                            ng-options="item as item.direccion for item in listaDirecciones">
                             <option value="">Seleccionar</option>
                     </select>
                     <span class="text-danger" 
@@ -55,7 +56,7 @@
                 <label class="control-label col-md-4">{{messages.CLAVE_EMPRESA_ACTIV_ECONOMICA}}</label>  
                 <div class="col-md-6" ng-class="{ 'has-error': data.CLAVE_EMPRESA_ACTIV_ECONOMICA==null }">
                     <select class="select form-control" ng-model="data.CLAVE_EMPRESA_ACTIV_ECONOMICA"  
-                            ng-options="item as item.texto for item in listaActividades">
+                            ng-options="item as item.glosa for item in listaActividades">
                             <option value="">Seleccionar</option>
                     </select>
                      <span class="text-danger" 

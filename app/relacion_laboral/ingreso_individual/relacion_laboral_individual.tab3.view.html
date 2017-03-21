@@ -46,7 +46,7 @@
 		    
 		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaDeInicioDelContrato"
 		       is-open="popupFecIniCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fechaDeInicioDelContrato" />
+		       id="fechaDeInicioDelContrato" ng-change="validateFechaTerminoContrato()" />
 		       
 		      <span class="input-group-btn">
 		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecIniCont)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -57,16 +57,15 @@
 
 		<!-- Fecha de término del contrato -->
 
-
 		<div class="form-group row">
 			<label for="fechaTerminoDelContrato" class="col-md-3 col-form-label">{{messages.fechaTerminoDelContrato}} *</label>
 			
 			<div class="col-md-4">
-				<p class="input-group">
+			<p class="input-group">
 		    
 		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="contrato.fechaTerminoDelContrato"
 		       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fechaTerminoDelContrato" ng-disabled="fechaTerminoDisabled()"/>
+		       id="fechaTerminoDelContrato" ng-disabled="fechaTerminoDisabled()" ng-change="validateFechaTerminoContrato()" />
 		       
 		      <span class="input-group-btn">
 		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)" ng-disabled="fechaTerminoDisabled()">
@@ -74,6 +73,12 @@
 		        </button>
 		      </span>
 		    </p>
+			    <small class="alert alert-danger" role="alert" ng-show="terminoContratoTooltip">
+				 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 
+				 {{messages.terminoContratoTooltip}}
+				 </small>
+			</div>
+			<div class="col-md-4">
 			</div>
 		</div>
 
@@ -145,7 +150,7 @@
                             </select>
                         </td>
                         <td>
-                            <select ng-model="datosLaborales.lugarPrestacionServicios" ng-options="elem.id as elem.glosa for elem in lugares" class="form-control" ng-required="true">
+                            <select ng-model="datosLaborales.lugarPrestacionServicios" ng-options="elem.id as elem.lugar for elem in lugares" class="form-control" ng-required="true">
                             	<option value="">{{messages.selectElijaOpcion}}</option>
                             </select>         
                         </td>
@@ -201,7 +206,7 @@
 		    
 		    <div class="col-md-3 form-inline">
 	        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>	        
-	        	<button class="btn btn-danger" type="button" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
+        		<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
 	        	<button class="btn btn-primary" type="submit" ng-click="ingresoSubmit(formTab3)">{{messages.BTN_finalizar}}</button>
 	        	        	        
 	        </div>

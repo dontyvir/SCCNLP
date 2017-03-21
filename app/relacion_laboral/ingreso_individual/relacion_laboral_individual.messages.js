@@ -19,7 +19,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    BTN_aceptar : 'Aceptar',
 
 	    // Labels Tab 1
-	    tabHeaderOne : 'Paso 1 de 4: Datos de la empresa',
+	    tabHeaderOne : 'Paso 1 de 3: Datos de la empresa',
 	    datosDelEmpleador : 'Datos del Empleador',
 	    rut : 'Rut',
 	    email : 'e-mail',
@@ -36,7 +36,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    cargoEnLaEmpresa : 'Cargo en la Empresa',
 
 	    //  Labels Tab 2
-	    tabHeaderTwo : 'Paso 2 de 4: Datos del Trabajador',
+	    tabHeaderTwo : 'Paso 2 de 3: Datos del Trabajador',
 	    informacionDelTrabajador : 'Información del Trabajador',
 	    pasaporteTrabajador : 'Pasaporte',
 	    nombreCompletoTrabajador : 'Nombre Completo',
@@ -49,7 +49,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    mandatoryFields : '* Campos Obligatorios',
 
 	    //  Labels Tab 3
-	    tabHeaderThree : 'Paso 3 de 4: Condiciones Relación Laboral',
+	    tabHeaderThree : 'Paso 3 de 3: Condiciones Relación Laboral',
 	    datosDelContrato : 'Datos del contrato',
 	    lugarDeCelebracionDelContrato : 'Lugar de celebración del contrato',
 	    fechaDeCelebracionDelContrato : 'Fecha de celebración del contrato',
@@ -75,9 +75,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    total : 'Total',
 	    selectElijaOpcion : '-- elija una opción --',
 	    estaSeguro : '¿Está seguro?',
+	    terminoContratoTooltip: 'La fecha de término debe ser posterior a la fecha de inicio',
 	    	
 	    // Labels 4
-	    tabHeaderFour : 'Paso 4 de 4: Finalización del Proceso',
+	    tabHeaderFour : 'Finalización del Proceso',
 	    datosIngresadosOK : 'Relación laboral ingresada'
 	};
 });

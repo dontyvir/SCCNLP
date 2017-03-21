@@ -4,68 +4,47 @@
  </div>
  <div class="modal-body">
 
-	<div class="form-group">
-	
-	    <label for="rutSindicato" class="col-md-4 control-label">{{messages.rutSindicato}}</label>
-	    
-	    <div class="col-md-8">
-	    
-	       	<input type="text" id="rutSindicato" name="rutSindicato" ng-model="sindicatoSelected" placeholder="{{messages.ingreseRut}}"
-	  	  uib-typeahead="sind as sind.rutSindicato for sind in sindicatos | filter:{rutSindicato:$viewValue}"
-	  	  class="form-control" typeahead-show-hint="true" typeahead-min-length="0">
-	  	  
-	    </div>
+	<div class="form-group row">
+		<label for="tipoContrato" class="col-md-4 control-label">{{messages.rutSindicato}} *</label>
+		
+		<div class="col-md-8">
+	       	<input type="text" id="rutSindicato" name="rutSindicato" ng-model="acuerdoModal.docId"
+	       	 placeholder="{{messages.ingreseRut}}" class="form-control" ng-required="true">
+		</div>
 	</div>
 
-    <div class="form-group">
-
-        <label class="col-md-4 control-label">{{messages.nombreSindicato}}</label>
-        <div class="col-md-8">{{sindicatoSelected.nombreSindicato}}</div>
-    </div>
-
-    <div class="form-group">
-
-        <label class="col-md-4 control-label">{{messages.representanteLegalSindicato}}</label>
-        <div class="col-md-8">{{sindicatoSelected.representanteLegalSindicato}}</div>
-    </div>
-
-	<div ng-show="sindicatoSelected">
-	
-	    <div class="form-group">
-	    
-			<label class="col-md-4 control-label">{{messages.acuerdo}}</label>
-			
-         	<div class="col-md-8">
-         	
-         	   <select ng-model="sindicatoSelected.iAcuerdoSelected" ng-options="sind.id as sind.glosa for sind in sindicatoSelected.acuerdos" class="form-control" ng-required="true">
-               		<option value="">{{messages.selectElijaOpcion}}</option>
-               </select>
-               
-         	</div>	
-	    </div>
-	    
-	    <div class="form-group">
-	    
-	           <label for="horaDesde" class="col-md-4 control-label">Hora Desde</label>
-	            <div class="col-md-8">
-              		<div id="horaDesde" uib-timepicker ng-model="sindicatoSelected.horaDesde" show-meridian="false" show-spinners="false"></div>
-	    		</div>
-	    </div>
-	    
-	    <div class="form-group">
-	    
-	          <label for="horaHasta" class="col-md-4 control-label">Hora Hasta</label>
-	          <div class="col-md-8">
-              	<div id="horaHasta" uib-timepicker ng-model="sindicatoSelected.horaHasta" show-meridian="false" show-spinners="false"></div>
-              </div>
-	    </div>
-	    
+	<div class="form-group row">
+		<label for="nombreAcuerdo" class="col-md-4 control-label">{{messages.acuerdo}}</label>
+		
+		<div class="col-md-8">
+	       	<input type="text" id="nombreAcuerdo" name="nombreAcuerdo" ng-model="acuerdoModal.acuerdo"
+	       	 placeholder="{{messages.acuerdo}}" class="form-control">
+		</div>
 	</div>
+    
+    <div class="form-group row">
+    
+           <label for="horaDesde" class="col-md-4 control-label">{{messages.horaDesde}} *</label>
+            <div class="col-md-8">
+             		<div id="horaDesde" uib-timepicker ng-model="acuerdoModal.horaDesde" show-meridian="false"
+             		     show-spinners="false" ng-required="true" ng-change="validarHora()"></div>
+    		</div>
+    </div>
+    
+    <div class="form-group row">
+    
+          <label for="horaHasta" class="col-md-4 control-label">{{messages.horaHasta}} *</label>
+          <div class="col-md-8">
+             	<div id="horaHasta" uib-timepicker ng-model="acuerdoModal.horaHasta" show-meridian="false"
+             	     show-spinners="false" ng-required="true" ng-change="validarHora()"></div>
+             	<span uib-tooltip="{{messages.validacionHoras}}" tooltip-is-open="validacionHoraOpen" tooltip-placement="bottom"></span>
+          </div>
+    </div>
 
  </div>
  <div class="modal-footer">
-     <button type="reset" class="btn btn-default" ng-click="clearSelected()">{{messages.BTN_limpiar}}</button>
-     <button type="reset"  class="btn btn-danger" ng-click="dismissModal()">{{messages.BTN_cancelar}}</button>
-     <button type="submit" class="btn btn-primary" ng-click="saveAcuerdoColectivoDescanso()">{{messages.BTN_guardar}}</button>
+     <button type="reset" class="btn btn-default">{{messages.BTN_limpiar}}</button>
+     <button type="reset"  class="btn btn-danger" ng-click="dismissModal(acuerdoDescanso)">{{messages.BTN_cancelar}}</button>
+     <button type="submit" class="btn btn-primary" ng-click="saveAcuerdoColectivoDescanso(acuerdoDescanso)">{{messages.BTN_guardar}}</button>
  </div>
  </form>

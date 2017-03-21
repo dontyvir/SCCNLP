@@ -38,20 +38,17 @@ function($resource, $httpParamSerializer) {
 		return wrapper.baseResource.query({serviceName : 'RelacionLab/getFuncion'});
 	}
 	
-	wrapper.getDatosEmpresa = function(_rut, _dv, _callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut+'/'+_dv},{}, _callback_fn);
+	wrapper.getDatosEmpresa = function(_rut, _callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut},{}, _callback_fn);
 		
 	}
 	
-	wrapper.getDatosPersona = function(_rut, _dv, _pasaporte, _callback_fn) {
+	wrapper.getDatosPersona = function(_rut, _pasaporte, _callback_fn) {
 		
-		return wrapper.baseResource.save({serviceName : 'RelacionLab/getDatosPersona'},{
-
-			rutTrabajador : _rut,
-			dvTrabajador : _dv,
-			pasaporteTrabajador : _pasaporte
-			
-		}, _callback_fn);		
+		if(!_pasaporte)
+			_pasaporte = 0;
+		
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_pasaporte},{}, _callback_fn);		
 	}
 	
 	wrapper.getLabor = function(){
@@ -95,6 +92,10 @@ function($resource, $httpParamSerializer) {
 			password : _password
 			
 		}, _callback_fn, _callback_error);		
+	}
+	
+	wrapper.getLocacion = function(_rutEmpresa, _callback_fn) {
+		return wrapper.baseResource.query({serviceName : 'Administracion/getLocacion/'+_rutEmpresa});		
 	}
 	
 	return wrapper;

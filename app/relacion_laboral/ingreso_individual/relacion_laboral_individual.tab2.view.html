@@ -26,7 +26,7 @@
 			<input id="inputRut" ng-model="trabajador.numDocIdentificador" ng-required="true"="true"  type="text" class="form-control">
 			
 			 <button type="button" class="btn btn-primary" ng-show="trabajador.documentoIdentificador == 'rut'"
-			         ng-click="loadDataTrabajador(trabajador.numDocIdentificador)">
+			         ng-click="loadDataTrabajador(trabajador.numDocIdentificador)" ng-disable="trabajadorLoading">
 			 
 			 <span ng-show="!trabajadorLoading">
 			 	   <span class="glyphicon glyphicon-search"></span>
@@ -163,7 +163,7 @@
 	    <div class="col-md-3 form-inline">
 	    
         	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>
-        	<button class="btn btn-danger" type="button" ng-click="ingresoCancel()">{{messages.BTN_cancelar}}</button>
+        	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
         	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(2,formTab2)">{{messages.BTN_continuar}}</button>
         	        	        
         </div>

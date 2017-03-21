@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 .factory('RegistrarContrato', ['$resource', '$filter',
@@ -6,11 +8,16 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 	var wrapper = {};
 	
-	wrapper.registrarResource = $resource('http://10.212.129.34/sccnlp/api/Relacionlab/guardarRelacionLaboral');
-	
+	wrapper.registrarResource = $resource('http://7.212.100.165/sccnlp/api/Relacionlab/guardarRelacionLaboral',{},{
+		save : {
+	        method: 'POST',
+	        headers: {
+	            'Content-Type': 'application/json; charset=utf-8'
+	        }
+		}
+	});
 
-	
-	wrapper.registrar = function(trabajador, empleador, contrato){
+	wrapper.registrar = function(trabajador, empleador, contrato, _callback_fn){
 		
 		// separación de rut / dv
 		
@@ -23,12 +30,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		if(trabajador.documentoIdentificador == 'rut') {
 			
 			var splitRut =  trabajador.numDocIdentificador.split("-");
-			rut_trabajador = splitRut[0];
-			dv_trabajador = splitRut[1];
+			_rut_trabajador = splitRut[0];
+			_dv_trabajador = splitRut[1];
 			
 		} else if (trabajador.documentoIdentificador == 'pasaporte'){
 			
-			pasaporte = numDocIdentificador;
+			_pasaporte = numDocIdentificador;
 			
 		} else {
 			//error !!
@@ -41,8 +48,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		var _apellido_materno = "";
 		
 		var split_nombre = trabajador.nombreCompleto.split(" ");
-		_apellido_materno = split_nombre.splice(split_nombre.length-1,1);
-		_apellido_paterno = split_nombre.splice(split_nombre.length-1,1);
+		_apellido_materno = split_nombre.splice(split_nombre.length-1,1)[0];
+		_apellido_paterno = split_nombre.splice(split_nombre.length-1,1)[0];
 		_nombre_trabajador = split_nombre.join(" ");
 		
 		var dateFormat = 'dd/MM/yyyy';
@@ -54,7 +61,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		
 		// objeto a ser enviado
 		
-		var outFormat = {
+		var _contrato = {
             IDUsuario           : 1,
             RutEmpresa          : splitRutEmpleador[0],
             DVEmpresa           : splitRutEmpleador[1],
@@ -75,12 +82,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
             DVAFP               : trabajador.AFPSelected.dv,
             RutISAPRE           : trabajador.ISAPRESelected.rut,
             DVISAPRE            : trabajador.ISAPRESelected.dv,
-            LugarCelebContrato  : contrato.lugarDeCelebracionDelContrato,
             FechaCelebContrato  : $filter('date')(contrato.fechaDeCelebracionDelContrato, dateFormat),
             IDTipoContrato      : contrato.tipoContratoSelected.value,
             FechaInicioContrato : $filter('date')(contrato.fechaDeInicioDelContrato, dateFormat),
             FechaTerminoContrato: fechaTermContrato,
-            DiaPago             : contrato.diaDePagoSelected,
+            ModalidadPago       : contrato.modalidadDePagoSelected,
             ACTIVO              : 1,
             
             Labores: []
@@ -90,24 +96,23 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		
 		for(var i=0;i<contrato.datosLabores.length;i++){
 			
-			datosLabor = contrato.datosLabores[i];
+			var datosLabor = contrato.datosLabores[i];
 			
-			outFormat.Labores.push( {
+			_contrato.Labores.push( {
 
 				ID_Labor               : datosLabor.id,
 				ID_Funcion             : datosLabor.funcionSelect.id,
 				LugarPrestacionServicio: datosLabor.lugarPrestacionServicios,
 				ID_Jornada             : datosLabor.tipoJornada.id,
+				ID_Turno				: 1,
 				Horario                : datosLabor.horario
 			});		
 		}
-	
-		wrapper.registrarResource.save({},outFormat,function(response){
-			console.log(response);
-			return true;
-		}, function(error){
+		
+		var outFormat = [_contrato];
+		
+		return wrapper.registrarResource.save({},outFormat, _callback_fn, function(error){
 			console.log(error);
-			return false;
 		});
 	}
 

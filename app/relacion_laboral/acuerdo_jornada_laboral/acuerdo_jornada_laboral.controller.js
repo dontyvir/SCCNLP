@@ -86,6 +86,37 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         	}
         }
 
+        $scope.marcarDias = function(){
+        	
+        	// marcamos de lunes a viernes
+        	for(var i=0;i<5;i++)
+        		$scope.acuerdoJornadaLaboralModel[i].selected = true;
+        }
+        
+        $scope.replicarHoras = function(){
+        	
+        	var _ini = null;
+        	var _ter = null;
+        	
+        	for(var i=0;i<7;i++){
+        		var mod = $scope.acuerdoJornadaLaboralModel[i];
+        	
+        		if(mod.selected) {
+        			
+        			if(mod.scheduleStart){
+        				if(!_ini) _ini = mod.scheduleStart;
+        			}
+        			mod.scheduleStart = _ini;
+        			
+        			if(mod.scheduleEnd){
+        				if(!_ter) _ter = mod.scheduleEnd;
+        			}
+        			mod.scheduleEnd = _ter;
+        		}
+        	}
+        		
+        }
+        
         /**
          * Validación del formulario
          */

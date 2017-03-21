@@ -15,5 +15,6 @@ angular.module('sccnlp',
 		'sccnlp.clave_empresa',
 		'sccnlp.crear_usuario',
 		'sccnlp.buscar_usuario',
-		'sccnlp.nombradas'
+		'sccnlp.nombradas',
+		'sccnlp.contrato'
 		]);

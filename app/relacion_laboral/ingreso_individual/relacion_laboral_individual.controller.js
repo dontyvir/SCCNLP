@@ -11,6 +11,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	$scope.ingresoIdNum = null;
 	
 	//tabs
+	$scope.terminoContratoTooltip = false;
+	$scope.trabajadorLoading = false;
+	$scope.empresaLoading = true;
 	$scope.tabsActive = 0;
 	$scope.tabs = [
 		{disable : false}, //tab datos de la empresa
@@ -117,6 +120,28 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	return false;
     }
     
+    $scope.validateFechaTerminoContrato = function(){
+    	
+    	if(!$scope.contrato.fechaTerminoDelContrato ||
+    		!$scope.contrato.fechaDeInicioDelContrato) {
+    		
+    		$scope.terminoContratoTooltip = false;    		
+    		return true;    		
+    	}
+
+    	
+    	if($scope.contrato.fechaDeInicioDelContrato.getTime() > 
+    		$scope.contrato.fechaTerminoDelContrato.getTime())
+    	{
+    		
+    		$scope.terminoContratoTooltip = true;
+    		
+    		return false;
+    	}
+    		$scope.terminoContratoTooltip = false;
+    		return true;
+    }
+    
     $scope.addRow = function () {
     	    	
     	var id = $scope.contrato.datosLabores.length;
@@ -140,18 +165,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     		$scope.addRow();
     }
 
-    /**
-     * Clear all values of the main form and the inner forms
-     * @returns {undefined}
-     */
-    $scope.cleanForm = function () {
-       
-    };
-
-    $scope.validateInfo = function () {
-     
-    };
-
     $scope.updateTotal = function () {
 
     	var total = 0;
@@ -170,7 +183,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.dateOptions = {
     	    formatYear: 'yy',
     	    maxDate: new Date(2020, 5, 22),
-    	    minDate: new Date(),
     	    startingDay: 1
     	  };
   
@@ -183,62 +195,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     
     $scope.openDatePicker = function (popup) {
     		popup.opened = true;
-    };
-
-
-
-    /**
-     * Function to validate the rut if typed in the form. Will validate
-     * for each character and will change the variable $scope.formRutButtonEnabled = true
-     * to activate the "Buscar" button
-     * @param {type} rut
-     * @returns {undefined}
-     */
-    $scope.validateRut = function (rut) {
-        var errores = false;
-        if ('Undefined' !== rut || '' !== rut) {
-
-            if (/^[0-9]+-[0-9kK]{1}$/.test(rut)) {
-                var valor = String(rut).replace('.', '');
-                valor = valor.replace('-', '');
-                var cuerpo = valor.slice(0, -1);
-                var dv = valor.slice(-1).toUpperCase();
-
-                if (cuerpo.length < 7) {
-                    errores = true;
-                }
-
-                var suma = 0;
-                var multiplo = 2;
-                var length = cuerpo.length;
-                for (var i = 1; i <= cuerpo.length; i++) {
-                    var index = multiplo * cuerpo.charAt(length - i);
-
-                    suma = suma + index;
-
-                    if (multiplo < 7) {
-                        multiplo = multiplo + 1;
-                    } else {
-                        multiplo = 2;
-                    }
-
-                }
-
-                var dvEsperado = 11 - (suma % 11);
-
-                dv = (dv === 'K') ? 10 : dv;
-                dv = (dv === 0) ? 11 : dv;
-
-                if (dvEsperado !== parseInt(dv)) {
-                    errores = true;
-                }
-                if (errores === false) {
-                    $scope.formRutButtonEnabled = true;
-                }
-            } else
-                $scope.formRutButtonEnabled = false;
-        }
-
     };
     
     var $parentCtl = $scope;
@@ -280,16 +236,16 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		      controller: 'AcuerdoDescansoController',
 		      controllerAs: '$ctrl',
 		      resolve: {
-		          datosLaborales: function () { return datosLaborales; }
+		    	  _acuerdoActivo: function () { return datosLaborales.acuerdoDescanso; }
 		      }
 		    });
 
-		    modalInstance.result.then(function (acuerdos_descanso) {
+		    modalInstance.result.then(function (acuerdo_descanso) {
 		    	
-		    	if(!acuerdos_descanso)
+		    	if(!acuerdo_descanso)
 		    		datosLaborales.acuerdoDescanso = null;
 		    	else
-		    		datosLaborales.acuerdoDescanso = acuerdos_descanso;
+		    		datosLaborales.acuerdoDescanso = acuerdo_descanso;
 		    	
 		    }, function () {
 		    	
@@ -303,14 +259,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			$scope.trabajador.fechaDeNacimiento = null;
 			$scope.trabajador.estadoCivil = null;
 	    }
-	    
-	    $scope.printSchedule = function(data){
-	    	return data;
-	    };
-	    
-	    $scope.printAgreement = function(data){
-	    	return data;
-	    };
 
 	    $scope.ingresoContinue = function(tab, form) {
 	    	
@@ -325,15 +273,16 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	$scope.tabsActive = tab;
 	    	
 	    };
-
+	    
 	    $scope.ingresoSubmit = function(form) {
 
 	    	if(form && form.$invalid){
 	    		return;
 	    	}
 	    	
-	    	//FIXME:
-	    	RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato);
+	    	if(!$scope.validateFechaTerminoContrato)
+	    		return;
+	    	
 	    	$scope.ingresoIdNum = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 	    	
 		    var modalInstance = $uibModal.open({
@@ -345,17 +294,25 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			      controllerAs: '$ctrl'
 			    });
 
-			    modalInstance.result.then(function (_proceed) {
+			    modalInstance.result.then(function () {
 			    	
-			    	//paso4
-			    	$scope.tabs[3].disable = false;
-			    	$scope.tabsActive = 3;
-			    	
+			    	// registro del contrato
+			    var _result = RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato,
+			    	function(response){
+			    		
+				    	//paso4
+			    	    $scope.tabs[0].disable = true;
+			    	    $scope.tabs[1].disable = true;
+			    	    $scope.tabs[2].disable = true;
+				    	$scope.tabs[3].disable = false;
+				    	$scope.tabsActive = 3;
+				    	
+			    	});
+
 			    }, function () {
 			    	
 			      console.log('Modal dismissed at: ' + new Date());
 			    });
-	    	
 	    }
 	    
 	    /**
@@ -364,12 +321,14 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 	    $scope.loadDataTrabajador = function (id_doc) {
 
-	    	if(!id_doc)
+	    	if(!id_doc || id_doc == "")
 	    		return;
 	    	
+	    	$scope.trabajadorLoading = true;
+
 	    	var _rut = "";
 	    	var _dv = "";
-	    	var _pasaporte = "";
+	    	var _pasaporte = null;
 	    	
 	    	if($scope.trabajador.documentoIdentificador == "rut"){
 	    		
@@ -380,7 +339,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    		_pasaporte = id_doc;
 	    	}
 	    	
-	    	RestClient.getDatosPersona(_rut, _dv, _pasaporte, function(data){
+	    	RestClient.getDatosPersona(_rut, _pasaporte, function(data){
 
 		        $scope.trabajador.nombreCompleto = data.nombres+" "+data.apellidoPaterno+" "+data.apellidoMaterno;
 		        $scope.trabajador.nacionalidad = data.nombreNacionalidad;
@@ -389,6 +348,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		        $scope.trabajador.email = data.email;
 		        $scope.trabajador.AFPSelected = data.idAFP;
 		        $scope.trabajador.ISAPRESelected = data.idISAPRE;
+		        
+		        $scope.trabajadorLoading = false;
 	    	});
 	    };
 	    
@@ -405,9 +366,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	 });
 	    };
 	    
-	    $scope.loadDataEmpresa = function(_rut, _dv){
+	    $scope.loadDataEmpresa = function(_rut){
 	    	
-	        var dat = RestClient.getDatosEmpresa(_rut,_dv, function(){
+	        var dat = RestClient.getDatosEmpresa(_rut, function(){
 	        	
 		        $scope.empleador.rutEmpleador = dat.rutEmpresa+"-"+dat.dvEmpresa;
 		        $scope.empleador.nombreEmpresa = dat.razonSocial;
@@ -427,9 +388,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		        $scope.empleador.nombreCompletoRepresentanteLegal = dat.representante.glosa;
 		        $scope.empleador.emailRepresentanteLegal = dat.representante.email;
 
+		        
+		        $scope.empresaLoading = false;
 	        });
 	    	
 	        $scope.empleador.terminoDeVigencia = null;
+
 	    }
 	    
 	    $scope.init = function() {
@@ -444,7 +408,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        
 
 	        $scope.modalidadDePago = [{id:1,glosa:"Diario"}]; //TODO: client
-	        $scope.lugares = [{id:1,glosa:"lugar1"}]; //TODO: client
+	        $scope.lugares = RestClient.getLocacion($scope.empleador.rutEmpleador);
 	        
 	        
 	        /**
@@ -461,7 +425,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	         */
 	        var session_data = sessionService.getUserData();
 
-	        $scope.loadDataEmpresa(session_data.rutEmpresa, session_data.dvEmpresa);
+	        $scope.loadDataEmpresa(session_data.rutEmpresa);
 	        $scope.loadDataUsuario(session_data.id);
 	    	
 	    };

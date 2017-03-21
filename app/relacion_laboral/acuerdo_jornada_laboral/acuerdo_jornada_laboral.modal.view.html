@@ -7,10 +7,10 @@
        <table class="table table-striped table-bordered table-responsive table-hover ">
            <thead >
                <tr>
-                   <th><small></small></th>
-                   <th><small>{{messages.diaDeLaSemana}}</small></th>
-                   <th><small>{{messages.horaInicio}}</small></th>
-                   <th><small>{{messages.horaTermino}}</small></th>
+                   <th><a href role="button" ng-click="marcarDias()" class="glyphicon glyphicon-arrow-down"></a></th>
+                   <th><small>{{messages.diaDeLaSemana}}</small> </span></th>
+                   <th><small>{{messages.horaInicio}}</small> <a href role="button" ng-click="replicarHoras()" class="glyphicon glyphicon-arrow-down"></a></th>
+                   <th><small>{{messages.horaTermino}}</small> <a href role="button" ng-click="replicarHoras()" class="glyphicon glyphicon-arrow-down"></a></th>
                </tr>
            </thead>
            <tbody>

@@ -1,0 +1,29 @@
+<h3>Relación Laboral : ingreso masivo</h3>
+
+<uib-tabset active="tabsActive">
+
+<uib-tab index="0" heading="{{messages.tabHeaderOne}}">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_masivo/ingreso_masivo.tab1.view.html'">
+				</div>
+		</div>	
+</uib-tab>
+		
+<uib-tab index="1" heading="{{messages.tabHeaderTwo}}" disable="tabs[1].disable">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_masivo/ingreso_masivo.tab2.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+<uib-tab index="2" heading="{{messages.tabHeaderThree}}" disable="tabs[2].disable">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_masivo/ingreso_masivo.tab3.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+</uib-tabset>

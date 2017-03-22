@@ -56,7 +56,10 @@ angular.module('sccnlp.session')
 		}
 		
 		function _isLoggedIn() {
-			return (_userData.username && _userData.username != ""); //TODO: improve this
+			
+			var d = _getUserData();
+			
+			return (d.username && d.username != "");
 		};
 
 		/**

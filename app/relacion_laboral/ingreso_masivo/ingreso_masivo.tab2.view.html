@@ -1,0 +1,39 @@
+<h4>{{messages.cargaRelLab}}</h4>
+
+<hr/>
+
+<p>Estimado empleador, usted puede realizar el ingreso de las relaciones laborales de sus trabajadores de forma masiva.</p>
+<br/>
+<p>Para realizar esta acción debe subir al sistema el archivo con el formato exactamente igual al ejemplo:</p>
+
+
+<br/>
+
+<div class="row">
+    <div class="col-md-9">
+
+		<form name="cargaCSV">
+		
+		  <div class="form-group">
+		    <label for="csvMasivo">Ingrese su nómina de trabajadores mediante la selección de un archivo: </label>
+		    <input type="file" class="form-control-file" id="csvMasivo" aria-describedby="csvLabel">
+		    <small id="csvLabel" class="form-text text-muted">Cargue aquí el archivo en formato csv con las relaciones laborales.</small>
+		  </div>
+		
+		</form>
+
+	</div>
+</div>
+
+<div class="row">
+    <div class="col-md-9">
+       <small>{{messages.mandatoryFields}}</small>                 
+    </div>
+    
+    <div class="col-md-3 form-inline">
+
+       	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
+       	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(2,formTab2)">{{messages.BTN_continuar}}</button>
+       	        	        
+       </div>
+</div>

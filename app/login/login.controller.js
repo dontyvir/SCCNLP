@@ -6,11 +6,7 @@ angular.module('sccnlp.login')
 	function($scope, $state, sessionService, loginMessages) {
 	
 	$scope.messages = loginMessages;
-	
-	if(sessionService.isLoggedIn()){ // si el usuario ya está logeado, redireccionar
-		$state.go('main.composite');
-	}
-	
+		
 	$scope.dataLoading = false;
 	
 	$scope.loginData = {username: null, password: null};
@@ -63,5 +59,9 @@ angular.module('sccnlp.login')
 				$scope.alert.active = true;
 			}
 	};
+	
+	if(sessionService.isLoggedIn()){ // si el usuario ya está logeado, redireccionar
+		$state.go('main.composite');
+	}
 	
 } ])

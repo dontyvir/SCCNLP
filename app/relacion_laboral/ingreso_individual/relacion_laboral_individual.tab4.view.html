@@ -1,11 +1,46 @@
+<div ng-show="relLab.loading">
+
+<h2>
+Ingresando Relación Laboral... 
+<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+</h2>
+
+</div>
+
+<div ng-show="relLab.ingresoError">
+
+<h4>Error al ingresar Relación Laboral</h4>
+
+<div class="alert alert-danger" role="alert">
+<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+<span class="sr-only">Error:</span>
+{{relLab.errorMSG}}</div>
+
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
+       	<button class="btn btn-primary" type="submit" ng-click="tryAgain()">Volver Atrás</button>
+       	        	        
+    </div>
+</div>
+</div>
 
 
-<!--Informacion del Tab-->
+<div ng-show="relLab.ingresada">
+
 <h4>{{messages.datosIngresadosOK}}</h4>
 <hr/>
 
 <p>Se ha almacenado los datos de la relación laboral ingresada. </p>
 
-<p>El número de identificación es: <b>{{ingresoIdNum}}</b></p>
+<p>El número de identificación es: <b>{{relLab.data.contratoId}}</b></p>
 
 <p>Si desea descargar una copia del registro presione aquí: </p>
+
+
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-primary" role="button">Finalizar</a>       	        	        
+    </div>
+</div>
+</div>

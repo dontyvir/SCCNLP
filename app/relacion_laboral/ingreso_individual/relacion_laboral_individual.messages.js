@@ -6,9 +6,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	
 	return {
 
-	    //Variables
-	    currentTab : 'tabOne',
-
 	    //Buttons
 	    BTN_cancelar : 'Cancelar',
 	    BTN_continuar : 'Continuar',
@@ -39,11 +36,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    tabHeaderTwo : 'Paso 2 de 3: Datos del Trabajador',
 	    informacionDelTrabajador : 'Información del Trabajador',
 	    pasaporteTrabajador : 'Pasaporte',
-	    nombreCompletoTrabajador : 'Nombre Completo',
+	    nombresTrabajador : 'Nombres',
+	    apellidosTrabajador : 'Apellidos',
 	    nacionalidadTrabajador : 'Nacionalidad',
 	    lugarDeNacimientoTrabajador : 'Lugar de Nacimiento',
 	    fechaDeNacimientoTrabajador : 'Fecha de Nacimiento',
 	    estadoCivilTrabajador : 'Estado Civil',
+	    sexoTrabajador : 'Sexo',
 	    AFPTrabajador : 'AFP',
 	    ISAPRETrabajador : 'ISAPRE',
 	    mandatoryFields : '* Campos Obligatorios',

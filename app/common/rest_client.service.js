@@ -98,6 +98,10 @@ function($resource, $httpParamSerializer) {
 		return wrapper.baseResource.query({serviceName : 'Administracion/getLocacion/'+_rutEmpresa});		
 	}
 	
+	wrapper.getModalidadPago = function() {
+		return wrapper.baseResource.query({serviceName : 'RelacionLab/getModalidadPago'});	
+	}
+	
 	return wrapper;
 	
 }]);

@@ -22,6 +22,16 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    {disable : true}  // tab finalización del proceso
 	]
 	
+	// Model Ingreso Relación Laboral
+	$scope.relLab = {
+		
+			loading : true,
+			ingresada : false,
+			ingresoError : false,
+			errorMsg : null,
+			data : null
+	};
+	
 	// Datos del empleador Model
 	
 	$scope.empleador = {
@@ -53,11 +63,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			email : null,
 			documentoIdentificador : 'rut', // opción por defecto
 			numDocIdentificador : null,
-			
-			nombreCompleto : null,
-			nacionalidad : null,
+			sexo : {id:null,glosa:null},
+			nombres : null,
+			apellidos : null,
+			nacionalidad : {id:null, glosa:null},
 			fechaDeNacimiento : null,
-			estadoCivil : null
+			estadoCivil : {id:null,glosa:null},
 			
 	};
 	
@@ -74,6 +85,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		this.acuerdoDescanso = null;
 		this.remunBruta = null;
 		this.tipoJornada = null;
+		this.acuerdoEmpty = true;
+		this.horarioEmpty = true;
 		
 	}
 	
@@ -103,6 +116,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.funciones = [];
     $scope.tiposJornada = [];
     $scope.lugares = [];
+    $scope.nacionalidades = [];
     
     /**
      * Métodos
@@ -140,6 +154,28 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	}
     		$scope.terminoContratoTooltip = false;
     		return true;
+    }
+    
+    $scope.validateHorariosAcuerdos = function(){
+    	
+    	var _ret = true;
+    	
+    	for(var i=0;i<$scope.contrato.datosLabores.length;i++){
+    		
+    		var lab = $scope.contrato.datosLabores[i];
+    		
+    		if(!lab.acuerdoDescanso) {
+    			_ret = false;
+    			lab.acuerdoEmpty = true;
+    		}
+    		
+    		if(!lab.horario){
+    			_ret = false;
+    			lab.horarioEmpty = true;
+    		}
+    	}
+    	
+    	return _ret;
     }
     
     $scope.addRow = function () {
@@ -254,8 +290,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    };
 
 	    $scope.clearDataTrabajador = function(){
-			$scope.trabajador.nombreCompleto = null;
+	    	$scope.trabajador.numDocIdentificador = null,
+			$scope.trabajador.nombres = null;
+			$scope.trabajador.apellidos = null;			
 			$scope.trabajador.nacionalidad = null;
+			$scope.trabajador.sexo = null;
 			$scope.trabajador.fechaDeNacimiento = null;
 			$scope.trabajador.estadoCivil = null;
 	    }
@@ -283,6 +322,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	if(!$scope.validateFechaTerminoContrato)
 	    		return;
 	    	
+	    	if(!$scope.validateHorariosAcuerdos())
+	    		return;
+	    	
 	    	$scope.ingresoIdNum = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 	    	
 		    var modalInstance = $uibModal.open({
@@ -295,24 +337,53 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			    });
 
 			    modalInstance.result.then(function () {
+			    
+			    	//paso4
+		    	    $scope.tabs[0].disable = true;
+		    	    $scope.tabs[1].disable = true;
+		    	    $scope.tabs[2].disable = true;
+			    	$scope.tabs[3].disable = false;
+			    	$scope.tabsActive = 3;
 			    	
+			    	var user_data = sessionService.getUserData();	
+			    
 			    	// registro del contrato
-			    var _result = RegistrarContrato.registrar($scope.trabajador, $scope.empleador, $scope.contrato,
-			    	function(response){
+			    	var _result = RegistrarContrato.registrar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
+			    		function(response){
 			    		
-				    	//paso4
-			    	    $scope.tabs[0].disable = true;
-			    	    $scope.tabs[1].disable = true;
-			    	    $scope.tabs[2].disable = true;
-				    	$scope.tabs[3].disable = false;
-				    	$scope.tabsActive = 3;
-				    	
+			    		$scope.relLab.loading = false;
+			    		
+			    		if(response[0].error == ""){
+			    			
+			    			$scope.relLab.data = response[0];
+			    			$scope.relLab.ingresada = true;
+			    			
+			    		} else {
+			    			$scope.relLab.ingresoError = true;
+			    			$scope.relLab.errorMSG = response[0].error;
+			    		}
+			    		
+			    			
+			    	}, function(error){
+			    		$scope.relLab.loading = false;
+			    		$scope.relLab.ingresoError = true;
+			    		$scope.relLab.errorMSG = error.message;
 			    	});
 
 			    }, function () {
 			    	
 			      console.log('Modal dismissed at: ' + new Date());
 			    });
+	    }
+	    
+	    $scope.tryAgain = function(){
+    	    $scope.tabs[0].disable = false;
+    	    $scope.tabs[1].disable = false;
+    	    $scope.tabs[2].disable = false;
+	    	$scope.tabs[3].disable = true;
+	    	$scope.tabsActive = 2;
+
+	    	$scope.relLab.loading = true;
 	    }
 	    
 	    /**
@@ -341,13 +412,28 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	
 	    	RestClient.getDatosPersona(_rut, _pasaporte, function(data){
 
-		        $scope.trabajador.nombreCompleto = data.nombres+" "+data.apellidoPaterno+" "+data.apellidoMaterno;
-		        $scope.trabajador.nacionalidad = data.nombreNacionalidad;
+	    		for(var i=0;i<$scope.AFP.length;i++){
+	    			if($scope.AFP[i].id == data.idAFP)
+	    				$scope.trabajador.AFPSelected = $scope.AFP[i];
+	    		}
+	    		
+	    		for(var i=0;i<$scope.ISAPRE.length;i++){
+	    			if($scope.ISAPRE[i].id == data.idISAPRE)
+	    				$scope.trabajador.ISAPRESelected = $scope.ISAPRE[i];
+	    		}
+	    		
+	    		
+	    		if(data.idSexo && data.idSexo == 2)
+	    			$scope.trabajador.sexo = {id: 2, glosa: "Femenino"};
+	    		else
+	    			$scope.trabajador.sexo = {id: 1, glosa: "Masculino"};
+	    		
+		        $scope.trabajador.nombres = data.nombres;
+		        $scope.trabajador.apellidos = data.apellidoPaterno+" "+data.apellidoMaterno;
+		        $scope.trabajador.nacionalidad = {id: data.idNacionalidad,glosa: data.nombreNacionalidad};
 		        $scope.trabajador.fechaDeNacimiento = new Date(data.fechaNacimiento);
-		        $scope.trabajador.estadoCivil = data.estadoCivil;
+		        $scope.trabajador.estadoCivil = {id: data.idEstadoCivil, glosa: data.estadoCivil};
 		        $scope.trabajador.email = data.email;
-		        $scope.trabajador.AFPSelected = data.idAFP;
-		        $scope.trabajador.ISAPRESelected = data.idISAPRE;
 		        
 		        $scope.trabajadorLoading = false;
 	    	});
@@ -405,12 +491,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        $scope.labores = RestClient.getLabor();
 	        $scope.funciones = RestClient.getFuncion();
 	        $scope.tiposJornada = RestClient.getTipoJornada();
-	        
+	        $scope.modalidadDePago = RestClient.getModalidadPago();
+	        $scope.nacionalidades = RestClient.getNacionalidad();
 
-	        $scope.modalidadDePago = [{id:1,glosa:"Diario"}]; //TODO: client
-	        $scope.lugares = RestClient.getLocacion($scope.empleador.rutEmpleador);
-	        
-	        
 	        /**
 	         * traemos los datos de sesión
 	          
@@ -426,6 +509,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        var session_data = sessionService.getUserData();
 
 	        $scope.loadDataEmpresa(session_data.rutEmpresa);
+	        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa);
 	        $scope.loadDataUsuario(session_data.id);
 	    	
 	    };

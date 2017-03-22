@@ -11,10 +11,10 @@ angular.module('sccnlp',
 		'sccnlp.session',
 		'sccnlp.authorization',
 		'sccnlp.relacionLaboral.ingresoIndividual',
+		'sccnlp.relacionLaboral.ingresoMasivo',
 		'sccnlp.login',
 		'sccnlp.clave_empresa',
 		'sccnlp.crear_usuario',
 		'sccnlp.buscar_usuario',
-		'sccnlp.nombradas',
-		'sccnlp.contrato'
+		'sccnlp.nombradas'
 		]);

@@ -16,7 +16,7 @@
          
         <label class="form-check-label">
          	<input type="radio" value="pasaporte" ng-model="trabajador.documentoIdentificador"
-          		   name="identificadorTrabajador" ng-checked="false"/>
+          		   name="identificadorTrabajador" ng-checked="false" ng-click="clearDataTrabajador()"/>
           		   {{messages.pasaporteTrabajador}}
          </label>
     
@@ -43,14 +43,26 @@
 		</div>
     </div>
     
-	<!-- Nombre completo Trabajador-->
+	<!-- Nombres Trabajador-->
 	
 	<div class="form-group row">
-		<label for="nombre-completo" class="col-md-3 col-form-label">{{messages.nombreCompletoTrabajador}}</label>
+		<label for="nombres" class="col-md-3 col-form-label">{{messages.nombresTrabajador}} *</label>
 		
 		<div class="col-md-4">
-			<input id="nombre-completo" ng-model="trabajador.nombreCompleto" type="text" ng-required="true"
-			       class="form-control" placeholder="{{messages.nombreCompletoTrabajador}}"
+			<input id="nombres" ng-model="trabajador.nombres" type="text" ng-required="true"
+			       class="form-control" placeholder="{{messages.nombresTrabajador}}"
+			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
+		</div>
+	</div>
+
+	<!-- Apellidos Trabajador-->
+
+	<div class="form-group row">
+		<label for="apellidos" class="col-md-3 col-form-label">{{messages.apellidosTrabajador}} *</label>
+		
+		<div class="col-md-4">
+			<input id="apellidos" ng-model="trabajador.apellidos" type="text" ng-required="true"
+			       class="form-control" placeholder="{{messages.apellidosTrabajador}}"
 			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
 		</div>
 	</div>
@@ -58,16 +70,35 @@
 	<!-- Nacionalidad Trabajador -->
 	
 	<div class="form-group row">
-		<label for="nacionalidad-trabajador" class="col-md-3 col-form-label">{{messages.nacionalidadTrabajador}}</label>
+		<label for="nacionalidad-trabajador" class="col-md-3 col-form-label">{{messages.nacionalidadTrabajador}} *</label>
 		
 		<div class="col-md-4">
-
-			<!-- Autocomplete list -->
-			<input id="nacionalidad-trabajador" ng-model="trabajador.nacionalidad" type="text" ng-required="true"
-			       class="form-control" placeholder="{{messages.nacionalidadTrabajador}}"
-			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
+			       
+			 <select ng-model="trabajador.nacionalidad.id" ng-show ="trabajador.documentoIdentificador == 'pasaporte'" id="nacionalidad-trabajador"
+			  class="form-control" ng-options="operator.id as operator.gentilicio for operator in nacionalidades" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
+			 	<option value="">{{messages.selectElijaOpcion}}</option>
+			 </select>
+			 
+			<span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.nacionalidad.glosa}}</span>
 		</div>
-	</div>	
+	</div>
+
+	<!-- Sexo Trabajador-->
+
+	<div class="form-group row">
+		<label for="sexo" class="col-md-3 col-form-label">{{messages.sexoTrabajador}} *</label>
+		
+		<div class="col-md-4">
+			 <select ng-model="trabajador.sexo.id" class="form-control" ng-readonly="trabajador.documentoIdentificador == 'rut'"
+			 ng-required="trabajador.documentoIdentificador == 'pasaporte'" ng-show ="trabajador.documentoIdentificador == 'pasaporte'">
+			 	<option value="">{{messages.selectElijaOpcion}}</option>
+			 	<option value="1">Masculino</option>
+			 	<option value="2">Femenino</option>
+			 </select>
+
+			<span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.sexo.glosa}}</span> 
+		</div>
+	</div>
 
 	<!-- Fecha de nacimiento Trabajador -->
 
@@ -97,12 +128,12 @@
 		
 		<div class="col-md-4">
 
-			 <select ng-model="trabajador.estadoCivil" ng-show ="trabajador.documentoIdentificador == 'pasaporte'"
+			 <select ng-model="trabajador.estadoCivil.id" ng-show ="trabajador.documentoIdentificador == 'pasaporte'"
 			  class="form-control" ng-options="operator.id as operator.glosa for operator in estadoCivil" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
 			 	<option value="">{{messages.selectElijaOpcion}}</option>
 			 </select>
 			 
-			 <span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.estadoCivil}}</span>
+			 <span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.estadoCivil.glosa}}</span>
 		</div>
 	</div>
 
@@ -135,7 +166,7 @@
 		<label for="afp-trabajador" class="col-md-3 col-form-label">{{messages.AFPTrabajador}}</label>
 		
 		<div class="col-md-4">
-                <select ng-model="trabajador.AFPSelected"  ng-options="operator.id as operator.glosa for operator in AFP"
+                <select ng-model="trabajador.AFPSelected"  ng-options="operator as operator.glosa for operator in AFP"
                  		class="form-control form-control-sm col-md-12" id="afp-trabajador">
                  		<option value="">{{messages.selectElijaOpcion}}</option>
                 </select>
@@ -148,7 +179,7 @@
 		<label for="isapre-trabajador" class="col-md-3 col-form-label">{{messages.ISAPRETrabajador}}</label>
 		
 		<div class="col-md-4">
-			<select ng-model="trabajador.ISAPRESelected" ng-options="operator.id as operator.glosa for operator in ISAPRE"
+			<select ng-model="trabajador.ISAPRESelected" ng-options="operator as operator.glosa for operator in ISAPRE"
  					class="form-control form-control-sm col-md-12" id="isapre-trabajador">
  					<option value="">{{messages.selectElijaOpcion}}</option>
  			</select>

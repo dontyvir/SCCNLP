@@ -180,7 +180,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         	
         	var selectedItems = [];
         	
-        	for(var i in $scope.acuerdoJornadaLaboralModel){
+        	for(var i=0;i<$scope.acuerdoJornadaLaboralModel.length;i++){
         		
         		if($scope.acuerdoJornadaLaboralModel[i].selected)
         			
@@ -195,7 +195,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
          */
         $scope.cleanAcuerdoJornadaLaboral = function () {
         	
-        	for(var i in $scope.acuerdoJornadaLaboralModel){
+        	for(var i=0;i<$scope.acuerdoJornadaLaboralModel.length;i++){
         		
         		var jornada = $scope.acuerdoJornadaLaboralModel[i];
         		

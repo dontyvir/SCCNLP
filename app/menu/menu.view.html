@@ -106,19 +106,24 @@
 								  {{messages.ADMIN_USR_INGRESAR}}
 								</a>
 							</li>
-							<li>
-							  <a ui-sref="main.composite.buscar_usuario">
-							    <i class="glyphicon glyphicon-search"></i>
-							     {{messages.ADMIN_USR_CONSULTAR}}
-							  </a>
-							</li>
-							
-							<li>
-								<a ui-sref="main.composite.clave_empresa">
-								<i class="glyphicon glyphicon-briefcase"></i>
-									Clave empresa
-								</a>
-							</li>
+							<li><a ui-sref="main.composite.clave_empresa"><i class="glyphicon glyphicon-briefcase"></i>
+								Clave empresa</a>
+                                                        <li class="dropdown-header">{{messages.ADMIN_GEOGRAFICO}}</li> 
+                                                        
+                                                        					<li><a ui-sref="main.composite.administradorGeograf-crear">
+						<i class="glyphicon glyphicon-plus"></i>
+							 {{messages.ADMIN_CREAR_LOCACIONES}}
+                                                                                                    </a></li>
+                                                                                                                                                        					<li><a ui-sref="main.composite.administradorGeograf-crear">
+					<li><a ui-sref="main.composite.administradorGeograf-consultar">
+						<i class="glyphicon glyphicon-search"></i>
+							 {{messages.ADMIN_CONSULTAR_LOCACIONES}}
+                                                                                                    </a></li>
+					</li>
+
+						</ul>
+					</li>
+
 				</ul>
 			</li>
 			

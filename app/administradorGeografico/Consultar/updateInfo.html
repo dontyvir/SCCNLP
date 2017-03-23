@@ -1,0 +1,52 @@
+<div class="modal-header" >
+    <h3 class="modal-title" id="modal-title">{{messagesModal.MODIFICAR_LOCACION}}</h3>
+</div>
+
+<div id="updateTable">
+
+    <table class="table table-striped table-bordered table-responsive table-hover " >
+        <thead >
+            <tr>
+                <th><small>{{messagesModal.RUT_EMPRESA}}</small></th>
+                <th><small>{{messagesModal.NOMBRE_EMPRESA}}</small></th>
+                <th><small>{{messagesModal.DIRECCION_CASA_MATRIZ}}</small></th>
+                <th><small>{{messagesModal.PUERTO}}</small></th>
+                <th><small>{{messagesModal.LUGAR}}</small></th>
+                <th><small>{{messagesModal.POSICION}}</small></th>                              
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="locacion in tablaLocacionModal">
+                <td class="col-md-2">
+                    <p>{{locacion.rutEmpresaModal}}</p>
+                </td>
+                <td class="col-md-2">
+                    <p>{{locacion.nombreEmpresaModal}}</p>
+                </td>
+                <td class="col-md-2">
+                    <p>{{locacion.direccionCasaMatrizModal}}</p>
+                </td>
+                <td class="col-md-2" ng-init="validatePorts()">
+                    <select required="true"  class="form-control" ng-model="locacion.puertoSeleccionadoModal" ng-options="o as o for o in locacion.puertoModal.nombre"></select>
+                </td>
+                <td class="col-md-2" >
+                    <input required="true" class="form-control" ng-model="locacion.lugarModal" >
+                </td>
+                <td class="col-md-2 row">
+                    <div class="col-md-9">
+                        <input required="true" ng-model="locacion.coordenadasModal" ng-disabled="true" class=" form-control" >
+                    </div>
+                    <button  ng-click="showModalGmaps()"  style="background-color: transparent; border-color: #000\9" class="btn col-sm-1 glyphicon glyphicon-map-marker"></button>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<div class="modal-footer">
+    <button class="btn btn-danger" ng-click="cancel()">{{messagesModal.CANCELAR_BTN}}</button>
+    <button class="btn btn-primary" ng-click="ok()">{{messagesModal.GUARDAR_BTN}}</button>
+</div>

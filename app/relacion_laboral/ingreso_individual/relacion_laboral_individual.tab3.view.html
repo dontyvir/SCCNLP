@@ -164,7 +164,7 @@
                                 
                                 <div></div>
                                 
-                                <button class="btn btn-link" type="button" ng-click="loadAcuerdoJornadaLaboral(datosLaborales)">
+                                <button class="btn btn-link" type="button" ng-click="loadAcuerdoJornadaLaboral(datosLaborales, contrato.datosLabores)">
                                 
                                 	<span class="glyphicon glyphicon-plus" ng-show="!datosLaborales.horario"> {{messages.ingresar}}</span>
                                 	<span class="glyphicon glyphicon-pencil" ng-show="datosLaborales.horario"> {{messages.edit}}</span>

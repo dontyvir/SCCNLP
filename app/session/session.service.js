@@ -24,6 +24,7 @@ angular.module('sccnlp.session')
 			  "nombre": "pepito perez",
 			  "rutEmpresa": "1",
 			  "dvEmpresa": "0",
+			  "idEmpresa": "1",
 			  "menus": "[Relacion laboral, Nombradas, Jornadas, Administracion]",
 			  "iss": "http://localhost:54919",
 			  "aud": "414e1927a3884f68abc79f7283837fd1",
@@ -36,6 +37,7 @@ angular.module('sccnlp.session')
 		/* model interno datos de usuario */
 		var _userData = {
 				id : null,
+				idEmpresa: null,
 				username : null,
 				rutEmpresa : null,
 				dvEmpresa : null,
@@ -52,6 +54,7 @@ angular.module('sccnlp.session')
 			_userData.rutEmpresa  = tokenPayload.rutEmpresa;
 			_userData.dvEmpresa   = tokenPayload.dvEmpresa;
 			_userData.permissions = tokenPayload.menus;
+			_userData.idEmpresa   = tokenPayload.idEmpresa;
 			
 		}
 		

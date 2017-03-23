@@ -2,9 +2,9 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('AcuerdoJornadaLaboralController', ['$scope', '$uibModalInstance', 'datosLaborales',
+.controller('AcuerdoJornadaLaboralController', ['$scope', '$uibModalInstance', 'labor', 'labores',
 	
-	function ($scope, $uibModalInstance, datosLaborales) {
+	function ($scope, $uibModalInstance, labor, labores) {
 	
         //Labels correspondientes al acuerdo jornada laboral
 	
@@ -46,9 +46,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         $scope.tooltipOpen = false;
         
         // si ya existían datos en el modelo padre, se llenan
-        if(datosLaborales.horario){
+        if(labor.horario){
         	
-        	var horario = datosLaborales.horario;
+        	var horario = labor.horario;
         	var model = $scope.acuerdoJornadaLaboralModel;
         	
         	for(var i=0;i<horario.length;i++){
@@ -117,13 +117,20 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		
         }
         
+        $scope.horasDia = function(_date_start, _date_end){
+        	
+			var date_diff = Math.abs(_date_end - _date_start);
+			
+			return date_diff/(3600 * 1000);
+        }
+        
         /**
          * Validación del formulario
          */
         $scope.validarForm = function(form){
         	
-        	var total_horas_semanales = 0;
-        	
+        	var total_horas_labor = 0;
+
         	var model = $scope.acuerdoJornadaLaboralModel;
         	
         	$scope.tooltipOpen = false;
@@ -148,19 +155,41 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         				return false;
         			}
         			
-        			var date_diff = Math.abs(model[i].scheduleEnd - model[i].scheduleStart);
-        			total_horas_semanales += date_diff/(3600 * 1000);
+        			total_horas_labor += $scope.horasDia(model[i].scheduleStart, model[i].scheduleEnd);
         		}	
         	}
         	
+        	var total_horas_semanales = total_horas_labor;
+        	
+        	// sumamos las horas de todas las labores
+        	
+        	for(var i=0;i<labores.length;i++){
+        		
+        		var _lab = labores[i];
+        		
+        		if(!_lab)
+        			continue;
+        		
+        		if(!_lab.horario)
+        			continue;
+        		
+        		if(lab.id == labor.id)
+        			continue;
+        		
+        		for(var j=0;j<_lab.horario.length;j++){
+        			
+        			total_horas_semanales += $scope.horasDia(_lab.horario[j].scheduleStart, _lab.horario[j].scheduleEnd);
+        		}
+        	}
+
         	if(total_horas_semanales > 45){
  
-        		$scope.tooltipMSG = "El total de horas trabajadas semanalmente no puede superar las 45";
+        		$scope.tooltipMSG = "El total de horas en todas las labores no puede superar las 45 semanales";
         		$scope.tooltipOpen = true;
         		return false;
         	}
         	
-        	if(total_horas_semanales <= 0){
+        	if(total_horas_labor <= 0){
 
         		$scope.tooltipMSG = "Debe asignar horas trabajadas";
         		$scope.tooltipOpen = true;

@@ -102,6 +102,10 @@ function($resource, $httpParamSerializer) {
 		return wrapper.baseResource.query({serviceName : 'RelacionLab/getModalidadPago'});	
 	}
 	
+	wrapper.getTerminoVigencia = function(_idEmpresa, _idPuerto, _callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getVigencia/'+_idEmpresa+'/'+_idPuerto},{},_callback_fn);			
+	}
+	
 	return wrapper;
 	
 }]);

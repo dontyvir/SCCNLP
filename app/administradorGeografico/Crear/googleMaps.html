@@ -1,0 +1,21 @@
+<div class="modal-header" >
+    <h3 class="modal-title" id="modal-title">{{messagesModal.LUGAR_COORDENADAS}}</h3>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <ng-map id="mapa" center="{{ center}}" zoom-control="true" ng-click="updateMarker(event)"  zoom="14">
+            <marker  id="latitudLongitudMarker" position="{{ position}}" on-click="map.showInfoWindow('latitudLongitudMarker')" ></marker>
+            <info-window id="info">
+                <div ng-non-bindable>
+                    {{infoMarkerLabel}}
+                </div>
+            </info-window>
+        </ng-map>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-danger" ng-show="view == 'search'" type="button" ng-click="cancel()">{{messagesModal.CANCELAR_BTN}}</button>
+    <button class="btn btn-primary" type="button" ng-click="ok()">{{messagesModal.OK_BTN}}</button>
+</div>

@@ -235,7 +235,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     
     var $parentCtl = $scope;
     
-    $scope.loadAcuerdoJornadaLaboral = function (datosLaborales) {
+    $scope.loadAcuerdoJornadaLaboral = function (labor, labores) {
 
 	    var modalInstance = $uibModal.open({
 
@@ -245,16 +245,17 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	      controller: 'AcuerdoJornadaLaboralController',
 	      controllerAs: '$ctrl',
 	      resolve: {
-	          datosLaborales: function () { return datosLaborales; }
+	          labor: function(){ return labor},
+	          labores : function(){return labores}
 	      }
 	    });
 
 	    modalInstance.result.then(function (acuerdos_jornada) {
 	    	
 	    	if(acuerdos_jornada.length == 0)
-	    		datosLaborales.horario = null;
+	    		labor.horario = null;
 	    	else
-		    	datosLaborales.horario = acuerdos_jornada;
+	    		labor.horario = acuerdos_jornada;
 	    	
 	    }, function () {
 	    	
@@ -383,6 +384,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	$scope.tabs[3].disable = true;
 	    	$scope.tabsActive = 2;
 
+	    	$scope.relLab.ingresoError = false;
 	    	$scope.relLab.loading = true;
 	    }
 	    
@@ -511,8 +513,31 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        $scope.loadDataEmpresa(session_data.rutEmpresa);
 	        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa);
 	        $scope.loadDataUsuario(session_data.id);
-	    	
+	        
+	        // get Término de Vigencia
+	        RestClient.getTerminoVigencia(session_data.idEmpresa,1, function(data){
+	        	$scope.empleador.terminoDeVigencia = data.fechavigencia;
+	        });
+	        
 	    };
+	    
+	    
+	    $scope.googlemapsInit = function(){
+	    	
+	        // inicialización google maps autocompletar
+	        
+	        var defaultBounds = new google.maps.LatLngBounds(
+	        		  new google.maps.LatLng(-33.8902, 151.1759),
+	        		  new google.maps.LatLng(-33.8474, 151.2631));
+
+    		var input = document.getElementById('domicilioGoogleMaps');
+    		var options = {
+    		 // bounds: defaultBounds,
+    		  types: ['address']
+    		};
+
+    		var autocomplete = new google.maps.places.Autocomplete(input, options);
+	    }
 	    
 	    // se llaman las funciones de inicialización dinámicas
 	    $scope.init();

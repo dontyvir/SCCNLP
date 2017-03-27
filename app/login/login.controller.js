@@ -11,6 +11,11 @@ angular.module('sccnlp.login')
 	
 	$scope.loginData = {username: null, password: null};
 	
+	$scope.loginClaveUnica = function(){
+		
+		
+	}
+	
 	$scope.ingresarClaveEmpresa = function() {
 		
 		$scope.dataLoading = true;

@@ -12,11 +12,12 @@ angular.module('sccnlp',
 		'sccnlp.authorization',
 		'sccnlp.relacionLaboral.ingresoIndividual',
 		'sccnlp.relacionLaboral.ingresoMasivo',
+		'sccnlp.relacionLaboral.consulta',
 		'sccnlp.login',
 		'sccnlp.clave_empresa',
 		'sccnlp.crear_usuario',
 		'sccnlp.buscar_usuario',
-		'sccnlp.nombradas',                
-        'sccnlp.administradorGeograf-crear',
-        'sccnlp.administradorGeograf-consultar'		
+		'sccnlp.nombradas',
+	    'sccnlp.administradorGeograf-crear',
+		'sccnlp.administradorGeograf-consultar'
 ]);

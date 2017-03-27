@@ -1,33 +1,30 @@
 <h3> {{mensajeriaConsulta.CONSULTAR_LOCACIONES}}</h3>
 <hr/>
 <div  class="col-md-12" id="AdministradorGeograf" ng-controller="AdministradorGeografConsultarCtrl" ng-init="initiate()">
-
+ <form id="formulario" name="formulario" class="form-group">
     <div  id="formDiv" >
-        <form id="formulario" name="formulario" class="form-group">
+       
             <div id="rutEmpresaDiv" class="row">
-                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.RUT_EMPRESA}}</strong></h5>
-                <h5 class="col-md-1">:</h5>
-                <h5 class="col-md-8">{{rutEmpresaConsultaData}}</h5>                
+                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.RUT_EMPRESA}}</strong></h5>                
+                <h5 class="col-md-9">{{rutEmpresaConsultaData}}</h5>                
             </div>
 
             <div id="nombreEmpresaDiv" class="row">                
-                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.NOMBRE_EMPRESA}}</strong></h5>
-                <h5 class="col-md-1">:</h5>
-                <h5 class="col-md-8">{{nombreEmpresaConsultaData}}</h5>     
+                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.NOMBRE_EMPRESA}}</strong></h5>                
+                <h5 class="col-md-9">{{nombreEmpresaConsultaData}}</h5>     
             </div>            
 
             <div id="direccionCasaMatrizDiv" class="row">
 
-                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.DIRECCION_CASA_MATRIZ}}</strong></h5>
-                <h5 class="col-md-1">:</h5>
-                <h5 class="col-md-8">{{direccionCasaMatrizConsultaData}}</h5>   
+                <h5 class="col-md-3"><strong>{{mensajeriaConsulta.DIRECCION_CASA_MATRIZ}}</strong></h5>                
+                <h5 class="col-md-9">{{direccionCasaMatrizConsultaData}}</h5>   
             </div>            
 
             <div id="puertoDiv" class="row">
 
                 <h5 class="col-md-3"><strong>{{mensajeriaConsulta.PUERTO}}</strong></h5>
-                <h5 class="col-md-1">:</h5>   
-                <div class="col-md-4">
+                
+                <div class="col-md-5">
                     <select  class="form-control" ng-change="updateLugar()" ng-model="puertoConsulta.seleccionado" ng-options="o as o for o in puertoConsulta.nombre"></select>
                 </div>
             </div>            
@@ -35,8 +32,8 @@
             <div id="sitioDiv" class="row">
 
                 <h5 class="col-md-3"><strong>{{mensajeriaConsulta.LUGAR}}</strong></h5>
-                <h5 class="col-md-1">:</h5>          
-                <div class="col-md-4">
+                       
+                <div class="col-md-5">
                     <select  class="form-control" ng-model="lugarConsultaData.seleccionado" ng-options="o as o for o in lugarConsultaData.nombre"></select>
                 </div>
             </div>            
@@ -44,8 +41,8 @@
             <div id="lugarDiv" class="row">
 
                 <h5 class="col-md-3"><strong>{{mensajeriaConsulta.POSICION}}</strong></h5>
-                <h5 class="col-md-1">:</h5>
-                <div class="col-md-4">
+                
+                <div class="col-md-5">
                     <input  ng-model="coordenadasConsultaData" class=" form-control" >                    
                 </div>
             </div>
@@ -53,7 +50,7 @@
             <div class="form-actions">
                 <button type="submit" ng-click="search()" class="btn btn-default">{{mensajeriaConsulta.BUSCAR_BTN}}</button>
             </div>
-        </form>
+       
     </div>
     <div class="form-actions pull-right">
 
@@ -114,12 +111,13 @@
     </div>
 
 
-    <div class="row">
+    <div class="">
         <div class="col-md-9"></div>
         <div class="col-3 form-inline pull-right">        	
             <button class="btn btn-primary" ng-click="save()" ui-sref="main.composite" href="#!/main">{{mensajeriaConsulta.SALIR_BTN}}</button>        	        
         </div>
     </div>
+      </form>
 </div>
 
 <script type="text/ng-template" id="messageComponentConsulta.html">

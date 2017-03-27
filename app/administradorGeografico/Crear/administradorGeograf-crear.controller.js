@@ -172,6 +172,35 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
             getCasaMatriz();
             // 
         };
+
+
+        $scope.getLocation = function (puerto) {
+            var geocoder = new google.maps.Geocoder();  //  Google function to decode an address
+            if (geocoder) {
+                geocoder.geocode({
+                    'address': puerto
+                }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        var latitude = results[0].geometry.location.lat();
+                        var longitude = results[0].geometry.location.lng();
+
+                        if (latitude !== null && longitude !== null) {
+//                        store.latitude = latitude;
+//                        store.longitude = longitude;
+                            //  Update the center of the map
+                            $scope.center = [latitude, longitude];
+                            //  Update the marker in the map
+                            $scope.position = [latitude, longitude];
+                            //  Update the variable to store the new lat and long values
+//                            $scope.coordenadas = latitude + "," + longitude;
+                            //  Update the markerLabel
+                            $scope.infoMarkerLabel = "Latitud: " + latitude + " | Longitud: " + longitude;
+                        }
+                    }
+                });
+            }
+        };
+
     }]);
 
 

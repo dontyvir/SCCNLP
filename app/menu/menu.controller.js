@@ -6,6 +6,8 @@ angular.module('sccnlp.menu', ['sccnlp.session', 'ui.router'])
 .controller('MenuCtrl', ['$scope', 'sessionService', '$state', 'menuMessages',
 	function ($scope, sessionService, $state, menuMessages) {
 	
+	$scope.isCollapsed = true;
+	
 	$scope.messages = menuMessages; // conexión del servicio messages
 	
 	$scope.logout = function(){

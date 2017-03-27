@@ -6,11 +6,10 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />        
         <link href="app.css" type="text/css" rel="stylesheet" />
 
         <!-- JS from Bower Components -->
-        <script src="bower_components/jquery/dist/jquery.min.js"></script>
         <script src="bower_components/angular/angular.js"></script>
         <script src="bower_components/ngmap/build/scripts/ng-map.min.js" type="text/javascript"></script>
         <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
@@ -19,24 +18,36 @@
         <script src="bower_components/angular-resource/angular-resource.js"></script>
         <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
         <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
+
         <script src="bower_components/angular/ng-table-to-csv.min.js"></script>        
         <script src="bower_components/alasql/dist/alasql.min.js" type="text/javascript"></script>
 
         <!-- Main App JS -->
+        
         <script src="app.js"></script>
         <script src="common/common.module.js"></script>
         <script src="common/rest_client.service.js"></script>    
+        <script src="common/validate_rut_service.js"></script>
+        
         <script src="session/session.module.js"></script>
         <script src="session/session.service.js"></script>
+        
         <script src="authorization/authorization.module.js"></script>
         <script src="authorization/authorization.service.js"></script>
+        
         <script src="login/login.module.js"></script>
         <script src="login/login.controller.js"></script>
         <script src="login/login.messages.js"></script>
+        
         <script src="main/main.module.js"></script>
         <script src="menu/menu.controller.js"></script>    
         <script src="menu/menu.messages.js"></script>
 
+        <script src="directives.js"></script>
+        <script src="filters.js"></script>
+        
+        <!-- Relación Laboral -->
+        
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.module.js"></script>
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.messages.js"></script>
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.controller.js"></script>
@@ -48,13 +59,21 @@
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.module.js"></script>
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.messages.js"></script>
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.controller.js"></script>
-	        
+	    
+	    <script src="relacion_laboral/consulta/consulta.module.js"></script>
+	    <script src="relacion_laboral/consulta/consulta.messages.js"></script>	    
+	    <script src="relacion_laboral/consulta/consulta.controller.js"></script>
+
+	    <!-- Nombradas -->
+	    
 	    <script src="nombradas/nombradas.module.js"></script>
 	    <script src="nombradas/nombradasIndividual.controller.js"></script>
 	    <script src="nombradas/nombradasMasiva.controller.js"></script>
 	    <script src="nombradas/nombradasModificar.controller.js"></script>
 	    <script src="nombradas/nombradasConsultar.controller.js"></script>
 	    <script src="nombradas/nombradas.message.js"></script>
+
+		<!-- Administración -->
 
         <script src="administracion/clave_empresa/clave_empresa.rest.service.js"></script>
         <script src="administracion/clave_empresa/clave_empresa.module.js"></script>
@@ -69,6 +88,8 @@
         <script src="administracion/buscar_usuario/buscar_usuario.controller.js"></script>    
         <script src="administracion/buscar_usuario/buscar_usuario.messages.js"></script>
 
+		<!-- Administrador Geográfico -->
+
         <script src="administradorGeografico/Crear/administradorGeograf-crear.module.js" ></script>
         <script src="administradorGeografico/Crear/administradorGeograf-crear.controller.js"></script>
         <script src="administradorGeografico/Crear/administradorGeograf-crear.messages.js" ></script>
@@ -77,9 +98,7 @@
         <script src="administradorGeografico/Consultar/administradorGeograf-consultar.controller.js"></script>
         <script src="administradorGeografico/Consultar/administradorGeograf-consultar.messages.js" ></script>
 
-        <script src="directives.js"></script>
-        <script src="filters.js"></script>
-                
+        <!-- Api Google Maps -->  
         <script src="https://maps.googleapis.com/maps/api/js?client=gme-direccionnacional&libraries=places"></script>
         
     </head>

@@ -1,19 +1,20 @@
-<header class="navbar navbar-default navbar-inner">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="isCollapsed = !isCollapsed">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand visible-xs" href="#">SCCNLP</a>
-        </div>
-        
-        <nav class="hidden-xs">
-            <ul class="nav navbar-nav">
-                <a href="#top" role="button" class="navbar-brand">SCCNLP</a>
-                
+<nav class="navbar navbar-default" role="navigation">
+
+		<div class="navbar-header">
+		
+			<button type="button" class="navbar-toggle" ng-click="isCollapsed = !isCollapsed">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">SCCNLP</a>
+		</div>
+		
+		<div class="collapse navbar-collapse" uib-collapse="isCollapsed">
+		
+			<ul class="nav navbar-nav">
+
                 <li class="dropdown" uib-dropdown="">
                 <a href id="relacion-laboral" data-toggle="dropdown" uib-dropdown-toggle> {{messages.REL_LAB_DROPDOWN}}<span class="caret"></span></a>
                 
@@ -34,7 +35,7 @@
 					</li>
 					<li class="dropdown-header">{{messages.REL_LAB_CONSULTAR}}</li>
 					<li>
-					<a ui-sref="main.composite"><i class="glyphicon glyphicon-search"></i> 
+					<a ui-sref="main.composite.consultaRelLab"><i class="glyphicon glyphicon-search"></i> 
 						{{messages.REL_LAB_CONSULTAR}}</a>
 					</li>
 				</ul>
@@ -98,53 +99,78 @@
 
 				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="administracion">
 
-						    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
-						
-							<li>
-								<a ui-sref="main.composite.crear_usuario">
-								  <i class="glyphicon glyphicon-plus"></i>
-								  {{messages.ADMIN_USR_INGRESAR}}
-								</a>
-							</li>
-							<li><a ui-sref="main.composite.clave_empresa"><i class="glyphicon glyphicon-briefcase"></i>
-								Clave empresa</a>
-                                                        <li class="dropdown-header">{{messages.ADMIN_GEOGRAFICO}}</li> 
-                                                        
-                                                        					<li><a ui-sref="main.composite.administradorGeograf-crear">
+				    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
+				
+					<li><a ui-sref="main.composite.crear_usuario">
+						  <i class="glyphicon glyphicon-plus"></i>
+						  {{messages.ADMIN_USR_INGRESAR}}
+						</a>
+					</li>
+					
+					<li><a ui-sref="main.composite.clave_empresa">
+						<i class="glyphicon glyphicon-briefcase"></i>
+						Clave empresa
+						</a>
+					</li>
+
+				    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
+				
+					<li>
+						<a ui-sref="main.composite.crear_usuario">
+						  <i class="glyphicon glyphicon-plus"></i>
+						  {{messages.ADMIN_USR_INGRESAR}}
+						</a>
+					</li>
+					
+                    <li>
+						<a ui-sref="main.composite.buscar_usuario">
+						  <i class="glyphicon glyphicon-search"></i>
+						  {{messages.ADMIN_USR_CONSULTAR}}
+						</a>
+					</li>
+					
+					<li><a ui-sref="main.composite.clave_empresa">
+						<i class="glyphicon glyphicon-briefcase"></i>
+						Clave empresa
+						</a>
+					</li>
+                         
+                    <li class="dropdown-header">{{messages.ADMIN_GEOGRAFICO}}</li> 
+                                                      
+                    <li><a ui-sref="main.composite.administradorGeograf-crear">
 						<i class="glyphicon glyphicon-plus"></i>
-							 {{messages.ADMIN_CREAR_LOCACIONES}}
-                                                                                                    </a></li>
-                                                                                                                                                        					<li><a ui-sref="main.composite.administradorGeograf-crear">
+				 		{{messages.ADMIN_CREAR_LOCACIONES}}
+                		</a>
+           		   </li>
+
 					<li><a ui-sref="main.composite.administradorGeograf-consultar">
 						<i class="glyphicon glyphicon-search"></i>
-							 {{messages.ADMIN_CONSULTAR_LOCACIONES}}
-                                                                                                    </a></li>
-					</li>
-
-						</ul>
-					</li>
-
+					 	{{messages.ADMIN_CONSULTAR_LOCACIONES}}
+                  		</a>
+               		</li>
+               		
 				</ul>
 			</li>
-			
-            </ul>
-        </nav>
-        
-        <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;" aria-expanded="false" aria-hidden="true">
-            <ul class="nav navbar-nav">
-                <li><a href="#getting_started" ng-click="isCollapsed = !isCollapsed">Getting started</a></li>
-                <li><a href="#directives_small" ng-click="isCollapsed = !isCollapsed">Directives</a></li>
-            </ul>
-        </nav>
-        
-        <ul class="nav navbar-nav navbar-right">
-			<li><a ui-sref="main.composite"><span class="glyphicon glyphicon-user"></span>
-					{{ getUserName() }}</a></li>
-			<li><a ui-sref="main.composite"><span
-					class="glyphicon glyphicon-home"></span> {{messages.INICIO}}</a></li>
-			<li><a href ng-click="logout()"><span
-					class="glyphicon glyphicon-log-out"></span> {{messages.LOGOUT}}</a></li>
-		</ul>
-    </div>
-</header>
 
+			</ul>
+			
+			<ul class="nav navbar-nav navbar-right">
+
+			<li><a ui-sref="main.composite" ng-click="isCollapsed = !isCollapsed">
+					<span class="glyphicon glyphicon-user"></span> {{ getUserName() }}
+				</a>
+			</li>
+			
+			<li><a ui-sref="main.composite" ng-click="isCollapsed = !isCollapsed">
+					<span class="glyphicon glyphicon-home"></span> {{messages.INICIO}}
+				</a>
+			</li>
+			
+			<li><a href ng-click="logout()" ng-click="isCollapsed = !isCollapsed">
+					<span class="glyphicon glyphicon-log-out"></span> {{messages.LOGOUT}}
+				</a>
+			</li>
+
+			</ul>
+		</div>
+	</nav>

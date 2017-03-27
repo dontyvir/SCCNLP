@@ -1,0 +1,156 @@
+<h3>Relación Laboral : Consultar</h3>
+
+<hr/>
+
+<form name="consultaRL">
+
+	<!-- Rut / Pasaporte -->
+	
+	<div class="form-group row">
+       <div class="form-check col-md-3">
+       
+         <label class="form-check-label">            
+           <input class="form-check-input" type="radio" name="identificadorTrabajador" ng-model="consulta.documentoIdentificador"
+           	      id="identificadorTrabajador" value="rut"  ng-checked="true"/>
+           	{{messages.rut}} 
+         </label>
+         
+        <label class="form-check-label">
+         	<input type="radio" value="pasaporte" ng-model="consulta.documentoIdentificador"
+          		   name="identificadorTrabajador" ng-checked="false"/>
+          		   {{messages.pasaporteTrabajador}}
+        </label>
+    
+       </div>
+       
+		<div class="col-md-4 form-inline">
+			<input id="inputRut" ng-model="consulta.numDocIdentificador" ng-required="true"="true"  type="text" class="form-control">
+			
+			 <button type="button" class="btn btn-primary" ng-show="consulta.documentoIdentificador == 'rut'"
+			         ng-click="loadData(consulta.numDocIdentificador)" ng-disable="consultaLoading">
+			 
+			 <span ng-show="!consultaLoading">
+			 	   <span class="glyphicon glyphicon-search"></span>
+			       Buscar
+			 </span>
+			 
+			 <span ng-show="consultaLoading">
+				 <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+				  Cargando... 
+			 </span>
+			  
+			  </button>
+			 
+		</div>
+    </div>
+    
+	<!-- Fecha de inicio del contrato -->
+
+	<div class="form-group row">
+		<label for="fechaDeInicioDelContrato" class="col-md-3 col-form-label">{{messages.fechaDeInicioDelContrato}}</label>
+		
+		<div class="col-md-4">
+			<p class="input-group">
+	    
+	      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="consulta.fechaDeInicioDelContrato"
+	       is-open="popupFecIniCont.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
+	       id="fechaDeInicioDelContrato" />
+	       
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecIniCont)"><i class="glyphicon glyphicon-calendar"></i></button>
+	      </span>
+	    </p>
+		</div>
+	</div>
+
+	<!-- Fecha de término del contrato -->
+
+	<div class="form-group row">
+		<label for="fechaTerminoDelContrato" class="col-md-3 col-form-label">{{messages.fechaTerminoDelContrato}}</label>
+		
+		<div class="col-md-4">
+		<p class="input-group">
+	    
+	      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="consulta.fechaTerminoDelContrato"
+	       is-open="popupFecTerCont.opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats"
+	       id="fechaTerminoDelContrato" />
+	       
+	      <span class="input-group-btn">
+	        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecTerCont)">
+	        	<i class="glyphicon glyphicon-calendar"></i>
+	        </button>
+	      </span>
+	    </p>
+		</div>
+	</div>
+	
+	<!-- Estado del contrato -->
+	
+	<div class="form-group row">
+		<label for="estado-contrato" class="col-md-3 col-form-label">{{messages.estadoContrato}}</label>
+		
+		<div class="col-md-4">
+			       
+			 <select ng-model="consulta.estadoContrato" id="estado-contrato"
+			  class="form-control">
+			 	<option value="">{{messages.selectElijaOpcion}}</option>
+			 	<option value="1">Activo</option>
+			 	<option value="0">Inactivo</option>
+			 </select>
+		</div>
+	</div>
+
+    <div class="form-group row">
+    	<div class="col-md-4">
+        	<button class="btn btn-warning" type="reset">{{messages.BTN_limpiar}}</button>  
+        	<button class="btn btn-primary" type="submit" ng-click="buscar()">{{messages.BTN_buscar}}</button>        	        
+    	</div>
+    	
+    	<div class="col-md-8 text-right">
+    		<button class="btn btn-default" type="button">{{messages.BTN_exportar}}</button> 
+    	</div>
+    </div>
+
+</form>
+
+
+<!--Tabla asociada-->
+
+<div class="row">
+	<div class="col-md-12">
+    <table class="table table-striped table-bordered table-responsive table-hover">
+        <thead>
+            <tr>
+                <th><small>{{messages.rutOPasaporte}}</small></th>
+                <th><small>{{messages.nombres}}</small></th>
+                <th><small>{{messages.apellidos}}</small></th>
+                <th><small>{{messages.tipoDeContrato}}</small></th>
+                <th><small>{{messages.fechaDeInicioDelContrato}}</small></th>
+                <th><small>{{messages.fechaTerminoDelContrato}}</small></th>
+                <th><small>{{messages.remuneracionBruta}}</small></th>
+                <th><small>{{messages.estadoContrato}}</small></th>
+                <th><small>{{messages.modificar}}</small></th>    
+                <th><small>{{messages.eliminar}}</small></th>                         
+            </tr>
+        </thead>
+          <tbody>
+              <tr ng-repeat="res in consulta.resultados">
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              	<td></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  </div>
+
+<br/><br/>
+  
+  

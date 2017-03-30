@@ -1,0 +1,69 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Modificar Jornada</h3>
+</div>
+<div class="modal-body" id="modal-body">
+    <div class="container-fluid" style=" overflow-x:scroll; width:100%;">
+        <table class="table table-bordered table-striped table-hover table-condensed" style="white-space: nowrap; width: 100%"  cellspacing="0">
+            <thead>
+                <tr style="background-color: #D3D3D3">
+                    <th><small>Rut o Pasaporte</small></th>
+                    <th><small>Nombres</small></th>
+                    <th><small>Apellidos</small></th>
+                    <th><small>Nombre Nave</small></th>
+                    <th><small>Nombre Lugar</small></th>
+                    <th><small>Fecha Inicio de Jornada*</small></th>
+                    <th><small>Hora Inicio de Jornada*</small></th>
+                    <th><small>Hora Inicio de Descanso</small></th>
+                    <th><small>Hora Término de Descanso</small></th>
+                    <th><small>Fecha Término de Jornada</small></th>
+                    <th><small>Hora Término de Jornada</small></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{registroModificar.rutPasaporteTrabajador}}</td>
+                    <td>{{registroModificar.nombresTrabajador}}</td>
+                    <td>{{registroModificar.apellidosTrabajador}}</td>
+                    <td>
+                        <select ng-model="registroModificar.idNave" ng-options="nav.id as nav.glosa for nav in naves" class="form-control" ng-disabled="registroModificar.idLugar"></select>
+                    </td>
+                    <td>
+                        <select ng-model="registroModificar.idLugar" ng-options="lug.id as lug.lugar for lug in lugares" class="form-control" ng-disabled="registroModificar.idNave"></select>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaInicioJornadaTrabajador" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" ng-disabled="true"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDataPickerInicio($index)" ng-disabled="true"><i class="glyphicon glyphicon-calendar" ></i></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div uib-timepicker ng-model="horaInicioJornadaTrabajador" show-meridian="false" show-spinners="false" ng-disabled="true"></div>
+                    </td>
+                    <td>
+                        <div uib-timepicker ng-model="horaInicioDescansoTrabajador" show-meridian="false" show-spinners="false"></div>
+                    </td>
+                    <td>
+                        <div uib-timepicker ng-model="horaTerminoDescansoTrabajador" show-meridian="false" show-spinners="false"></div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaTerminoJornadaTrabajador" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openDataPickerTermino($index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div uib-timepicker ng-model="horaTerminoJornadaTrabajador" show-meridian="false" show-spinners="false"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" type="button" ng-click="cancelar()">Cancelar</button>
+    <button class="btn btn-primary" type="button" ng-click="guardar()">Guardar</button>
+</div>

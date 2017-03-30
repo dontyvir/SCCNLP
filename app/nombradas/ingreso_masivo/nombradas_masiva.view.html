@@ -1,0 +1,25 @@
+<h3>{{messages.ingresoNombradaMasiva}}</h3>
+<br>
+<uib-tabset active="tabsActive">
+
+<uib-tab index="0" heading="{{messages.tabHeaderOneMasiva}}" disable="tabs[0].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'nombradas/ingreso_masivo/nombradas_masiva.view.tab1.html'">
+                </div>
+        </div>  
+</uib-tab>
+        
+<uib-tab index="1" heading="{{messages.tabHeaderTwoMasiva}}" disable="tabs[1].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'nombradas/nombradas_resolucion.view.tab2.html'">
+                </div>
+        </div>
+</uib-tab>
+
+</uib-tabset>
+
+
+
+    

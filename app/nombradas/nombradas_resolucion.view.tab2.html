@@ -2,13 +2,13 @@
     <br>
     <p>Se ha ingresado de forma correcta su Nombrada <b>ID: {{messages.idNombrada}}</b>, quedando en estado aporbada</p>
     <p>{{messages.messageResolucion}}</p>
-    <a class="btn btn-success" title="Export Table" ng-click="csv.generate()" ng-href="{{ csv.link() }}" download="ResolucionNombrada.csv">
+    <a class="btn btn-success" title="Export Table">
       {{messages.BTN_ExportarExcel}} <i class="glyphicon glyphicon-cloud-download"></i>
     </a>
 </div>
 <div class="container-fluid" style="overflow: auto;">
     <br>
-    <table ng-init='configPages()' class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px" export-csv="csv" 
+    <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap" cellspacing="0" style="width: 1200px" export-csv="csv" 
     separator=";" export-csv-ignore="ignore">
         <thead>
             <tr style="background-color: #D3D3D3">
@@ -41,11 +41,7 @@
             </tr>
         </tbody>
     </table>
-    <div class="btn-group pull-right">
-        <button type='button' class='btn btn-default' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
-        <button type='button' class='btn btn-default' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
-        <button type='button' class='btn btn-default' ng-disabled='currentPage >= tableDatosTrabajadores.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
-    </div>
+   
 </div>
 <br>
 <br>

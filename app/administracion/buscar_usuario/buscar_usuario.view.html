@@ -85,7 +85,7 @@
 
                             <div class="container-fluid">
                                 <label class="switch ">
-                                    <input type="checkbox" ng-click="changeVigencia(datosUsuario)" ng-checked="datosUsuario.VIGENCIA"  >
+                                    <input type="checkbox" ng-click="changeVigencia(datosUsuario,$index)" ng-checked="datosUsuario.VIGENCIA"  >
                                     <div class="slider round"></div>
                                 </label>
                             </div>
@@ -98,12 +98,9 @@
         <div class=" pull-right">
 
             <button type="button" ui-sref="main.composite" ng-click="cancel()" 
-                    class="btn btn-warning">{{messages.CANCELAR_BTN}}
+                    class="btn btn-warning">{{messages.SALIR_BTN}}
             </button>
-            <button type="submit" ng-disabled="getTableDatosUsuarios().length <= 0" ng-click="save()"
-                    class="btn btn-primary">{{messages.GUARDAR_BTN}}
-            </button>
-
+         
         </div>
     </div>
     </form>

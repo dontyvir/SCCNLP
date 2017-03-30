@@ -1,0 +1,30 @@
+<h3>{{messages.ingresoComiteParaditario}}</h3>
+<br>
+<uib-tabset active="tabsActive">
+
+<uib-tab index="0" heading="{{messages.tabHeaderOne}}" disable="tabs[0].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'comiteParitario/crear/comiteParitario_crear.view.tab1.html'">
+                </div>
+        </div>  
+</uib-tab>
+        
+<uib-tab index="1" heading="{{messages.tabHeaderTwo}}" disable="tabs[1].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'comiteParitario/crear/comiteParitario_crear.view.tab2.html'">
+                </div>
+        </div>
+</uib-tab>
+<uib-tab index="2" heading="{{messages.tabHeaderTree}}" disable="tabs[2].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'comiteParitario/crear/comiteParitario_crear.view.tab3.html'">
+                </div>
+        </div>
+</uib-tab>
+
+</uib-tabset>
+
+

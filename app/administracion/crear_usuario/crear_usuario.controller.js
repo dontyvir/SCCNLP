@@ -124,12 +124,18 @@ angular.module('sccnlp.crear_usuario')
                     return list;
                 };
 
+                var getRutBody = function (param) {
+                    var valor = String(param).replace('.', '');
+                    valor = valor.replace('-', '');
+                    return valor.slice(0, -1);
+                };
+
                 /**
                  * Function to add to the table the values returned from the Registro Civil Service
                  * @returns {undefined}
                  */
                 $scope.agregarUsuario = function () {
-                    if ($scope.USUARIO_RUT !== '' && !validateRut.validate($scope.USUARIO_RUT)) {
+                    if ($scope.USUARIO_RUT !== '' && validateRut.validate($scope.USUARIO_RUT)) {
 
                         var nuevo = RestClient.getDatosPersona($scope.USUARIO_RUT, '', function (data) {
                             var element = {USUARIO_RUT: data.rut + "-" + data.dv,
@@ -142,7 +148,16 @@ angular.module('sccnlp.crear_usuario')
                                 ID_PERSONA: data.id
                             };
 
-                            $scope.tablaUsuarios.push(element);
+                            RestClient.getConsultarUsuarios(session_data.id, getRutBody($scope.USUARIO_RUT), '', '', function (usuario) {
+                                if (usuario.length === 0)
+                                    $scope.tablaUsuarios.push(element);
+                                else
+                                    var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_USUARIO_EXISTENTE);
+                            }, function (usuario) {
+                                var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_REG_CIVIL);
+                            });
+
+
                         }, function (data) {
 
                             if (data.data === 'Persona no encontrada') {

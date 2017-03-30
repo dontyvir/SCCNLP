@@ -211,6 +211,8 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
  */
 module.controller('ModalShowMap', ['$scope', 'NgMap', '$uibModalInstance', 'store',
     function ($scope, NgMap, $uibModalInstance, store) {
+
+        console.log("entre");
         $scope.messagesModal = store.mensajes;  // conexión del servicio messages para Modal
         $scope.view = store.from;       // Store the information if is from select map or see map
         var address = store.puerto;             //  Puert to seek in google

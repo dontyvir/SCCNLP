@@ -1,0 +1,56 @@
+<div class="container-fluid col-lg-12">
+    <br>
+    <p>{{messages.messageRegistroJornada}}</p>
+    <a class="btn btn-success" title="Export Table" ng-click="getExcel()">
+        {{messages.BTN_exportar}} <i class="glyphicon glyphicon-cloud-download"></i>
+    </a>
+</div>
+<div class="container-fluid" style="overflow: auto;">
+    <br>
+    <table  ng-init='configPages()' class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0"  ng-enabled="verTablaTrabajador">
+        <thead>
+            <tr style="background-color: #D3D3D3">
+                <th><small>Rut o Pasaporte</small></th>
+                <th><small>Nombres</small></th>
+                <th><small>Apellidos</small></th>
+                <th><small>Nave</small></th>
+                <th><small>Lugar</small></th>
+                <th><small>Fecha Inicio de Jornada*</small></th>
+                <th><small>Hora Inicio de Jornada*</small></th>
+                <th><small>Hora Inicio de Descanso</small></th>
+                <th><small>Hora Término de Descanso</small></th>
+                <th><small>Fecha Término de Jornada</small></th>
+                <th><small>Hora Término de Jornada</small></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="datosTrabajador in tableDatosRegistro | startFromGrid: currentPage * pageSize | limitTo: pageSize">
+                <td>{{datosTrabajador.rutPasaporteTrabajador}}</td>
+                <td>{{datosTrabajador.nombresTrabajador}}</td>
+                <td>{{datosTrabajador.apellidosTrabajador}}</td>
+                <td>{{datosTrabajador.nave}}</td>
+                <td>{{datosTrabajador.lugar}}</td>
+                <td>{{datosTrabajador.FechaInicioJornadaTrabajador}}</td>
+                <td>{{datosTrabajador.HoraInicioJornadaTrabajador}}</td>
+                <td>{{datosTrabajador.HoraInicioDescansoTrabajador}}</td>
+                <td>{{datosTrabajador.HoraTerminoDescansoTrabajador}}</td>
+                <td>{{datosTrabajador.FechaTerminoJornadaTrabajador}}</td>
+                <td>{{datosTrabajador.HoraTerminoJornadaTrabajador}}</td>
+            </tr>
+        </tbody>
+    </table>
+     <div class="btn-group pull-right">
+        <button type='button' class='btn btn-default' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
+        <button type='button' class='btn btn-default' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
+        <button type='button' class='btn btn-default' ng-disabled='currentPage >= tableDatosTrabajadores.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
+    </div>
+</div>
+<br>
+<br>
+<div class="container-fluid col-lg-6 pull-right">
+    <div class="pull-right">
+        <button class="btn btn-primary" id="BTN_continuar-next2" data-toggle="tab" href ui-sref="main.composite">{{messages.BTN_salir}}</button>
+    </div>
+</div>
+<br>
+<br>

@@ -2,21 +2,11 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.factory('RegistrarContrato', ['$resource', '$filter',
+.factory('RegistrarContrato', ['$resource', '$filter', 'RestClientRelacionLaboral',
 	
-    function($resource, $filter) {
+    function($resource, $filter, RestClientRelacionLaboral) {
 
 	var wrapper = {};
-	
-	wrapper.registrarResource = $resource('http://7.212.100.165/sccnlp/api/Relacionlab/guardarRelacionLaboral',{},{
-		save : {
-	        method: 'POST',
-	        isArray : true,
-	        headers: {
-	            'Content-Type': 'application/json; charset=utf-8'
-	        }
-		}
-	});
 
 	wrapper.registrar = function(userId, trabajador, empleador, contrato, _callback_fn){
 		
@@ -149,7 +139,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		
 		var outFormat = [_contrato];
 		
-		return wrapper.registrarResource.save({},outFormat, _callback_fn, function(error){
+		return RestClientRelacionLaboral.registrarRelacionLaboral(outFormat, _callback_fn, function(error){
 			console.log(error);
 		});
 	}

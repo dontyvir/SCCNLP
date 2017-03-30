@@ -52,7 +52,7 @@ angular.module('sccnlp.common')
                             return dvEsperado;
                         }
                     };
-                    return Fn.rut(p_rut);
+                    return true//Fn.rut(p_rut);
                 };
 
 

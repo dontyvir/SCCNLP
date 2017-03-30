@@ -1,0 +1,134 @@
+<form name="formTab2">
+	<h4>{{messages.datosEmpresa}}</h4>
+	<hr/>
+	<div class="form-group row">
+		<label for="direccionGoogleMaps" class="col-md-3 col-form-label">{{messages.rutEmpresa}}</label>
+		
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{rutEmpresa}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.nombreRazon}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{nombreRazon}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.rutRepresentante}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{rutRepresentante}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.nombreRepresentanteLegal}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{nombreRepresentanteLegal}}</label>
+		</div>
+	</div>
+	<br>
+	<h4>{{messages.datosComite}}</h4>
+	<hr/>
+	<div class="form-group row">
+		<label for="direccionGoogleMaps" class="col-md-3 col-form-label">{{messages.direccionFaena}}</label>
+		
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{direccionFaena}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.comuna}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{comuna}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.fechaActoEleccionario}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{fechaActoEleccionario}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.tipoComite}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{tipoComite}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.cantidadTrabajadores}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{cantidadTrabajadores}}</label>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="control-label col-md-3">{{messages.asumeFunciones}}</label>
+		<div class="col-md-4">
+			<label class="control-label col-xs-4">{{asumeFunciones ? 'SI' : 'NO'}}</label>
+		</div>
+	</div>
+	<br>
+	<h4>{{messages.datosRepresentateEmpresa}}</h4>
+	<hr/>
+	<div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" >
+                <thead>
+                    <tr style="background-color: #D3D3D3">
+                        <th><small>{{messages.cargo}}</small></th>
+                        <th><small>{{messages.tipo}}</small></th>
+                        <th><small>{{messages.rut}}</small></th>
+                        <th><small>{{messages.nombres}}</small></th>
+                        <th><small>{{messages.apellidoPaterno}}</small></th>
+                        <th><small>{{messages.apellidoMaterno}}</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat = "emp in detallesEmpresa">
+                        <td>{{emp.cargo}}</td>
+                        <td>{{emp.tipo}}</td>
+                        <td>{{emp.rut}}</td>
+                        <td>{{emp.nombres}}</td>
+                        <td>{{emp.apellidoPaterno}}</td>
+                        <td>{{emp.apellidoMaterno}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+	<h4>{{messages.datosRepresentateTrabajadores}}</h4>
+	<hr/>
+	<div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" >
+                <thead>
+                    <tr style="background-color: #D3D3D3">
+                        <th><small>{{messages.cargo}}</small></th>
+                        <th><small>{{messages.tipo}}</small></th>
+                        <th><small>{{messages.posicionVotacion}}</small></th>
+                        <th><small>{{messages.aforado}}</small></th>
+                        <th><small>{{messages.rut}}</small></th>
+                        <th><small>{{messages.nombres}}</small></th>
+                        <th><small>{{messages.apellidoPaterno}}</small></th>
+                        <th><small>{{messages.apellidoMaterno}}</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="trab in detallesTrabajador">
+                        <td>{{trab.cargo}}</td>
+                        <td>{{trab.tipo}}</td>
+                        <td>{{trab.posicion}}</td>
+                        <td>{{trab.aforado ? 'SI' : 'NO'}}</td>
+                        <td>{{trab.rut}}</td>
+                        <td>{{trab.nombre}}</td>
+                        <td>{{trab.apellidoPaterno}}</td>
+                        <td>{{trab.apellidoMaterno}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="float:right;">
+        <button class="btn btn-danger" type="button" ng-click="volverConsultar(0)">{{messages.BTN_volver}}</button>
+    </div>
+
+</form>

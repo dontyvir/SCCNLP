@@ -2,9 +2,9 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient', 'sessionService','RegistrarContrato',
+.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient', 'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
 	
-	function($scope, ingIndivMessages, $uibModal, RestClient, sessionService,RegistrarContrato) {
+	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,sessionService,RegistrarContrato) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -445,10 +445,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	
 	    	 var dat = RestClient.getDatosUsuario(idUsuario, function(){
 
-	    		if(dat.pasaporte) 
-	    			$scope.empleador.rutUsuarioQueRegistra = dat.pasaporte;
-	    		else
+	    		if(dat.rut) 
 	    			$scope.empleador.rutUsuarioQueRegistra = dat.rut+"-"+dat.dv;
+	    		else
+	    			$scope.empleador.rutUsuarioQueRegistra = dat.pasaporte;
 	    		
 		        $scope.empleador.nombreCompletoUsuarioQueRegistra = dat.nombres+" "+dat.apellidoPaterno+" "+dat.apellidoMaterno;
 	    	 });
@@ -489,11 +489,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	$scope.estadoCivil = RestClient.getEstadoCivil();
 	        $scope.AFP = RestClient.getAFP();
 	        $scope.ISAPRE = RestClient.getIsapre();
-	        $scope.tipoContrato = RestClient.getTipoContrato();
-	        $scope.labores = RestClient.getLabor();
-	        $scope.funciones = RestClient.getFuncion();
-	        $scope.tiposJornada = RestClient.getTipoJornada();
-	        $scope.modalidadDePago = RestClient.getModalidadPago();
+	        $scope.tipoContrato = RestClientRelacionLaboral.getTipoContrato();
+	        $scope.labores = RestClientRelacionLaboral.getLabor();
+	        $scope.funciones = RestClientRelacionLaboral.getFuncion();
+	        $scope.tiposJornada = RestClientRelacionLaboral.getTipoJornada();
+	        $scope.modalidadDePago = RestClientRelacionLaboral.getModalidadPago();
 	        $scope.nacionalidades = RestClient.getNacionalidad();
 
 	        /**

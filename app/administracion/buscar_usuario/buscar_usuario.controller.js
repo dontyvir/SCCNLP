@@ -9,7 +9,7 @@ angular.module('sccnlp.buscar_usuario')
                 $scope.USUARIO_RUT = '';
                 $scope.USUARIO_NOMBRES = '';
                 $scope.VIGENCIA_LISTA = {//  Data puerto
-                    nombre: ['','Activo', 'Inactivo'],
+                    nombre: ['', 'Activo', 'Inactivo'],
                     seleccionado: ''
                 };
 
@@ -22,10 +22,10 @@ angular.module('sccnlp.buscar_usuario')
 
                 $scope.confirmEliminar = false;
 
-                $scope.cancel = function (){
+                $scope.cancel = function () {
                     $scope.tablaUsuarios = [];
                 };
-                
+
                 var getRutBody = function (param) {
                     var valor = String(param).replace('.', '');
                     valor = valor.replace('-', '');
@@ -37,7 +37,8 @@ angular.module('sccnlp.buscar_usuario')
                         return true;
                     else if (param === 'Inactivo')
                         return false;
-                    else return '';
+                    else
+                        return '';
                 };
 
                 $scope.buscar = function () {
@@ -106,61 +107,61 @@ angular.module('sccnlp.buscar_usuario')
                         }
                     } else {
                         var nuevo = RestClient.getConsultarUsuarios(session_data.id, getRutBody($scope.USUARIO_RUT), $scope.USUARIO_NOMBRES, getVigencia($scope.VIGENCIA_LISTA.seleccionado), function (data) {
-                                if (data.length === 0) {
-                                    var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_PERSONA_NO_ENCONTRADA);
-                                } else {
-                                    for (var item = 0; data.length > item; item++) {
+                            if (data.length === 0) {
+                                var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_PERSONA_NO_ENCONTRADA);
+                            } else {
+                                for (var item = 0; data.length > item; item++) {
 
-                                        var modulosDeServicio = angular.copy($scope.modulo);
-                                        var puertosDeServicio = angular.copy($scope.puerto);
-                                        //get modulos seleccionados
+                                    var modulosDeServicio = angular.copy($scope.modulo);
+                                    var puertosDeServicio = angular.copy($scope.puerto);
+                                    //get modulos seleccionados
 
 
-                                        for (var modulo in data[item].modulos) {
-                                            if (data[item].modulos[modulo].activo === true) {
-                                                for (var mod in modulosDeServicio) {
-                                                    if (modulosDeServicio[mod].id === data[item].modulos[modulo].id) {
-                                                        modulosDeServicio[mod].selected = true;
-                                                    }
+                                    for (var modulo in data[item].modulos) {
+                                        if (data[item].modulos[modulo].activo === true) {
+                                            for (var mod in modulosDeServicio) {
+                                                if (modulosDeServicio[mod].id === data[item].modulos[modulo].id) {
+                                                    modulosDeServicio[mod].selected = true;
                                                 }
                                             }
                                         }
-
-                                        //get puertos seleccionados
-
-
-                                        for (var puerto in data[item].puertos) {
-                                            if (data[item].puertos[puerto].activo === true) {
-                                                for (var mod in puertosDeServicio) {
-                                                    if (puertosDeServicio[mod].id === data[item].puertos[puerto].id) {
-                                                        puertosDeServicio[mod].selected = true;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-
-                                        var element = {USUARIO_RUT: data[item].rut,
-                                            USUARIO_NOMBRES: data[item].nombres,
-                                            USUARIO_APELLIDOS: data[item].apellidos,
-                                            USUARIO_MODULOS: modulosDeServicio,
-                                            USUARIO_PUERTOS: puertosDeServicio,
-                                            MODULOS_COMPLETADOS: '',
-                                            PUERTOS_COMPLETADOS: '',
-                                            VIGENCIA: data[item].activo,
-                                            ID_USUARIO: data[item].idUsuario,
-                                            ID_EMPLEADO: data[item].idEmpleado,
-                                            ID_EMPRESA: data[item].idEmpresa,
-                                            ID_PERSONA: data[item].idPersona
-                                        };
-
-                                        $scope.tablaUsuarios.push(element);
                                     }
-                                }
-                            }, function (data) {
 
-                                var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE);
-                            });
+                                    //get puertos seleccionados
+
+
+                                    for (var puerto in data[item].puertos) {
+                                        if (data[item].puertos[puerto].activo === true) {
+                                            for (var mod in puertosDeServicio) {
+                                                if (puertosDeServicio[mod].id === data[item].puertos[puerto].id) {
+                                                    puertosDeServicio[mod].selected = true;
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                    var element = {USUARIO_RUT: data[item].rut,
+                                        USUARIO_NOMBRES: data[item].nombres,
+                                        USUARIO_APELLIDOS: data[item].apellidos,
+                                        USUARIO_MODULOS: modulosDeServicio,
+                                        USUARIO_PUERTOS: puertosDeServicio,
+                                        MODULOS_COMPLETADOS: '',
+                                        PUERTOS_COMPLETADOS: '',
+                                        VIGENCIA: data[item].activo,
+                                        ID_USUARIO: data[item].idUsuario,
+                                        ID_EMPLEADO: data[item].idEmpleado,
+                                        ID_EMPRESA: data[item].idEmpresa,
+                                        ID_PERSONA: data[item].idPersona
+                                    };
+
+                                    $scope.tablaUsuarios.push(element);
+                                }
+                            }
+                        }, function (data) {
+
+                            var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE);
+                        });
                     }
 
                 };
@@ -170,37 +171,37 @@ angular.module('sccnlp.buscar_usuario')
 
                 };
 
-                var getListToUpdate = function(param){
+                var getListToUpdate = function (param) {
                     var table = [];
                     for (var item in param) {
-                        
+
                         //  get Modulos
                         var newModulos = [];
-                        for (var modulos in param[item].USUARIO_MODULOS){
-                            if(param[item].USUARIO_MODULOS[modulos].selected === true){
-                                var moduloInput = {id:param[item].USUARIO_MODULOS[modulos].id, glosa:param[item].USUARIO_MODULOS[modulos].glosa, activo:1};
+                        for (var modulos in param[item].USUARIO_MODULOS) {
+                            if (param[item].USUARIO_MODULOS[modulos].selected === true) {
+                                var moduloInput = {id: param[item].USUARIO_MODULOS[modulos].id, glosa: param[item].USUARIO_MODULOS[modulos].glosa, activo: 1};
                                 newModulos.push(moduloInput);
                             }
                         }
-                        
-                        
+
+
                         //  get Puertos
                         var newPuertos = [];
-                        for (var puertos in param[item].USUARIO_PUERTOS){
-                            if(param[item].USUARIO_PUERTOS[puertos].selected === true){
-                                var puertoInput = {id:param[item].USUARIO_PUERTOS[puertos].id, glosa:param[item].USUARIO_PUERTOS[puertos].glosa, activo:1};
+                        for (var puertos in param[item].USUARIO_PUERTOS) {
+                            if (param[item].USUARIO_PUERTOS[puertos].selected === true) {
+                                var puertoInput = {id: param[item].USUARIO_PUERTOS[puertos].id, glosa: param[item].USUARIO_PUERTOS[puertos].glosa, activo: 1};
                                 newPuertos.push(puertoInput);
                             }
                         }
-                        
-                        var element = {idUsuario: param[item].ID_USUARIO, 
-                                       idEmpleado:  param[item].ID_EMPLEADO,
-                                   idEmpresa: param[item].ID_EMPRESA,
-                               idPersona: param[item].ID_PERSONA,
-                               nombres: null,
-                               modulos: newModulos,
-                               puertos: newPuertos,
-                               activo:param[item].VIGENCIA
+
+                        var element = {idUsuario: param[item].ID_USUARIO,
+                            idEmpleado: param[item].ID_EMPLEADO,
+                            idEmpresa: param[item].ID_EMPRESA,
+                            idPersona: param[item].ID_PERSONA,
+                            nombres: null,
+                            modulos: newModulos,
+                            puertos: newPuertos,
+                            activo: param[item].VIGENCIA
                         };
                         table.push(element);
                     }
@@ -208,14 +209,21 @@ angular.module('sccnlp.buscar_usuario')
                 };
 
 
-                $scope.save = function(){
-                  console.log($scope.tablaUsuarios);  
-                  
-                  var nuevo = RestClient.modifyUser(getListToUpdate($scope.tablaUsuarios), function(data){
-                      var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_RUT);
-                  },function(data){
-                      var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE);
-                  });
+                $scope.save = function (index, lugar) {
+                    console.log($scope.tablaUsuarios);
+                    var element = $scope.tablaUsuarios[index];
+                    var table = [];
+                    table.push(element);
+                    var nuevo = RestClient.modifyUser(getListToUpdate(table), function (data) {
+                        console.log('Guardado Exitosamente');
+                    }, function (data) {
+                        if (lugar === 'puerto')
+                            var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE_PUERTO);
+                        if (lugar === 'modulo')
+                            var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE_MODULO);
+                        if (lugar === 'vigencia')
+                            var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_NO_SERVICE_VIGENCIA);
+                    });
                 };
 
 
@@ -248,6 +256,8 @@ angular.module('sccnlp.buscar_usuario')
                         for (var item in result.USUARIO_MODULOS) {
                             $scope.tablaUsuarios[p_index].USUARIO_MODULOS[item].selected = result.USUARIO_MODULOS[item].selected;
                         }
+                        
+                        $scope.save(p_index,'modulo')
 
                     });
                 };
@@ -274,7 +284,7 @@ angular.module('sccnlp.buscar_usuario')
                         for (var item in result.USUARIO_PUERTOS) {
                             $scope.tablaUsuarios[p_index].USUARIO_PUERTOS[item].selected = result.USUARIO_PUERTOS[item].selected;
                         }
-
+                        $scope.save(p_index,'puerto');
                     });
                 };
                 /**
@@ -334,8 +344,9 @@ angular.module('sccnlp.buscar_usuario')
                     });
                 };
 
-                $scope.changeVigencia = function (element) {
+                $scope.changeVigencia = function (element,index) {
                     element.VIGENCIA = !element.VIGENCIA;
+                    $scope.save(index,'vigencia');
                 };
 
                 /**
@@ -423,8 +434,18 @@ angular.module('sccnlp.buscar_usuario').controller('modalShowModulos', ['$scope'
          * Accept the new values 
          * @returns {undefined}
          */
+        
+        $scope.getActiveModules = function(){
+            $scope.hasMinimun = false;
+            for (var item in  $scope.elemento.USUARIO_MODULOS) {
+                if ($scope.elemento.USUARIO_MODULOS[item].selected === true) {
+                    $scope.hasMinimun = true;
+                }
+            }return $scope.hasMinimun;
+        };
+        
         $scope.ok = function () {
-            $uibModalInstance.close($scope.elemento);
+            $uibModalInstance.close($scope.elemento); 
         };
     }]);
 angular.module('sccnlp.buscar_usuario').controller('modalShowPuertos', ['$scope', '$uibModalInstance', 'store',
@@ -446,12 +467,23 @@ angular.module('sccnlp.buscar_usuario').controller('modalShowPuertos', ['$scope'
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
         };
+        
+        $scope.getActivePorts = function(){
+            $scope.hasMinimun = false;
+            for (var item in  $scope.elemento.USUARIO_PUERTOS) {
+                if ($scope.elemento.USUARIO_PUERTOS[item].selected === true) {
+                    $scope.hasMinimun = true;
+                }
+            }
+            return  $scope.hasMinimun;
+        };
+        
         /**
          * Accept the new values 
          * @returns {undefined}
          */
-        $scope.ok = function () {
-            $uibModalInstance.close($scope.elemento);
+        $scope.ok = function () {            
+                $uibModalInstance.close($scope.elemento);            
         };
     }]);
 

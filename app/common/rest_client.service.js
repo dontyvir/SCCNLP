@@ -13,81 +13,20 @@ angular.module('sccnlp.common')
 	        headers: {
 	            'Content-Type': 'application/x-www-form-urlencoded'
 	        },
-	   transformRequest : function(data){
+	        transformRequest : function(data){
 	        	return $httpParamSerializer(data);
-	        },
-       save_Array_JSON : {
+	        }
+		},
+        save_Array_JSON : {
                 method: 'POST',
                 isArray: true,
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
-            }
-		}
+        }
 	});
 
-	wrapper.getIsapre = function() {
-		
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getIsapre'});
-	}
-	
-	wrapper.getAFP = function(){ 
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getAFP'});		
-	}
-	
-	wrapper.getNacionalidad = function(){
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getNacionalidad'});
-		
-	}
-	
-	wrapper.getFuncion = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getFuncion'});
-	}
-	
-	wrapper.getDatosEmpresa = function(_rut, _callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut},{}, _callback_fn);
-		
-	}
-	
-	wrapper.getDatosPersona = function(_rut, _pasaporte, _callback_fn) {
-		
-		if(!_pasaporte)
-			_pasaporte = 0;
-		
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_pasaporte},{}, _callback_fn);		
-	}
-	
-	wrapper.getLabor = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getLabor'});
-	}
-	
-	wrapper.getTipoContrato = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTipoContrato'});
-	}
-	
-	wrapper.getEstadoCivil = function(){
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'});
-	}
-	
-	wrapper.getDatosUsuario = function(_id_usuario, _callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosUsuario/'+_id_usuario},{}, _callback_fn);
-	}
-	
-	wrapper.getAcuerdoDescanso = function(_rut, _dv){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getAcuerdoDescanso', rutSindicato : _rut, dvSindicato: _dv});
-	}
-	
-	wrapper.getTurno = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTurno'});
-	}
-	
-	wrapper.getDatosRepresentante = function(_rut, _dv){
-		return wrapper.baseResource.query({serviceName : 'Administracion/getDatosRepresentante/'+_rut+'/'+_dv});
-	}
-	
-	wrapper.getTipoJornada = function() {
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTipoJornada'});		
-	}
+	/** autenticación login empresa */
 	
     wrapper.authEmpresa = function (_username, _password, _callback_fn, _callback_error) {
 
@@ -99,68 +38,89 @@ angular.module('sccnlp.common')
 
         }, _callback_fn, _callback_error);
     }
+	
+	/** Clientes Mantenedor **/
+	
+	wrapper.getIsapre = function(_callback_fn,_callback_error) {
+		
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getIsapre'},{},_callback_fn,_callback_error);
+	}
+	
+	wrapper.getAFP = function(_callback_fn,_callback_error){ 
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getAFP'},{},_callback_fn,_callback_error);		
+	}
 
-	wrapper.getDatosPersona = function(_rut, _pasaporte, _callback_fn) {
+	wrapper.getNave = function() {
+		
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getNave'});
+	}
+	wrapper.getComunasByIdRegion = function(id_region, _callback_fn) {
+		
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getComunasByIdRegion/'+id_region});
+	}
+	
+	wrapper.getRegion = function(){
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getRegion'});
+		
+	}
+	wrapper.getNacionalidad = function(_callback_fn,_callback_error){
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getNacionalidad'},{},_callback_fn,_callback_error);
+	}
+	wrapper.getEstado = function(){
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstado'});
+	}
+	
+    wrapper.getPuerto = function (_callback_fn, _callback_error) {
+        return wrapper.baseResource.query({serviceName: 'Mantenedor/getPuerto'}, {}, _callback_fn, _callback_error);
+    }
+    
+	wrapper.getEstadoCivil = function(_callback_fn,_callback_error){
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'},{},_callback_fn,_callback_error);
+	}
+
+	wrapper.getDatosEmpresa = function(_rut, _callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut},{}, _callback_fn);
+		
+	}
+	
+	wrapper.getDatosPersona = function(_rut, _dv, _pasaporte, _callback_fn, _callback_error) {
 		
 		if(!_pasaporte)
 			_pasaporte = 0;
+
+		if(!_rut)
+			_rut = {};
+
+		if(!_dv)
+			_dv = {};
 		
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_pasaporte},{}, _callback_fn);		
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_dv+'/'+_pasaporte},{}, _callback_fn, _callback_error);		
 	}
+
+	/** Clientes Administración **/
 	
-	wrapper.getLabor = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getLabor'});
-	}
-	
-	wrapper.getTipoContrato = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTipoContrato'});
-	}
-	
-	wrapper.getEstadoCivil = function(){
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'});
-	}
-	
+    
 	wrapper.getDatosUsuario = function(_id_usuario, _callback_fn){
 		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosUsuario/'+_id_usuario},{}, _callback_fn);
-	}
-	
-	wrapper.getAcuerdoDescanso = function(_rut, _dv){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getAcuerdoDescanso', rutSindicato : _rut, dvSindicato: _dv});
-	}
-	
-	wrapper.getTurno = function(){
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTurno'});
 	}
 	
 	wrapper.getDatosRepresentante = function(_rut, _dv){
 		return wrapper.baseResource.query({serviceName : 'Administracion/getDatosRepresentante/'+_rut+'/'+_dv});
 	}
-	
-	wrapper.getTipoJornada = function() {
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getTipoJornada'});		
+    
+	wrapper.getLocacion = function(_rutEmpresa,_callback_fn,_callback_error) {
+		return wrapper.baseResource.query({serviceName : 'Administracion/getLocacion/'+_rutEmpresa},{},_callback_fn,_callback_error);		
 	}
-
-
-	wrapper.getLocacion = function(_rutEmpresa, _callback_fn) {
-		return wrapper.baseResource.query({serviceName : 'Administracion/getLocacion/'+_rutEmpresa});		
-	}
-	
-	wrapper.getModalidadPago = function() {
-		return wrapper.baseResource.query({serviceName : 'RelacionLab/getModalidadPago'});	
-	}
-	
-	wrapper.getTerminoVigencia = function(_idEmpresa, _idPuerto, _callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getVigencia/'+_idEmpresa+'/'+_idPuerto},{},_callback_fn);			
+    
+	wrapper.getTerminoVigencia = function(_idEmpresa, _idPuerto, _callback_fn,_callback_error){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getVigencia/'+_idEmpresa+'/'+_idPuerto},{},
+				                         _callback_fn,_callback_error);			
 	}
 
     wrapper.getModulo = function (_callback_fn, _callback_error) {
         return wrapper.baseResource.query({serviceName: 'Administracion/getModulo'}, {}, _callback_fn, _callback_error);
     };
-
-    wrapper.getPuerto = function (_callback_fn, _callback_error) {
-        return wrapper.baseResource.query({serviceName: 'Mantenedor/getPuerto'}, {}, _callback_fn, _callback_error);
-    };
-
+    
     wrapper.saveNewUser = function (_userlist, _callback_fn, _callback_error) {
 
         return wrapper.baseResource.save_Array_JSON({serviceName: 'Administracion/guardarUsuarios'}, _userlist, _callback_fn, _callback_error);
@@ -183,4 +143,3 @@ angular.module('sccnlp.common')
 	return wrapper;
 	
 }]);
-

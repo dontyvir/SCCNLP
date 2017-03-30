@@ -1,4 +1,4 @@
-angular.module('sccnlp.relacionLaboral.consulta',[ 'ui.router', 'sccnlp.common', 'sccnlp.session' ])
+angular.module('sccnlp.relacionLaboral.consulta',[ 'ui.router', 'sccnlp.common', 'sccnlp.session','sccnlp.relacionLaboral' ])
 
 .config([ '$stateProvider', function($stateProvider) {
 

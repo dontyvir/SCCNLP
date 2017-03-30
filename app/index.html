@@ -28,6 +28,7 @@
         <script src="common/common.module.js"></script>
         <script src="common/rest_client.service.js"></script>    
         <script src="common/validate_rut_service.js"></script>
+        <script src="common/rest_client_relacion_laboral.js"></script>
         
         <script src="session/session.module.js"></script>
         <script src="session/session.service.js"></script>
@@ -48,6 +49,9 @@
         
         <!-- Relación Laboral -->
         
+	    <script src="relacion_laboral/relacion_laboral.module.js"></script>
+	    <script src="relacion_laboral/relacion_laboral_trabajador.model.js"></script>        
+        
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.module.js"></script>
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.messages.js"></script>
 	    <script src="relacion_laboral/ingreso_individual/relacion_laboral_individual.controller.js"></script>
@@ -67,14 +71,34 @@
 	    <!-- Nombradas -->
 	    
 	    <script src="nombradas/nombradas.module.js"></script>
-	    <script src="nombradas/nombradasIndividual.controller.js"></script>
-	    <script src="nombradas/nombradasMasiva.controller.js"></script>
-	    <script src="nombradas/nombradasModificar.controller.js"></script>
-	    <script src="nombradas/nombradasConsultar.controller.js"></script>
-	    <script src="nombradas/nombradas.message.js"></script>
+        <script src="nombradas/ingreso_individual/nombradas_individual.service.js"></script>
+        <script src="nombradas/ingreso_individual/nombradasIndividual.controller.js"></script>
+        <script src="nombradas/ingreso_masivo/nombradasMasiva.controller.js"></script>
+        <script src="nombradas/modificar/nombradasModificar.controller.js"></script>
+        <script src="nombradas/consulta/nombradasConsultar.controller.js"></script>
+        <script src="nombradas/nombradas.message.js"></script>
+
+        <script src="jornadas/jornadas.module.js"></script>
+        <script src="jornadas/ingreso_individual/jornadasIndividual.controller.js"></script>
+        <script src="jornadas/ingreso_individual/jornadas_individual.service.js"></script>
+        <script src="jornadas/ingreso_masivo/jornadasMasiva.controller.js"></script>
+        <script src="jornadas/ingreso_masivo/jornadas_masiva.service.js"></script>
+        <script src="jornadas/consulta/jornadasConsulta.controller.js"></script>
+        <script src="jornadas/consulta/jornadas_consultar.service.js"></script>
+        <script src="jornadas/jornadas.messages.js"></script>
+
+        <script src="comiteParitario/comiteParitario.module.js" ></script>
+        <script src="comiteParitario/crear/comiteParitario_crear.service.js" ></script>
+        <script src="comiteParitario/crear/comiteParitario_crear.controller.js"></script>
+        <script src="comiteParitario/crear/comiteParitario_crear.messages.js"></script>
+        <script src="comiteParitario/consultar/comiteParitario_consultar.service.js" ></script>
+        <script src="comiteParitario/consultar/comiteParitario_consultar.controller.js"></script>
+        <script src="comiteParitario/consultar/comiteParitario_consultar.messages.js"></script>
+        <script src="comiteParitario/modificar/comiteParitario_modificar.service.js" ></script>
+        <script src="comiteParitario/modificar/comiteParitario_modificar.controller.js"></script>
+        <script src="comiteParitario/modificar/comiteParitario_modificar.messages.js"></script>
 
 		<!-- Administración -->
-
         <script src="administracion/clave_empresa/clave_empresa.rest.service.js"></script>
         <script src="administracion/clave_empresa/clave_empresa.module.js"></script>
         <script src="administracion/clave_empresa/clave_empresa.controller.js"></script>    

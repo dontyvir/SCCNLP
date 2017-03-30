@@ -9,7 +9,6 @@ angular.module('sccnlp.nombradas')
         ingresoNombradaIndividual : "Ingreso de Nombrada Individual",
         ingresoNombradaMasiva : "Ingreso de Nombrada Masiva",
         modificarNombrada : "Modificar Nombrada",
-        // Labels Tab 1.
         tabHeaderOne: "Paso 1: Ingreso de Nombrada",
         tabHeaderTwo: "Paso 2: Resolucion de Nombrada",
         tabHeaderOneMasiva: "Paso 1 de 2: Datos de Nombrada",
@@ -22,6 +21,7 @@ angular.module('sccnlp.nombradas')
         nave: "Nave",
         sitio: "Sitio",
         lugar: "Lugar",
+        posicion : "Posición",
         trabajador: "Trabajador",
         rut: "Rut",
         nombre: "Nombre",
@@ -31,7 +31,6 @@ angular.module('sccnlp.nombradas')
         messageValidate : "Este campo no puede estar en vacio",
         
         // Labels Tab 2
-
         messageResolucion : "A continuación, puede revisar la resolución de la Autoridad Maritima de acuerdo a los trabajadores incluido en la Nombrada.",
         messageCamposObligatorios: "Este campo no puede quedar en vacio",
 
@@ -48,7 +47,6 @@ angular.module('sccnlp.nombradas')
         messageModalMasivaConexionMaritima : "En este momento no se tiene enlace de comunicación con la autoridad marítima. Por favor, vuelva a intentarlo más tarde.",
 
         // Consulta de Nombradas
-
         consultaNombrada : "Consulta Nombrada",
         idNombrada : "ID Nombrada",
         labor : "Labor",

@@ -42,52 +42,49 @@
                 
                 </li>
 
-			<li uib-dropdown class="dropdown" permission="['Nombradas']">
-				<a href id="nombradas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-					 {{messages.NOMBRADAS_DROPDOWN}}<span class="caret"></span>
-				</a>
-				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="nombradas">
-					<li>
-						<a href ui-sref="main.composite">
-						  <i class="glyphicon glyphicon-plus"></i>
-						  {{messages.NOMBRADAS_INGRESAR}}
-						</a>
-					</li>
-					
-					<li>
-						<a href ui-sref="main.composite.nombradas_individual">
-						<i class="glyphicon glyphicon-plus"></i> 
-								{{messages.NOMBRADAS_INDIVIDUAL}}
-						</a>
-					</li>
-					<li>
-						<a href ui-sref="main.composite.nombradas_masiva">
-						<i class="glyphicon glyphicon-plus-sign"></i>
-								{{messages.NOMBRADAS_MASIVA}}
-						</a>
-					</li>
-					
-					<li>
-						<a href ui-sref="main.composite.nombradas_consultar">
-						<i class="glyphicon glyphicon-search"></i> 
-						 {{messages.NOMBRADAS_CONSULTAR}}
-						</a>
-					</li>
-
-				</ul>
-
-			</li>
-
-			<li uib-dropdown class="dropdown" permission="['Jornadas']">
-				<a href id="jornadas" class="dropdown-toggle" data-toggle="dropdown" uib-dropdown-toggle>
-					{{messages.JORNADAS_DROPDOWN}} <span class="caret"></span>
-				</a>
+			<li class="dropdown" uib-dropdown="">
+				<a href id="nombradas" data-toggle="dropdown" uib-dropdown-toggle> {{messages.NOMBRADAS_DROPDOWN}}<span class="caret"></span></a>
 				
-				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="jornadas">
+				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="nombradas">
+					<li class="dropdown-header">{{messages.NOMBRADAS_INGRESAR}}</li>
+					<li><a ui-sref="main.composite.nombradas_individual">
+						<i class="glyphicon glyphicon-plus"></i>
+						{{messages.NOMBRADAS_INDIVIDUAL}}
+					</a>
+					</li>
 					<li>
-						<a ui-sref="main.composite"><i class="glyphicon glyphicon-plus"></i>
-							{{messages.JORNADAS_INGRESAR}}
+						<a ui-sref="main.composite.nombradas_masiva">
+							<i class="glyphicon glyphicon-cloud-upload"></i>
+							{{messages.NOMBRADAS_MASIVA}}
 						</a>
+					</li>
+					<li class="dropdown-header">{{messages.NOMBRADAS_CONSULTAR}}</li>
+					<li>
+						<a ui-sref="main.composite.nombradas_consultar"><i class="glyphicon glyphicon-search"></i>
+						{{messages.NOMBRADAS_CONSULTAR}}</a>
+					</li>
+				</ul>
+			</li>
+			<li class="dropdown" uib-dropdown="">
+					<a href id="nombradas" data-toggle="dropdown" uib-dropdown-toggle> {{messages.JORNADAS_DROPDOWN}}<span class="caret"></span></a>
+					
+					<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="nombradas">
+						<li class="dropdown-header">{{messages.JORNADAS_INGRESAR}}</li>
+						<li><a ui-sref="main.composite.jornadas_individual">
+							<i class="glyphicon glyphicon-plus"></i>
+							{{messages.JORNADAS_INDIVIDUAL}}
+						</a>
+					</li>
+					<li>
+						<a ui-sref="main.composite.jornadas_masiva">
+							<i class="glyphicon glyphicon-cloud-upload"></i>
+							{{messages.JORNADAS_MASIVA}}
+						</a>
+					</li>
+					<li class="dropdown-header">{{messages.JORNADAS_CONSULTAR}}</li>
+					<li>
+						<a ui-sref="main.composite.jornadas_consultar"><i class="glyphicon glyphicon-search"></i>
+						{{messages.JORNADAS_CONSULTAR}}</a>
 					</li>
 				</ul>
 			</li>
@@ -98,20 +95,6 @@
 				</a>
 
 				<ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="administracion">
-
-				    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
-				
-					<li><a ui-sref="main.composite.crear_usuario">
-						  <i class="glyphicon glyphicon-plus"></i>
-						  {{messages.ADMIN_USR_INGRESAR}}
-						</a>
-					</li>
-					
-					<li><a ui-sref="main.composite.clave_empresa">
-						<i class="glyphicon glyphicon-briefcase"></i>
-						Clave empresa
-						</a>
-					</li>
 
 				    <li class="dropdown-header">{{messages.ADMIN_USUARIOS}}</li>
 				
@@ -148,6 +131,17 @@
 					 	{{messages.ADMIN_CONSULTAR_LOCACIONES}}
                   		</a>
                		</li>
+					<li class="dropdown-header">{{messages.ADMIN_COMITE_PARITARIO}}</li>
+					<li><a ui-sref="main.composite.comiteParitario_crear">
+						<i class="glyphicon glyphicon-plus"></i>
+						{{messages.ADMIN_COMITE_PARITARIO_CREAR}}
+					</a></li>
+			
+					<li><a ui-sref="main.composite.comiteParitario_consultar">
+						<i class="glyphicon glyphicon-search"></i>
+						{{messages.ADMIN_COMITE_PARITARIO_CONSULTAR}}
+					</a></li>
+					
                		
 				</ul>
 			</li>

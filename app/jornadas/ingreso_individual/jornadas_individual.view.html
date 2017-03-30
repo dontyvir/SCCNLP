@@ -1,0 +1,23 @@
+<h3>{{messages.ingresoIndividual}}</h3>
+<br>
+<uib-tabset active="tabsActive">
+
+<uib-tab index="0" heading="{{messages.tabHeaderOne}}" disable="tabs[0].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'jornadas/ingreso_individual/jornadas_individual.view.tab1.html'">
+                </div>
+        </div>  
+</uib-tab>
+        
+<uib-tab index="1" heading="{{messages.tabHeaderTwo}}" disable="tabs[1].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'jornadas/jornadas_copia_registro.view.tab2.html'">
+                </div>
+        </div>
+</uib-tab>
+
+</uib-tabset>
+
+

@@ -1,0 +1,30 @@
+<div id="modulosModal">
+    <div class="modal-header" >
+        <h3 class="modal-title" >{{messagesModal.ADD_REMOVE_PUERTOS}}</h3>
+    </div>
+
+    <div style="overflow-y: auto; height: 305.556px">
+        <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap;" cellspacing="0" >
+
+            <thead>
+                <tr style="background-color: #D3D3D3">
+                    <th><small></small></th>
+                    <th><small>{{messagesModal.USUARIO_HEADER_PUERTOS}}</small></th>                   
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="puerto in elemento.USUARIO_PUERTOS">
+                    <td  style="text-align: center" ><input type="checkbox" ng-click="selectPuertos($index)"  ng-checked="puerto.selected"></td>
+                    <td>{{puerto.glosa}}</td>                    
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-danger"   type="button" ng-click="cancel()">{{messagesModal.CANCELAR_BTN}}</button>
+        <button class="btn btn-primary" ng-disabled="!getActivePorts()" type="button" ng-click="ok()">{{messagesModal.GUARDAR_BTN}}</button>
+    </div>
+</div>

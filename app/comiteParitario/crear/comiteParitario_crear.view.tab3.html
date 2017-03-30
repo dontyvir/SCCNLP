@@ -1,0 +1,149 @@
+<form name="formTab3" ng-show="mostrarFormulario">
+    <h4>{{messages.tabHeaderTree}}</h4>
+    <hr/>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.cargo}} *</label>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[0]" ng-model="trabajador.cargo"> {{messages.presidente}}
+            </label>
+        </div>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[1]" ng-model="trabajador.cargo"> {{messages.secretario}}
+            </label>
+        </div>
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[2]" ng-model="trabajador.cargo"> {{messages.miembroComite}} *
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.tipo}} *</label>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="tipo" ng-value="tipo[0]" ng-model="trabajador.tipo"> {{messages.titular}}
+            </label>
+        </div>
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="tipo" ng-value="tipo[1]" ng-model="trabajador.tipo"> {{messages.suplente}}
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.posicionVotacion}} *</label>
+        <div class="col-xs-6">
+            <label class="radio-inline" ng-repeat="n in [].constructor(6) track by $index">
+                <input type="radio" name="radio.posicion" value="{{$index+1}}" ng-model="trabajador.posicion"> {{$index+1}}
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.aforado}} *</label>
+        <div class="col-xs-4">
+            <label class="checkbox-inline">
+                <input type="checkbox" value="true" ng-model="trabajador.aforado">
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="nombre-completo" class="col-md-3 col-form-label">{{messages.rut}}*</label>
+        
+        <div class="col-md-2">
+            <input type="text" ng-required="true" class="form-control" ng-model="trabajador.rut">
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary" ng-click="buscarEmpleado('trabajador', formTab3)" ng-disabled="trabajadorLoading">
+            
+            <span ng-show="!trabajadorLoading">
+                <span class="glyphicon glyphicon-search"></span>
+                Buscar
+            </span>
+            
+            <span ng-show="trabajadorLoading">
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                Cargando...
+            </span>
+            
+            </button>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.nombres}} *</label>
+        <label class="control-label col-xs-4">{{trabajador.nombres}}</label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.apellidoPaterno}} *</label>
+        <label class="control-label col-xs-4">{{trabajador.apellidoPaterno}}</label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.apellidoMaterno}} *</label>
+        <label class="control-label col-xs-4">{{trabajador.apellidoMaterno}}</label>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-6 pull-left">
+            <button class="btn btn-warning" type="submit" ng-click="">{{messages.BTN_limpiar}}</button>
+            <button class="btn btn-default" type="button" ng-click="anadirRepresentanteTrabajadores()">{{messages.BTN_anadirRepresentante}}</button>
+        </div>
+        
+    </div>
+    <div class="row" ng-show="viewTableTrabajador">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" >
+                <thead>
+                    <tr>
+                        <th><small>{{messages.cargo}}</small></th>
+                        <th><small>{{messages.tipo}}</small></th>
+                        <th><small>{{messages.posicionVotacion}}</small></th>
+                        <th><small>{{messages.aforado}}</small></th>
+                        <th><small>{{messages.rut}}</small></th>
+                        <th><small>{{messages.nombres}}</small></th>
+                        <th><small>{{messages.apellidoPaterno}}</small></th>
+                        <th><small>{{messages.apellidoMaterno}}</small></th>
+                        <th><small>{{messages.BTN_eliminar}}</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="trab in representantesTrabajadores">
+                        <td>{{trab.cargo}}</td>
+                        <td>{{trab.tipo}}</td>
+                        <td>{{trab.posicion}}</td>
+                        <td>{{trab.aforado}}</td>
+                        <td>{{trab.rut}}</td>
+                        <td>{{trab.nombres}}</td>
+                        <td>{{trab.apellidoPaterno}}</td>
+                        <td>{{trab.apellidoMaterno}}</td>
+                        <td>
+                            <a type="button" class="btn" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarRegistro($index, 'trabajador')" style="font-size: 20px"><i class="glyphicon glyphicon-trash" aria-hidden="true" style="color: red"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+            <small>{{messages.camposObligatorios}}</small>
+        </div>
+        
+        <div class="col-md-3 form-inline" style="text-align: right;">
+            
+            <button class="btn btn-danger" type="button" ui-sref="main.composite">{{messages.BTN_cancelar}}</button>
+            <button class="btn btn-primary" type="submit" ng-really-message="¿Desea guardar el Comité Paritario de Higiene y Seguridad? " ng-really-click="registrarComite()">{{messages.BTN_finalizar}}</button>
+            
+        </div>
+    </div>
+</form>
+<div ng-show="!mostrarFormulario">
+    <p>Se ha procesado satisfactoriamente su solicitud. </p>
+    <p>Si desea descargar el comprobante del proceso de constitución de Comité Paritario de Higiene y Seguridad, presione aquí: <a href ng-click="descargaComite()" class="btn btn-lg" style="font-size: 32px;"><i class="glyphicon glyphicon-floppy-open"></i></a></p>
+    <div class="col-md-3 form-inline" style="float:right;">
+        <button class="btn btn-danger" type="button" ng-click="btnSalir()">{{messages.BTN_salir}}</button>
+    </div>
+</div>

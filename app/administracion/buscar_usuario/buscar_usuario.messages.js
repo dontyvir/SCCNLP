@@ -37,6 +37,12 @@ angular.module('sccnlp.buscar_usuario')
                 USUARIO_HEADER_RUT : "Rut",
                 USUARIO_HEADER_NOMBRES: "Nombres",
                 USUARIO_HEADER_APELLIDOS: "Apellidos",
-                USUARIO_HEADER_ELIMINAR:"Eliminar"
+                USUARIO_HEADER_ELIMINAR:"Eliminar",
+                MESSAGE_WARNING_NO_SERVICE_PUERTO: "No se ha logrado guardar el puerto. Por favor intente mas nuevamente",
+                MESSAGE_WARNING_NO_SERVICE_MODULO: "No se ha logrado guardar el modulo. Por favor intente mas nuevamente",
+                MESSAGE_WARNING_NO_SERVICE_VIGENCIA: "No se ha logrado guardar la vigencia. Por favor intente mas nuevamente",
+                MESSAGE_WARNING_MINIMUN_PORTS: "Por favor, seleccione al menos un puerto",
+                MESSAGE_WARNING_MINIMUN_MODULO: "Por favor, seleccione al menos un modulo",
+                SALIR_BTN: "Salir"
             };
         });

@@ -27,7 +27,11 @@ angular.module('sccnlp.relacionLaboral.consulta')
 		eliminar : 'Eliminar',
 		tipoDeContrato : 'Tipo de contrato',
 		remuneracionBruta : 'Remuneración Bruta [CLP]',
-		BTN_exportar : 'Exportar a Excel'
+		BTN_exportar : 'Exportar a Excel',
+		tabHeaderOne : 'Búsqueda',
+		tabHeaderTwo : 'Datos del Trabajador',
+		tabHeaderThree : 'Datos del Contrato',
+		tabHeaderFour : 'Finalización'
 
 	};
 });

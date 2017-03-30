@@ -1,0 +1,23 @@
+
+<br>
+<uib-tabset active="tabsActive">
+
+<uib-tab index="0" heading="{{messages.consultarComiteParitario}}" disable="tabs[0].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'comiteParitario/consultar/comiteParitario_consultar_tab1.view.html'">
+                </div>
+        </div>  
+</uib-tab>
+
+<uib-tab index="1" heading="{{messages.detalleComite}}" disable="tabs[1].disable">
+        <div class="panel panel-default">
+                <div class="panel-body"
+                ng-include="'comiteParitario/consultar/comiteParitario_consultar_tab2.view.html'">
+                </div>
+        </div>
+</uib-tab>
+
+</uib-tabset>
+
+

@@ -1,0 +1,122 @@
+<form name="formTab2">
+    <h4>{{messages.tabHeaderTwo}}</h4>
+    <hr/>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.cargo}} *</label>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[0]" ng-model="empresa.cargo"> {{messages.presidente}}
+            </label>
+        </div>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[1]" ng-model="empresa.cargo"> {{messages.secretario}}
+            </label>
+        </div>
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="cargo" ng-value="cargo[2]" ng-model="empresa.cargo"> {{messages.miembroComite}} *
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.tipo}} *</label>
+        <div class="col-xs-1">
+            <label class="radio-inline">
+                <input type="radio" name="tipo" ng-value="tipo[0]" ng-model="empresa.tipo"> {{messages.titular}}
+            </label>
+        </div>
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="tipo" ng-value="tipo[1]" ng-model="empresa.tipo"> {{messages.suplente}}
+            </label>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="nombre-completo" class="col-md-3 col-form-label">{{messages.rut}}*</label>
+        
+        <div class="col-md-2">
+            <input type="text" ng-required="true" class="form-control" ng-model="empresa.rut">
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-primary" ng-click="buscarEmpleado('empresa', formTab2)" ng-disabled="empresaLoading">
+            
+            <span ng-show="!empresaLoading">
+                <span class="glyphicon glyphicon-search"></span>
+                Buscar
+            </span>
+            
+            <span ng-show="empresaLoading">
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                Cargando...
+            </span>
+            
+            </button>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.nombres}} *</label>
+        <label class="control-label col-xs-4">{{empresa.nombres}}</label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.apellidoPaterno}} *</label>
+        <label class="control-label col-xs-4">{{empresa.apellidoPaterno}}</label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-xs-3">{{messages.apellidoMaterno}} *</label>
+        <label class="control-label col-xs-4">{{empresa.apellidoMaterno}}</label>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-6 pull-left">
+            <button class="btn btn-warning" type="submit" ng-click="limpiarEmpresa()">{{messages.BTN_limpiar}}</button>
+            <button class="btn btn-default" type="button" ng-click="anadirRepresentanteEmpresa()">{{messages.BTN_anadirRepresentante}}</button>
+        </div>
+        
+    </div>
+    <div class="row" ng-show="viewTableEmpresa">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" >
+                <thead>
+                    <tr>
+                        <th><small>{{messages.cargo}}</small></th>
+                        <th><small>{{messages.tipo}}</small></th>
+                        <th><small>{{messages.rut}}</small></th>
+                        <th><small>{{messages.nombres}}</small></th>
+                        <th><small>{{messages.apellidoPaterno}}</small></th>
+                        <th><small>{{messages.apellidoMaterno}}</small></th>
+                        <th><small>{{messages.BTN_eliminar}}</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat = "rep in representantesEmpresa">
+                        <td>{{rep.cargo}}</td>
+                        <td>{{rep.tipo}}</td>
+                        <td>{{rep.rut}}</td>
+                        <td>{{rep.nombres}}</td>
+                        <td>{{rep.apellidoPaterno}}</td>
+                        <td>{{rep.apellidoMaterno}}</td>
+                        <td>
+                            <a type="button" class="btn" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarRegistro($index, 'empresa')" style="font-size: 20px"><i class="glyphicon glyphicon-trash" aria-hidden="true" style="color: red"></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+            <small>{{messages.camposObligatorios}}</small>
+        </div>
+        
+        <div class="col-md-3 form-inline" style="text-align: right;">
+            
+            <button class="btn btn-danger" type="button" ng-click="">{{messages.BTN_cancelar}}</button>
+            <button class="btn btn-primary" type="submit" ng-click="ingresoContinue(2)">{{messages.BTN_continuar}}</button>
+            
+        </div>
+    </div>
+</form>

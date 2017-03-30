@@ -23,7 +23,7 @@
        </div>
        
 		<div class="col-md-4 form-inline">
-			<input id="inputRut" ng-model="trabajador.numDocIdentificador" ng-required="true"="true"  type="text" class="form-control">
+			<input id="inputRut" ng-model="trabajador.numDocIdentificador" ng-required="true"="true"  type="text" ng-maxlength="50" class="form-control">
 			
 			 <button type="button" class="btn btn-primary" ng-show="trabajador.documentoIdentificador == 'rut'"
 			         ng-click="loadDataTrabajador(trabajador.numDocIdentificador)" ng-disable="trabajadorLoading">

@@ -31,7 +31,9 @@ angular.module('sccnlp.crear_usuario')
                                 MESSAGE_WARNING_GUARDADO_EXITOSO:  "Se ha guardado exitosamente",
                                 MESSAGE_WARNING_GUARDADO_FALLIDO:  "No se ha podido guardar correctamente. Por favor, intente nuevamente",
                                 PLACEHOLDER_MODULOS: "Ingrese valores a los modulos",
-                                PLACEHOLDER_PUERTOS: "Ingrese valores a los puertos"
+                                PLACEHOLDER_PUERTOS: "Ingrese valores a los puertos",
+                                MESSAGE_WARNING_USUARIO_EXISTENTE: 'Usuario ya existe en sistema',
+                                MESSAGE_WARNING_REG_CIVIL: 'Servicio de consulta de usuarios con problemas.Favor intente mas tarde.'
                                 
 	};
 });

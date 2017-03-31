@@ -4,11 +4,19 @@ angular.module('sccnlp.relacionLaboral.consulta')
 
 .controller('ConsultaCtrl', ['$scope', 'consultaMessages', '$uibModal', 'RestClient','RestClientRelacionLaboral',
 	        'sessionService','$resource', '$filter', 'ingIndivMessages','Trabajador','Empleador','Contrato','Domicilio',
-	        'Labor','loadAcuerdoJornadaLaboral','loadAcuerdoDescanso',
+	        'Labor','loadAcuerdoJornadaLaboral','loadAcuerdoDescanso','ModalEsperaCarga','RegistrarContrato',
 	
 	function($scope, consultaMessages, $uibModal, RestClient, RestClientRelacionLaboral,sessionService,
 			$resource, $filter, ingIndivMessages, Trabajador,Empleador,Contrato,Domicilio,Labor,loadAcuerdoJornadaLaboral,
-			loadAcuerdoDescanso) {
+			loadAcuerdoDescanso,ModalEsperaCarga,RegistrarContrato) {
+
+	// Model Ingreso Relación Laboral
+	$scope.relLab = {
+			ingresada : false,
+			ingresoError : false,
+			errorMsg : null,
+			data : null
+	};
 	
 	$scope.messages = ingIndivMessages;
 	angular.merge($scope.messages, consultaMessages);
@@ -328,11 +336,13 @@ angular.module('sccnlp.relacionLaboral.consulta')
 		    	
 		    	var user_data = sessionService.getUserData();
 		    
+		    	var modal_carga = ModalEsperaCarga();
+		    	
 		    	// registro del contrato
 		    	var _result = RegistrarContrato.actualizar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
 		    		function(response){
 		    		
-		    		$scope.relLab.loading = false;
+		    		modal_carga.close(true);
 		    		
 		    		if(response[0].error == ""){
 		    			
@@ -346,7 +356,9 @@ angular.module('sccnlp.relacionLaboral.consulta')
 		    		
 		    			
 		    	}, function(error){
-		    		$scope.relLab.loading = false;
+		    		
+		    		modal_carga.close(false);
+		    		
 		    		$scope.relLab.ingresoError = true;
 		    		$scope.relLab.errorMSG = error.message;
 		    	});

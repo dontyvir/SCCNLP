@@ -7,16 +7,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     function($resource, $filter, RestClientRelacionLaboral) {
 
 	var wrapper = {};
-
-	wrapper.actualizar = function(userId, trabajador, empleador, contrato, _callback_fn){
-		
-	}
 	
-	wrapper.registrar = function(userId, trabajador, empleador, contrato, _callback_fn){
+	wrapper.prepararDatos = function(_userId,_trabajador,_empleador,_contrato){
 		
 		// separación de rut / dv
 		
-		var splitRutEmpleador =  empleador.rutEmpleador.split("-");
+		var splitRutEmpleador = _empleador.rutEmpleador.split("-");
 		
 		var _rut_trabajador = null;
 		var _dv_trabajador = '';
@@ -141,6 +137,22 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			});		
 		}
 		
+		return _contrato;
+	}
+
+	wrapper.actualizar = function(userId, trabajador, empleador, contrato, _callback_fn){
+		
+		var _contrato = wrapper.prepararDatos(userId,trabajador,empleador,contrato);
+		var outFormat = [_contrato];
+		
+		return RestClientRelacionLaboral.actualizarRelacionLaboral(outFormat, _callback_fn, function(error){
+			console.log(error);
+		});
+	}
+	
+	wrapper.registrar = function(userId, trabajador, empleador, contrato, _callback_fn){
+
+		var _contrato = wrapper.prepararDatos(userId,trabajador,empleador,contrato);
 		var outFormat = [_contrato];
 		
 		return RestClientRelacionLaboral.registrarRelacionLaboral(outFormat, _callback_fn, function(error){

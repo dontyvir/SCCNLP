@@ -8,6 +8,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 	var wrapper = {};
 
+	wrapper.actualizar = function(userId, trabajador, empleador, contrato, _callback_fn){
+		
+	}
+	
 	wrapper.registrar = function(userId, trabajador, empleador, contrato, _callback_fn){
 		
 		// separación de rut / dv

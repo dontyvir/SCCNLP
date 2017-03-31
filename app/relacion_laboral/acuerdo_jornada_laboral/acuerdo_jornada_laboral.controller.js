@@ -21,24 +21,24 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         
         // prototipo para clase día de seamana
         
-        function DaySchedule(_dayLabel) {
-        	
+        function DaySchedule(_dayLabel,_id) {
+        	this.id = _id;
         	this.selected = false;
         	this.dayLabel = _dayLabel;
-        	this.scheduleStart = null;
-        	this.scheduleEnd = null;
+        	this.horaDesde = null;
+        	this.horaHasta = null;
         	this.tooltipOpen = false;
         }
 
         $scope.acuerdoJornadaLaboralModel = [
         		
-        		new DaySchedule("Lunes"),
-        		new DaySchedule("Martes"),
-        		new DaySchedule("Miércoles"),
-        		new DaySchedule("Jueves"),
-        		new DaySchedule("Viernes"),
-        		new DaySchedule("Sábado"),
-        		new DaySchedule("Domingo"),
+        		new DaySchedule("Lunes",    0),
+        		new DaySchedule("Martes",   1),
+        		new DaySchedule("Miércoles",2),
+        		new DaySchedule("Jueves",   3),
+        		new DaySchedule("Viernes",  4),
+        		new DaySchedule("Sábado",   5),
+        		new DaySchedule("Domingo",  6),
         ];
         
         // mensaje para el tooltip de error
@@ -52,37 +52,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         	var model = $scope.acuerdoJornadaLaboralModel;
         	
         	for(var i=0;i<horario.length;i++){
+
+        		var id = horario[i].dia;
         		
-        		// a qué día de la semana pertenece el objeto recorrido
-        		var m = 0;
-        		
-        		switch(horario[i].dayLabel){
-        		
-        			case 'Lunes':
-        				m=0;
-        			break;
-        			case 'Martes':
-        				m=1;
-        			break;
-        			case 'Miércoles':
-        				m=2;
-        			break;
-        			case 'Jueves':
-        				m=3;
-        			break;
-        			case 'Viernes':
-        				m=4;
-        			break;
-        			case 'Sábado':
-        				m=5;
-        			break;
-        			case 'Domingo':
-        				m=6;
-        			break;
-        			
-        		}
-        		
-        		model[m] = horario[i];
+        		model[id].selected = true;
+        		model[id].horaDesde = horario[i].horaDesde;
+        		model[id].horaHasta = horario[i].horaHasta;
         	}
         }
 
@@ -103,15 +78,15 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         	
         		if(mod.selected) {
         			
-        			if(mod.scheduleStart){
-        				if(!_ini) _ini = mod.scheduleStart;
+        			if(mod.horaDesde){
+        				if(!_ini) _ini = mod.horaDesde;
         			}
-        			mod.scheduleStart = _ini;
+        			mod.horaDesde = _ini;
         			
-        			if(mod.scheduleEnd){
-        				if(!_ter) _ter = mod.scheduleEnd;
+        			if(mod.horaHasta){
+        				if(!_ter) _ter = mod.horaHasta;
         			}
-        			mod.scheduleEnd = _ter;
+        			mod.horaHasta = _ter;
         		}
         	}
         		
@@ -141,21 +116,21 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		
         		if(model[i].selected){
         			
-        			if(!model[i].scheduleStart || !model[i].scheduleEnd){
+        			if(!model[i].horaDesde || !model[i].horaHasta){
         				
         				$scope.tooltipMSG = "Debe ingresar ambas horas";
         				model[i].tooltipOpen = true;
         				return false;
         			}
         			
-        			if(model[i].scheduleStart.getTime() >= model[i].scheduleEnd.getTime()){
+        			if(model[i].horaDesde.getTime() >= model[i].horaHasta.getTime()){
         				
         				$scope.tooltipMSG = "La hora de inicio debe ser menor a la de término";
         				model[i].tooltipOpen = true;
         				return false;
         			}
         			
-        			total_horas_labor += $scope.horasDia(model[i].scheduleStart, model[i].scheduleEnd);
+        			total_horas_labor += $scope.horasDia(model[i].horaDesde, model[i].horaHasta);
         		}	
         	}
         	
@@ -173,12 +148,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		if(!_lab.horario)
         			continue;
         		
-        		if(lab.id == labor.id)
+        		if(_lab.id == labor.id)
         			continue;
         		
         		for(var j=0;j<_lab.horario.length;j++){
         			
-        			total_horas_semanales += $scope.horasDia(_lab.horario[j].scheduleStart, _lab.horario[j].scheduleEnd);
+        			total_horas_semanales += $scope.horasDia(_lab.horario[j].horaDesde, _lab.horario[j].horaHasta);
         		}
         	}
 
@@ -208,12 +183,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		return;
         	
         	var selectedItems = [];
+        	var model = $scope.acuerdoJornadaLaboralModel;
         	
-        	for(var i=0;i<$scope.acuerdoJornadaLaboralModel.length;i++){
+        	for(var i=0;i<model.length;i++){
         		
-        		if($scope.acuerdoJornadaLaboralModel[i].selected)
+        		if(model[i].selected)
         			
-        			selectedItems.push($scope.acuerdoJornadaLaboralModel[i]);
+        			selectedItems.push({dia: i,horaDesde: model[i].horaDesde, horaHasta: model[i].horaHasta});
         	}
         	
         	$uibModalInstance.close(selectedItems);
@@ -229,8 +205,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         		var jornada = $scope.acuerdoJornadaLaboralModel[i];
         		
         		jornada.selected = false;
-        		jornada.scheduleStart = null;
-        		jornada.scheduleEnd = null;
+        		jornada.horaDesde = null;
+        		jornada.horaHasta = null;
         	}
         };
         
@@ -243,4 +219,40 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
         };
     }
 
-]);
+])
+
+.factory('loadAcuerdoJornadaLaboral',['$uibModal',function($uibModal){
+	
+	 function loadAcuerdoJornadaLaboral(labor, labores) {
+
+	    var modalInstance = $uibModal.open({
+
+	      ariaLabelledBy: 'modal-title',
+	      ariaDescribedBy: 'modal-body',
+	      templateUrl: 'relacion_laboral/acuerdo_jornada_laboral/acuerdo_jornada_laboral.modal.view.html',
+	      controller: 'AcuerdoJornadaLaboralController',
+	      controllerAs: '$ctrl',
+	      backdrop : 'static',
+	      resolve: {
+	          labor: function(){ return labor},
+	          labores : function(){return labores}
+	      }
+	    });
+
+	    modalInstance.result.then(function (acuerdos_jornada) {
+	    	
+	    	if(acuerdos_jornada.length == 0)
+	    		labor.horario = null;
+	    	else
+	    		labor.horario = acuerdos_jornada;
+	    	
+	    }, function () {
+	    	
+	      console.log('Modal dismissed at: ' + new Date());
+	    });
+	}
+	 
+	 return loadAcuerdoJornadaLaboral;
+}])
+
+

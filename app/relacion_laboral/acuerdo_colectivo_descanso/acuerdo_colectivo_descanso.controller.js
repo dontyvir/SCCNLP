@@ -27,11 +27,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	
 	//prototipo acuerdoDescanso
 	
-	function AcuerdoDescanso(_docId, _nom_acuerdo, _hora_desde, _hora_hasta){
+	function AcuerdoDescanso(_idSindicato, _hora_desde, _hora_hasta){
 		
 		this.id = null;
-		this.docId = (_docId)?_docId:''; // rut o R.S.U. del sindicato
-		this.acuerdo = (_nom_acuerdo)?_nom_acuerdo:'';
+		this.idSindicato = (_idSindicato)?_idSindicato:''; // rut o R.S.U. del sindicato
 		this.horaDesde = (_hora_desde)?_hora_desde:null;
 		this.horaHasta = (_hora_hasta)?_hora_hasta:null;
 	};
@@ -77,8 +76,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     		return;
     	
     	var _acuerdo = new AcuerdoDescanso(
-    			$scope.acuerdoModal.docId,
-    			$scope.acuerdoModal.acuerdo,
+    			$scope.acuerdoModal.idSindicato,
     			$scope.acuerdoModal.horaDesde,
     			$scope.acuerdoModal.horaHasta
     	);
@@ -90,4 +88,37 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	if(_acuerdoActivo)
 		$scope.acuerdoModal = angular.copy(_acuerdoActivo);
 	
-}]);
+}])
+
+.factory('loadAcuerdoDescanso',['$uibModal',function($uibModal){
+	
+   function loadAcuerdoDescanso(datosLaborales){
+    	
+	    var modalInstance = $uibModal.open({
+
+		      ariaLabelledBy: 'modal-title',
+		      ariaDescribedBy: 'modal-body',
+		      templateUrl: 'relacion_laboral/acuerdo_colectivo_descanso/acuerdo_colectivo_descanso.modal.view.html',
+		      controller: 'AcuerdoDescansoController',
+		      controllerAs: '$ctrl',
+		      backdrop : 'static',
+		      resolve: {
+		    	  _acuerdoActivo: function () { return datosLaborales.acuerdoDescanso; }
+		      }
+		    });
+
+		    modalInstance.result.then(function (acuerdo_descanso) {
+		    	
+		    	if(!acuerdo_descanso)
+		    		datosLaborales.acuerdoDescanso = null;
+		    	else
+		    		datosLaborales.acuerdoDescanso = acuerdo_descanso;
+		    	
+		    }, function () {
+		    	
+		      console.log('Modal dismissed at: ' + new Date());
+		    });
+	    };
+	
+	return loadAcuerdoDescanso;
+}])

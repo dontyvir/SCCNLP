@@ -3,15 +3,25 @@
 angular.module('sccnlp.relacionLaboral.consulta')
 
 .controller('ConsultaCtrl', ['$scope', 'consultaMessages', '$uibModal', 'RestClient','RestClientRelacionLaboral',
-	        'sessionService','$resource', '$filter', 'ingIndivMessages','Trabajador','Empleador','Contrato',
+	        'sessionService','$resource', '$filter', 'ingIndivMessages','Trabajador','Empleador','Contrato','Domicilio',
+	        'Labor','loadAcuerdoJornadaLaboral','loadAcuerdoDescanso',
 	
 	function($scope, consultaMessages, $uibModal, RestClient, RestClientRelacionLaboral,sessionService,
-			$resource, $filter, ingIndivMessages, Trabajador,Empleador,Contrato) {
+			$resource, $filter, ingIndivMessages, Trabajador,Empleador,Contrato,Domicilio,Labor,loadAcuerdoJornadaLaboral,
+			loadAcuerdoDescanso) {
 	
 	$scope.messages = ingIndivMessages;
 	angular.merge($scope.messages, consultaMessages);
-		
+
 	$scope.consultaLoading = false;
+	
+    $scope.loadAcuerdoJornadaLaboral = loadAcuerdoJornadaLaboral;
+    $scope.loadAcuerdoDescanso = loadAcuerdoDescanso;
+    
+    // flag para desactivar campos en tab3
+    $scope.isEdit = true;
+    $scope.editLoading = false; //cargando datos para edición
+    $scope.fechaTerminoDisabled = function(){return true;}
 
 	/** modelos de datos edición **/
 	
@@ -131,19 +141,38 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	$scope.consulta.estadoContrato = null;
     	$scope.consulta.resultados = null;
     }
-
-    $scope.getRutOPasaporte = function(res){
-    	
-    	if(res.rutPersona && res.rutPersona!="")
-    		return res.rutPersona+"-"+res.dvPersona;
-
-    	return res.pasaporte;
-    }
     
     $scope.exportarExcel = function(){
     	
     }
 
+    
+    /** métodos pantallas de edición **/
+    
+    // limpieza solamente de campos editables
+    
+    $scope.limpiarTrabajador = function(){
+    	$scope.trabajador.email = null;
+    	$scope.trabajador.AFP = null;
+    	$scope.trabajador.ISAPRE = null;
+    	$scope.trabajador.domicilio = new Domicilio();
+    }
+
+    $scope.limpiarContrato = function(){
+    	
+    }
+    
+    $scope.ingresoCancelar = function(){
+
+    	$scope.datos = null;
+    	$scope.trabajador = null;
+    	$scope.contrato = null;
+    	
+    	$scope.tabsActive = 0;
+    	$scope.tabs[1].disable = true;
+
+    }
+    
     var loadDataTrabajador = function (datosTrabajador, listAFP, listISAPRE, listNacionalidad, listEstadoCivil) {
 
     	if(!datosTrabajador || !listAFP|| !listISAPRE||!listNacionalidad||!listEstadoCivil)
@@ -196,13 +225,155 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	var dat = contratoData;
 
     	var _contrato = new Contrato(dat.fechaCelebContrato,dat.idTipoContrato,dat.fechaInicioContrato,
-    			                    dat.fechaTerminoContrato,dat.idModalidad,dat.labores);
+    			                    dat.fechaTerminoContrato,dat.idModalidadPago,dat.labores, true);
     	
     	return _contrato;
     }
     
-    var loading = 10;
+    $scope.addRow = function () {
+    	
+    	var id = $scope.contrato.labores.length;
+    	$scope.contrato.labores.push(new Labor(id));
+    };
+    
+    /** usado en la tabla de resultados de contratos **/
+    $scope.getRutOPasaporte = function(data){
+    	if(data.rutPersona && data.rutPersona != "")
+    		return data.rutPersona+"-"+data.dvPersona;
+    	
+    	return data.pasaporte;
+    }
+    
+    
+    /** al cambiar de región se recarga la lista de comunas **/
+    $scope.cambioRegion = function(){
+    	$scope.comunas = RestClient.getComunasByIdRegion($scope.datos.trabajador.domicilio.idRegion);
+    }
+    
+    $scope.validateFechaTerminoContrato = function(){
+    	
+    	if(!$scope.contrato.fechaTerminoContrato ||
+    		!$scope.contrato.fechaInicioContrato) {
+    		
+    		$scope.terminoContratoTooltip = false;    		
+    		return true;    		
+    	}
 
+    	
+    	if($scope.contrato.fechaInicioContrato.getTime() > 
+    		$scope.contrato.fechaTerminoContrato.getTime())
+    	{
+    		
+    		$scope.terminoContratoTooltip = true;
+    		
+    		return false;
+    	}
+    		$scope.terminoContratoTooltip = false;
+    		return true;
+    }
+    
+    $scope.validateHorariosAcuerdos = function(){
+    	
+    	var _ret = true;
+    	
+    	for(var i=0;i<$scope.contrato.labores.length;i++){
+    		
+    		var lab = $scope.contrato.labores[i];
+    		
+    		if(!lab.acuerdoDescanso) {
+    			_ret = false;
+    			lab.acuerdoEmpty = true;
+    		}
+    		
+    		if(!lab.horario){
+    			_ret = false;
+    			lab.horarioEmpty = true;
+    		}
+    	}
+    	
+    	return _ret;
+    }
+    
+    $scope.ingresoSubmit = function(form){
+    	
+    	if(form && form.$invalid){
+    		return;
+    	}
+    	
+    	if(!$scope.validateFechaTerminoContrato)
+    		return;
+    	
+    	if(!$scope.validateHorariosAcuerdos())
+    		return;
+    	
+    	//Modal de confirmar Modificación
+	    var modalInstance = $uibModal.open({
+
+		      ariaLabelledBy: 'modal-title',
+		      ariaDescribedBy: 'modal-body',
+		      templateUrl: 'relacion_laboral/confirmacion_guardado/confirmacion_modificar.modal.view.html',
+		      controller: 'ConfirmacionGuardadoCtrl',
+		      controllerAs: '$ctrl',
+		      backdrop : 'static'
+		    });
+
+		    modalInstance.result.then(function () {
+		    
+		    	//paso4
+	    	    $scope.tabs[0].disable = true;
+	    	    $scope.tabs[1].disable = true;
+	    	    $scope.tabs[2].disable = true;
+		    	$scope.tabs[3].disable = false;
+		    	$scope.tabsActive = 3;
+		    	
+		    	var user_data = sessionService.getUserData();
+		    
+		    	// registro del contrato
+		    	var _result = RegistrarContrato.actualizar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
+		    		function(response){
+		    		
+		    		$scope.relLab.loading = false;
+		    		
+		    		if(response[0].error == ""){
+		    			
+		    			$scope.relLab.data = response[0];
+		    			$scope.relLab.ingresada = true;
+		    			
+		    		} else {
+		    			$scope.relLab.ingresoError = true;
+		    			$scope.relLab.errorMSG = response[0].error;
+		    		}
+		    		
+		    			
+		    	}, function(error){
+		    		$scope.relLab.loading = false;
+		    		$scope.relLab.ingresoError = true;
+		    		$scope.relLab.errorMSG = error.message;
+		    	});
+
+		    }, function () {
+		    	
+		      console.log('Modal dismissed at: ' + new Date());
+		    });
+    }
+    
+    $scope.updateTotal = function () {
+
+    	var total = 0;
+    	var length = $scope.contrato.labores.length;
+    	
+    	for(var i=0; i < length; i++) {
+    		
+    		var remun = $scope.contrato.labores[i].remunBruta;
+    		if(remun && !isNaN(remun))
+    		total += remun;
+    	}
+    	
+    	$scope.contrato.total = total;
+    };
+    
+    /** esperamos a que las listas se hayan cargado para continuar **/
+    var loading = null;
     var _count = function(){
     	
     	if(--loading==0){
@@ -211,14 +382,24 @@ angular.module('sccnlp.relacionLaboral.consulta')
 	    	
 	    	$scope.contrato = loadDataContrato($scope.datos);
 	    	
+	    	$scope.comunas = RestClient.getComunasByIdRegion($scope.datos.trabajador.domicilio.idRegion);
+	    	
 	    	$scope.tabs[1].disable = false;
 	    	$scope.tabsActive = 1;
+	    	
+	    	$scope.editLoading = false;
     	}
     }
     
     // esto se llama al modificar un registro en la pantalla de consulta
     $scope.modificarContrato = function(relLab){
 
+    	loading = 12;
+    	
+    	$scope.editLoading = true;
+    	
+        var session_data = sessionService.getUserData();
+    	
     	$scope.estadoCivil = RestClient.getEstadoCivil(_count);
         $scope.AFP = RestClient.getAFP(_count);
         $scope.ISAPRE = RestClient.getIsapre(_count);
@@ -228,9 +409,10 @@ angular.module('sccnlp.relacionLaboral.consulta')
         $scope.tiposJornada = RestClientRelacionLaboral.getTipoJornada(_count);
         $scope.modalidadDePago = RestClientRelacionLaboral.getModalidadPago(_count);
         $scope.nacionalidades = RestClient.getNacionalidad(_count);
-
-    	$scope.datos = RestClientRelacionLaboral.getDetalleRelacionLaboral(1,_count);
+    	$scope.regiones = RestClient.getRegion(_count);
+        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa,_count);
     	
+    	$scope.datos = RestClientRelacionLaboral.getDetalleRelacionLaboral(relLab.idContrato,_count);
     }
     
     $scope.ingresoContinue = function(nTab, form){

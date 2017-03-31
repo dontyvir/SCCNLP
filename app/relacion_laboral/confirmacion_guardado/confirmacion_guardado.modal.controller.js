@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('sccnlp.relacionLaboral.ingresoIndividual')
+angular.module('sccnlp.relacionLaboral')
 
-.controller('RecordatorioLegalController', ['$scope', '$uibModalInstance',
+.controller('ConfirmacionGuardadoCtrl', ['$scope', '$uibModalInstance',
 	
 	function ($scope, $uibModalInstance) {
 	

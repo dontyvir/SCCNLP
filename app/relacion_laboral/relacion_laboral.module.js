@@ -63,19 +63,20 @@ angular.module('sccnlp.relacionLaboral',[])
 	
 	// prototipo datos Labores
 	
-	function Labor(_id, idLabor, idFuncion,idLugar,horario,acuerdoDescanso,remunBruta,idJornada) {
+	function Labor(_id,_idLabor,_idFuncion,_idLugar,_idJornada,_horario,_acuerdoDescanso,_remunBruta, _isLoaded) {
 		
 		this.id = _id,
-		this.laborSelect = idLabor;
-		this.funcionSelect = idFuncion;
-		this.lugarPrestacionServicios = idLugar;
-		this.horario = horario;
-		this.acuerdoDescanso = acuerdoDescanso;
-		this.remunBruta = remunBruta;
-		this.tipoJornada = idJornada;
+		this.idLabor = _idLabor;
+		this.idFuncion = _idFuncion;
+		this.idLugar = _idLugar;
+		this.horario = _horario;
+		this.acuerdoDescanso = _acuerdoDescanso;
+		this.remuneracionBruta = _remunBruta;
+		this.idJornada = _idJornada;
 		
-		this.acuerdoEmpty = (!acuerdoDescanso);
-		this.horarioEmpty = (!horario);
+		this.acuerdoEmpty = (_acuerdoDescanso)?true:false;
+		this.horarioEmpty = (_horario)?true:false;
+		this.isLoaded = (_isLoaded)?true:false; // flag para desabilitar campos en la edición
 		
 	}	
 	return Labor;
@@ -85,24 +86,26 @@ angular.module('sccnlp.relacionLaboral',[])
 	
 	// prototipo Contrato
 	
-	function Contrato(fechaCeleb,tipo,fechaInicio,fechaFin,idFormaPago,labores){
+	function Contrato(_fechaCeleb,_idTipoContrato,_fechaInicio,_fechaFin,_idModalidadPago,_labores, _isLoaded){
 
-		this.fechaDeCelebracionDelContrato = fechaCeleb;
-	    this.tipoContratoSelected = tipo;
-	    this.fechaDeInicioDelContrato = fechaInicio
-	    this.fechaTerminoDelContrato = fechaFin;
-	    this.diaDePagoSelected = idFormaPago;
+		this.fechaCelebContrato = _fechaCeleb;
+	    this.idTipoContrato = _idTipoContrato;
+	    this.fechaInicioContrato = _fechaInicio
+	    this.fechaTerminoContrato = _fechaFin;
+	    this.idModalidadPago = _idModalidadPago;
 	    this.total = 0;
-	    this.datosLabores = null;
+	    this.labores = null;
 	    
-	    if(labores && labores.length > 1){
+	    if(_labores && _labores.length > 1){
 	    	
-	    	this.datosLabores = [];
+	    	this.labores = [];
 	    	
-	    	for(var i=0;i<labores.length;i++){
-	    		var lab = labores[i];
-	    		this.datosLabores.push(new Labor(i,lab.idLabor,lab.idLocacion,lab.horario,lab.acuerdoDescanso,
-	    				lab.remuneracionBruta,lab.idJornada));
+	    	for(var i=0;i<_labores.length;i++){
+	    		var lab = _labores[i];
+	    		this.labores.push(new Labor(i,lab.idLabor,lab.idFuncion,lab.idLugar,lab.idJornada,lab.horario,
+	    				lab.acuerdoDescanso,lab.remuneracionBruta, _isLoaded));
+	    		
+	    		this.total += lab.remuneracionBruta;
 	    	}
 	    } else {
 	    	
@@ -111,7 +114,5 @@ angular.module('sccnlp.relacionLaboral',[])
 
 	}
 	return Contrato;
+	
 }])
-	
-
-	

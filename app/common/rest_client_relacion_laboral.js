@@ -8,8 +8,49 @@ angular.module('sccnlp.common')
 
         var wrapper = {};
         
+        // transforma un string "HH:mm" a objeto Date()
+        wrapper.horaToDate = function(hora){
+        	
+        	hora = hora.split(":");
+        	if(!hora) return null;
+        	
+        	var horas = Number(hora[0]);
+        	var mins = Number(hora[1]);
+        	
+        	var date = new Date();
+        	date.setHours(horas,mins,0,0);
+        	
+        	return date;
+        }
         
     	/** Clientes Relación Laboral **/
+        
+        wrapper.getDetalleContrato = function(_id, _callback_fn,_callback_error) {
+    		return RestClient.baseResource.get({serviceName : 'Relacionlab/getDetalleContrato/'+_id},{},
+    				function(data){
+    				  
+    				   //formatos tiempo a Date()
+    			
+    					var labores = data.labores;
+    				   for(var i=0;i<labores.length;i++){
+    					   
+    					   var lab = labores[i];
+
+    					   lab.acuerdoDescanso.horaDesde = wrapper.horaToDate(lab.acuerdoDescanso.horaDesde);
+    					   lab.acuerdoDescanso.horaHasta = wrapper.horaToDate(lab.acuerdoDescanso.horaHasta);
+    					   
+    					   for(var j=0;j<lab.horario.length;j++){
+    						   
+    						   var horario = lab.horario[j];
+    						   horario.horaDesde = wrapper.horaToDate(horario.horaDesde);
+    						   horario.horaHasta = wrapper.horaToDate(horario.horaHasta);
+    					   }
+    				   }
+    				                            	 
+    				   return _callback_fn(data);                       	 
+    				},
+    				_callback_error);
+        }
 
     	wrapper.getDetalleRelacionLaboral = function(id, _callback_fn,_callback_error) {
 
@@ -24,11 +65,11 @@ angular.module('sccnlp.common')
     					nombres         : "Nombre Nombre",
     					apellidoPaterno : "Apellido",
     					apellidoMaterno : "Apellido",
-    					idNacionalidad  : 1,
+    					idNacionalidad  : 44,
     					fechaNacimiento : '1905/01/21',
     					idEstadoCivil   : 1,
     					idSexo          : 1,
-    					domicilio       : {idRegion : 1, idComuna : 1, calle: "Calle", numero: 12345, depto: "234", block: "34"},
+    					domicilio       : {idRegion : 1, idComuna : 1, calle: "Calle", numero: 12345, depto: "234", block: "34", longitud:"-45.3445656",latitud:"-20.4242424"},
     					email           : "user@domain.name",
     					idIsapre        : 1,
     					idAFP           : 1
@@ -80,6 +121,10 @@ angular.module('sccnlp.common')
         	
         	return RestClient.baseResource.save_Array_JSON(
         			{serviceName : 'Relacionlab/guardarRelacionLaboral'}, data, _callback_fn, _callback_error);
+        }
+        wrapper.actualizarRelacionLaboral = function(data, _callback_fn, _callback_error){
+        	return RestClient.baseResource.save_Array_JSON(
+        			{serviceName : 'Relacionlab/actualizarRelacionLaboral'}, data, _callback_fn, _callback_error);        	
         }
         
     	wrapper.getTurno = function(_callback_fn,_callback_error){

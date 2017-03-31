@@ -31,7 +31,9 @@ angular.module('sccnlp.relacionLaboral.consulta')
 		tabHeaderOne : 'Búsqueda',
 		tabHeaderTwo : 'Datos del Trabajador',
 		tabHeaderThree : 'Datos del Contrato',
-		tabHeaderFour : 'Finalización'
+		tabHeaderFour : 'Finalización',
+		domicilioGMaps : 'Búsqueda de dirección Google Maps'
+			
 
 	};
 });

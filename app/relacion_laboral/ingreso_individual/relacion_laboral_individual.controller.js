@@ -2,13 +2,19 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
-.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient', 'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
+.controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient',
+	                              'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
+	                              'loadAcuerdoDescanso', 'loadAcuerdoJornadaLaboral',
 	
-	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,sessionService,RegistrarContrato) {
+	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,
+			 sessionService, RegistrarContrato,loadAcuerdoDescanso,loadAcuerdoJornadaLaboral) {
 	
 	$scope.messages = ingIndivMessages;
 	
 	$scope.ingresoIdNum = null;
+	
+	// flag para hacer editables campos en tab3
+    $scope.isEdit = false;
 	
 	//tabs
 	$scope.terminoContratoTooltip = false;
@@ -235,60 +241,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     
     var $parentCtl = $scope;
     
-    $scope.loadAcuerdoJornadaLaboral = function (labor, labores) {
-
-	    var modalInstance = $uibModal.open({
-
-	      ariaLabelledBy: 'modal-title',
-	      ariaDescribedBy: 'modal-body',
-	      templateUrl: 'relacion_laboral/acuerdo_jornada_laboral/acuerdo_jornada_laboral.modal.view.html',
-	      controller: 'AcuerdoJornadaLaboralController',
-	      controllerAs: '$ctrl',
-	      resolve: {
-	          labor: function(){ return labor},
-	          labores : function(){return labores}
-	      }
-	    });
-
-	    modalInstance.result.then(function (acuerdos_jornada) {
-	    	
-	    	if(acuerdos_jornada.length == 0)
-	    		labor.horario = null;
-	    	else
-	    		labor.horario = acuerdos_jornada;
-	    	
-	    }, function () {
-	    	
-	      console.log('Modal dismissed at: ' + new Date());
-	    });
-    };
-    
-    $scope.loadAcuerdoDescanso = function (datosLaborales){
-    	
-	    var modalInstance = $uibModal.open({
-
-		      ariaLabelledBy: 'modal-title',
-		      ariaDescribedBy: 'modal-body',
-		      templateUrl: 'relacion_laboral/acuerdo_colectivo_descanso/acuerdo_colectivo_descanso.modal.view.html',
-		      controller: 'AcuerdoDescansoController',
-		      controllerAs: '$ctrl',
-		      resolve: {
-		    	  _acuerdoActivo: function () { return datosLaborales.acuerdoDescanso; }
-		      }
-		    });
-
-		    modalInstance.result.then(function (acuerdo_descanso) {
-		    	
-		    	if(!acuerdo_descanso)
-		    		datosLaborales.acuerdoDescanso = null;
-		    	else
-		    		datosLaborales.acuerdoDescanso = acuerdo_descanso;
-		    	
-		    }, function () {
-		    	
-		      console.log('Modal dismissed at: ' + new Date());
-		    });
-	    };
+    $scope.loadAcuerdoJornadaLaboral = loadAcuerdoJornadaLaboral;
+    $scope.loadAcuerdoDescanso = loadAcuerdoDescanso;
 
 	    $scope.clearDataTrabajador = function(){
 	    	$scope.trabajador.numDocIdentificador = null,
@@ -346,7 +300,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			    	$scope.tabs[3].disable = false;
 			    	$scope.tabsActive = 3;
 			    	
-			    	var user_data = sessionService.getUserData();	
+			    	var user_data = sessionService.getUserData();
 			    
 			    	// registro del contrato
 			    	var _result = RegistrarContrato.registrar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
@@ -518,10 +472,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        RestClient.getTerminoVigencia(session_data.idEmpresa,1, function(data){
 	        	$scope.empleador.terminoDeVigencia = data.fechavigencia;
 	        });
-	        
 	    };
-	    
-	    
+
 	    $scope.googlemapsInit = function(){
 	    	
 	        // inicialización google maps autocompletar

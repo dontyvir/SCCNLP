@@ -54,13 +54,13 @@ angular.module('sccnlp.common')
 		
 		return wrapper.baseResource.query({serviceName : 'Mantenedor/getNave'});
 	}
-	wrapper.getComunasByIdRegion = function(id_region, _callback_fn) {
+	wrapper.getComunasByIdRegion = function(id_region, _callback_fn,_callback_error) {
 		
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getComunasByIdRegion/'+id_region});
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getComunasByIdRegion/'+id_region},{},_callback_fn,_callback_error);
 	}
 	
-	wrapper.getRegion = function(){
-		return wrapper.baseResource.query({serviceName : 'Mantenedor/getRegion'});
+	wrapper.getRegion = function(_callback_fn,_callback_error){
+		return wrapper.baseResource.query({serviceName : 'Mantenedor/getRegion'},{},_callback_fn,_callback_error);
 		
 	}
 	wrapper.getNacionalidad = function(_callback_fn,_callback_error){

@@ -31,21 +31,21 @@ angular.module('sccnlp.relacionLaboral')
 
 		    	if(!id) {
 		    		
-		    		sexo = {id: null, glosa:null};
+		    		this.sexo = {id: null, glosa:null};
 		    		
 		    	} else {
 		    		
 					if(id == 2)
-						sexo = {id: 2, glosa: "Femenino"};
+						this.sexo = {id: 2, glosa: "Femenino"};
 					
 					else if(id == 1)
-						sexo = {id: 1, glosa: "Masculino"};
+						this.sexo = {id: 1, glosa: "Masculino"};
 		    	}
 			}
 			
 			this.setPasaporte = function(_pasaporte){
-				documentoIdentificador = "pasaporte";
-				pasaporte = _pasaporte;
+				this.documentoIdentificador = "pasaporte";
+				this.pasaporte = _pasaporte;
 			}
 			
 			this.setRut = function(_rut,_dv){
@@ -63,13 +63,13 @@ angular.module('sccnlp.relacionLaboral')
 			}
 			
 			this.getApellidos = function(){
-				return apellidoPaterno+" "+apellidoMaterno;
+				return this.apellidoPaterno+" "+this.apellidoMaterno;
 			}
 			
 			this.setApellidos = function(apellidos){
 				var ap = apellidos.split(" ");
-				apellidosPaterno = ap[0];
-				appellidoMaterno = ap[1];
+				this.apellidosPaterno = ap[0];
+				this.appellidoMaterno = ap[1];
 			}
 			
 			var _searchById = function(id, list){
@@ -81,22 +81,24 @@ angular.module('sccnlp.relacionLaboral')
 					if(list[i].id == id)
 						return list[i];
 				}
+				
+				return null;
 			}
 			
 			this.setAFP = function (id, AFPList){
-				AFP = _searchById(id, AFPList);
+				this.AFP = _searchById(id, AFPList);
 			}
 			
 			this.setISAPRE = function(id, ISAPREList){
-				ISAPRE = _searchById(id, ISAPREList);
+				this.ISAPRE = _searchById(id, ISAPREList);
 			}
 			
 			this.setNacionalidad = function(id, nacList){
-				nacionalidad = _searchById(id, nacList);
+				this.nacionalidad = _searchById(id, nacList);
 			}
 			
 			this.setEstadoCivil = function(id, eCList){
-				estadoCivil = _searchById(id, eCList);
+				this.estadoCivil = _searchById(id, eCList);
 			}
 			
 			

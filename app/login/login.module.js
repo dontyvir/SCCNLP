@@ -1,4 +1,4 @@
-angular.module('sccnlp.login', [ 'ui.router', 'sccnlp.session' ])
+angular.module('sccnlp.login', [ 'ui.router', 'sccnlp.session','sccnlp.common' ])
 
 
 .config([ '$stateProvider', function($stateProvider) {

@@ -38,6 +38,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    pasaporteTrabajador : 'Pasaporte',
 	    nombresTrabajador : 'Nombres',
 	    apellidosTrabajador : 'Apellidos',
+	    apellidoPaterno : 'Apellido Paterno',
+	    apellidoMaterno : 'Apellido Materno',
 	    nacionalidadTrabajador : 'Nacionalidad',
 	    lugarDeNacimientoTrabajador : 'Lugar de Nacimiento',
 	    fechaDeNacimientoTrabajador : 'Fecha de Nacimiento',
@@ -46,6 +48,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    AFPTrabajador : 'AFP',
 	    ISAPRETrabajador : 'ISAPRE',
 	    mandatoryFields : '* Campos Obligatorios',
+		domicilioGMaps : 'Búsqueda de dirección Google Maps',
 
 	    //  Labels Tab 3
 	    tabHeaderThree : 'Paso 3 de 3: Condiciones Relación Laboral',

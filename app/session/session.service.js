@@ -42,10 +42,11 @@ angular.module('sccnlp.session')
 				rutEmpresa : null,
 				dvEmpresa : null,
 				role : null,
+				idPuerto : null,
 				permissions : []
 		};
 
-		function _fillUserData(access_token) {
+		function _fillUserData(access_token, idPuerto) {
 
 			var tokenPayload = jwtHelper.decodeToken(access_token);
 			
@@ -55,7 +56,7 @@ angular.module('sccnlp.session')
 			_userData.dvEmpresa   = tokenPayload.dvEmpresa;
 			_userData.permissions = tokenPayload.menus;
 			_userData.idEmpresa   = tokenPayload.idEmpresa;
-			
+			_userData.idPuerto    = idPuerto;
 		}
 		
 		function _isLoggedIn() {
@@ -65,6 +66,10 @@ angular.module('sccnlp.session')
 			return (d.username && d.username != "");
 		};
 
+		function _setIdPuerto(idPuerto){
+			localStorageService.set('idPuerto', idPuerto);
+		}
+		
 		/**
 		 * Función para autenticar un par usuario/contraseña en BD de backend local
 		 */
@@ -113,6 +118,10 @@ angular.module('sccnlp.session')
 
 			return localStorageService.get('id_token');
 		};
+		
+		function _getIdPuerto(){
+			return localStorageService.get('idPuerto');			
+		}
 
 		function _getUserData() {
 			
@@ -122,7 +131,8 @@ angular.module('sccnlp.session')
 			if(token && !_userData.username && 
 			   !jwtHelper.isTokenExpired(token)){
 				
-				_fillUserData(token);
+				
+				_fillUserData(token, _getIdPuerto());
 			}
 			
 			return _userData;
@@ -132,8 +142,10 @@ angular.module('sccnlp.session')
 
 		login_empresa : _login_empresa,
 		getIdToken : _getIdToken,
+		getIdPuerto: _getIdPuerto,
 		isLoggedIn : _isLoggedIn,
 		logout : _logout,
-		getUserData : _getUserData
+		getUserData : _getUserData,
+		setIdPuerto : _setIdPuerto
 	};
 } ]);

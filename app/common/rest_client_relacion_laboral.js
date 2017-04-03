@@ -52,12 +52,14 @@ angular.module('sccnlp.common')
     				_callback_error);
         }
 
-    	wrapper.getDetalleRelacionLaboral = function(id, _callback_fn,_callback_error) {
+    	wrapper.getDetalleRelacionLaboral = function(_id, _callback_fn,_callback_error) {
 
     		var _contrato = {
+    				
+    				idContrato : _id,
     				idUsuario           : 1,
-    				rutEmpresa          : 1,
-    				dvEmpresa           : 2,
+    				rutEmpresa          : "1",
+    				dvEmpresa           : "2",
     				trabajador			: {
     					rut             : 2222222,
     					dv              : "k",

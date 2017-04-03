@@ -8,48 +8,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 	var wrapper = {};
 	
-	wrapper.prepararDatos = function(_userId,_trabajador,_empleador,_contrato){
-		
-		// separación de rut / dv
-		
-		var splitRutEmpleador = _empleador.rutEmpleador.split("-");
-		
-		var _rut_trabajador = null;
-		var _dv_trabajador = '';
-		var _pasaporte = '';
-		
-		if(trabajador.documentoIdentificador == 'rut') {
-			
-			var splitRut =  trabajador.numDocIdentificador.split("-");
-			_rut_trabajador = splitRut[0];
-			_dv_trabajador = splitRut[1];
-			
-		} else if (trabajador.documentoIdentificador == 'pasaporte'){
-			
-			_pasaporte = numDocIdentificador;
-			
-		} else {
-			//error !!
-		}
-		
-		// separación de nombres
-		
-		var _apellido_paterno = "";
-		var _apellido_materno = "";
-		
-		var split_apellidos = trabajador.apellidos.split(" ");
-		_apellido_materno = split_apellidos[1];
-		_apellido_paterno = split_apellidos[0];
-		
+	wrapper.prepararDatos = function(_userId,_rut_empleador,_dv_empleador,_trabajador,_contrato){
+
 		var dateFormat = 'yyyy/MM/dd';
 		var timeFormat = 'HH:mm';
-		
-		var fechaTermContrato = "";
-		
-		if(contrato.fechaTerminoDelContrato)
-			fechaTermContrato = $filter('date')(contrato.fechaTerminoDelContrato, dateFormat);
-		
-		
+
 		var generarHorario = function(_horariosIn){
 			
 			if(!_horariosIn)
@@ -92,57 +55,67 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		
 		// objeto a ser enviado
 		
-		var _contrato = {
-			idUsuario           : userId,
-			rutEmpresa          : splitRutEmpleador[0],
-			dvEmpresa           : splitRutEmpleador[1],
-			rutTrabajador       : _rut_trabajador,
-			dvTrabajador        : _dv_trabajador,
-			pasaporte           : _pasaporte,
-			nombres             : trabajador.nombres,
-			apellidoPaterno     : _apellido_paterno,
-			apellidoMaterno     : _apellido_materno,
-			idNacionalidad      : trabajador.nacionalidad.id,
-			fechaNacimiento     : $filter('date')(trabajador.fechaDeNacimiento, dateFormat),
-			idEstadoCivil       : trabajador.estadoCivil.id,
-			idSexo              : trabajador.sexo.id,
-			domicilio           : trabajador.domicilio,
-			email               : trabajador.email,
-			rutAFP              : trabajador.AFPSelected.rut,
-			dvAFP               : trabajador.AFPSelected.dv,
-			rutISAPRE           : trabajador.ISAPRESelected.rut,
-			dvISAPRE            : trabajador.ISAPRESelected.dv,
-			fechaCelebContrato  : $filter('date')(contrato.fechaDeCelebracionDelContrato, dateFormat),
-			idTipoContrato      : contrato.tipoContratoSelected,
-			fechaInicioContrato : $filter('date')(contrato.fechaDeInicioDelContrato, dateFormat),
-			fechaTerminoContrato: fechaTermContrato,
-			idModalidad         : contrato.modalidadDePagoSelected,
+		var _idAFP = null;
+		var _idISAPRE = null;
+		
+		if(_trabajador.ISAPRE && _trabajador.ISAPRE.id)
+			_idISAPRE = _trabajador.ISAPRE.id;
+		
+		if(_trabajador.AFP && _trabajador.AFP.id)
+			_idAFP = _trabajador.AFP.id;
+		
+		var contrato_out = {
+	              idContrato: _contrato.id,
+	              idUsuario: _userId,
+	              rutEmpresa: _rut_empleador,
+	              dvEmpresa: _dv_empleador,
+	              trabajador:{
+	                    rut: _trabajador.rut,
+	                    dv: _trabajador.dv,
+	                    pasaporte: _trabajador.pasaporte,
+	                    nombres: _trabajador.nombres,
+	                    apellidoPaterno: _trabajador.apellidoPaterno,
+	                    apellidoMaterno: _trabajador.apellidoMaterno,
+	                    idNacionalidad: _trabajador.nacionalidad.id,
+	                    fechaNacimiento: $filter('date')(_trabajador.fechaNacimiento,dateFormat),
+	                    idEstadoCivil: _trabajador.estadoCivil.id,
+	                    idSexo: _trabajador.sexo.id,
+	                    domicilio       : _trabajador.domicilio,
+	                    email: _trabajador.email,
+	                    idIsapre: _idISAPRE,
+	                    idAFP: _idAFP
+	                 },
+	              fechaCelebContrato   : $filter('date')(_contrato.fechaCelebContrato,dateFormat),
+	              idTipoContrato       : _contrato.idTipoContrato,
+	              fechaInicioContrato  :  $filter('date')(_contrato.fechaInicioContrato,dateFormat),
+	              fechaTerminoContrato :  $filter('date')(_contrato.fechaTerminoContrato,dateFormat)||"",
+	              idModalidad: _contrato.idModalidadPago,
             
             labores: []
     		}
 		
-		for(var i=0;i<contrato.datosLabores.length;i++){
+		for(var i=0;i<_contrato.labores.length;i++){
 			
-			var datosLabor = contrato.datosLabores[i];
+			var labor = _contrato.labores[i];
 			
-			_contrato.labores.push( {
-
-				idLabor          : datosLabor.laborSelect,
-				idFuncion        : datosLabor.funcionSelect,
-				idLocacion       : datosLabor.lugarPrestacionServicios,
-				idJornada        : datosLabor.tipoJornada,
-				horario          : generarHorario(datosLabor.horario),
-				acuerdoDescanso  : generarAcuerdoDescanso(datosLabor.acuerdoDescanso),
-				remuneracionBruta: datosLabor.remunBruta
+			contrato_out.labores.push( {
+				idDetalle        : labor.id,
+				idLabor          : labor.idLabor,
+				idFuncion        : labor.idFuncion,
+				idLocacion       : labor.idLugar,
+				idJornada        : labor.idJornada,
+				horario          : generarHorario(labor.horario),
+				acuerdoDescanso  : generarAcuerdoDescanso(labor.acuerdoDescanso),
+				remuneracionBruta: labor.remuneracionBruta
 			});		
 		}
 		
-		return _contrato;
+		return contrato_out;
 	}
 
-	wrapper.actualizar = function(userId, trabajador, empleador, contrato, _callback_fn){
+	wrapper.actualizar = function(userId,rut_empleador,dv_empleador, trabajador, contrato, _callback_fn){
 		
-		var _contrato = wrapper.prepararDatos(userId,trabajador,empleador,contrato);
+		var _contrato = wrapper.prepararDatos(userId,rut_empleador,dv_empleador,trabajador,contrato);
 		var outFormat = [_contrato];
 		
 		return RestClientRelacionLaboral.actualizarRelacionLaboral(outFormat, _callback_fn, function(error){
@@ -150,9 +123,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		});
 	}
 	
-	wrapper.registrar = function(userId, trabajador, empleador, contrato, _callback_fn){
+	wrapper.registrar = function(userId,rut_empleador,dv_empleador, trabajador, contrato, _callback_fn){
 
-		var _contrato = wrapper.prepararDatos(userId,trabajador,empleador,contrato);
+		var _contrato = wrapper.prepararDatos(userId,rut_empleador,dv_empleador,trabajador,contrato);
 		var outFormat = [_contrato];
 		
 		return RestClientRelacionLaboral.registrarRelacionLaboral(outFormat, _callback_fn, function(error){

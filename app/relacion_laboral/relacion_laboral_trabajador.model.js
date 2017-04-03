@@ -8,6 +8,9 @@ angular.module('sccnlp.relacionLaboral')
 	
 	 function Trabajador(_rut, _dv, _pasaporte, _nombres, _apPat, _apMat, idSexo, _fecNac, _email, _domicilio){
 
+		 	if(_fecNac && typeof _fecNac == 'string')
+		 		_fecNac = Date.parse(_fecNac);
+		 
 	    	this.sexo = null;
 			this.AFP = null;
 			this.ISAPRE = null;

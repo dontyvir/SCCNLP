@@ -55,14 +55,26 @@
 		</div>
 	</div>
 
-	<!-- Apellidos Trabajador-->
+	<!-- Apellido Paterno -->
 
 	<div class="form-group row">
-		<label for="apellidos" class="col-md-3 col-form-label">{{messages.apellidosTrabajador}} *</label>
+		<label for="apellidoPat" class="col-md-3 col-form-label">{{messages.apellidoPaterno}} *</label>
 		
 		<div class="col-md-4">
-			<input id="apellidos" ng-model="trabajador.apellidos" type="text" ng-required="true"
-			       class="form-control" placeholder="{{messages.apellidosTrabajador}}"
+			<input id="apellidoPat" ng-model="trabajador.apellidoPaterno" type="text" ng-required="true"
+			       class="form-control" placeholder="{{messages.apellidoPaterno}}"
+			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
+		</div>
+	</div>
+
+	<!-- Apellido Materno-->
+
+	<div class="form-group row">
+		<label for="apellidoMat" class="col-md-3 col-form-label">{{messages.apellidoMaterno}} *</label>
+		
+		<div class="col-md-4">
+			<input id="apellidoMat" ng-model="trabajador.apellidoMaterno" type="text" ng-required="true"
+			       class="form-control" placeholder="{{messages.apellidoMaterno}}"
 			       ng-readonly="trabajador.documentoIdentificador == 'rut'">
 		</div>
 	</div>
@@ -75,11 +87,11 @@
 		<div class="col-md-4">
 			       
 			 <select ng-model="trabajador.nacionalidad.id" ng-show ="trabajador.documentoIdentificador == 'pasaporte'" id="nacionalidad-trabajador"
-			  class="form-control" ng-options="operator.id as operator.gentilicio for operator in nacionalidades" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
+			  class="form-control" ng-options="operator as operator.gentilicio for operator in nacionalidades track by operator.id" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
 			 	<option value="">{{messages.selectElijaOpcion}}</option>
 			 </select>
 			 
-			<span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.nacionalidad.glosa}}</span>
+			<span ng-show ="trabajador.documentoIdentificador == 'rut'">{{trabajador.nacionalidad.gentilicio}}</span>
 		</div>
 	</div>
 
@@ -107,7 +119,7 @@
 		
 		<div class="col-md-4">
 		    <p class="input-group">
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="trabajador.fechaDeNacimiento"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="trabajador.fechaNacimiento"
 		       is-open="popupFecNacTrab.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
 		       id="fecha-nac-trabajador" ng-readonly="trabajador.documentoIdentificador == 'rut'"/>
 		       
@@ -129,7 +141,7 @@
 		<div class="col-md-4">
 
 			 <select ng-model="trabajador.estadoCivil.id" ng-show ="trabajador.documentoIdentificador == 'pasaporte'"
-			  class="form-control" ng-options="operator.id as operator.glosa for operator in estadoCivil" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
+			  class="form-control" ng-options="operator as operator.glosa for operator in estadoCivil track by operator.id" ng-required="trabajador.documentoIdentificador == 'pasaporte'">
 			 	<option value="">{{messages.selectElijaOpcion}}</option>
 			 </select>
 			 
@@ -137,54 +149,8 @@
 		</div>
 	</div>
 
-	<!--  Domicilio -->
-	
-	<div class="form-group row">
-		<label for="domicilioGoogleMaps" class="col-md-3 col-form-label">{{messages.domicilio}} *</label>
-		
-		<div class="col-md-4">
-
-                <input ng-model="trabajador.domicilio" id="domicilioGoogleMaps" type="text" class="form-control"
-                placeholder="{{messages.domicilio}}" ng-required="true">
-		</div>
-	</div>	
-
-	<!-- Email -->
-
-	<div class="form-group row">
-		<label for="email" class="col-md-3 col-form-label">{{messages.email}}</label>
-		
-		<div class="col-md-4">
-                <input id="email" ng-model="trabajador.email" type="email" class="form-control"
-                placeholder="{{messages.email}}">
-		</div>
-	</div>	
-	
-	<!-- AFP Trabajador -->
-	
-	<div class="form-group row" ng-show="trabajador.documentoIdentificador == 'rut'">
-		<label for="afp-trabajador" class="col-md-3 col-form-label">{{messages.AFPTrabajador}}</label>
-		
-		<div class="col-md-4">
-                <select ng-model="trabajador.AFPSelected"  ng-options="operator as operator.glosa for operator in AFP"
-                 		class="form-control form-control-sm col-md-12" id="afp-trabajador">
-                 		<option value="">{{messages.selectElijaOpcion}}</option>
-                </select>
-		</div>
-	</div>
-
-	<!-- ISAPRE Trabajador -->
-	
-	<div class="form-group row" ng-show="trabajador.documentoIdentificador == 'rut'">
-		<label for="isapre-trabajador" class="col-md-3 col-form-label">{{messages.ISAPRETrabajador}}</label>
-		
-		<div class="col-md-4">
-			<select ng-model="trabajador.ISAPRESelected" ng-options="operator as operator.glosa for operator in ISAPRE"
- 					class="form-control form-control-sm col-md-12" id="isapre-trabajador">
- 					<option value="">{{messages.selectElijaOpcion}}</option>
- 			</select>
-		</div>
-	</div>
+	<!-- form domicilio, email, afp, isapre -->
+	<ng-include src="'relacion_laboral/datos_trabajador.fragment.html'"></ng-include>
 
 	<div class="row">
 	    <div class="col-md-9">

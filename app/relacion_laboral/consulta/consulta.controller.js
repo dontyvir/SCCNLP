@@ -5,10 +5,11 @@ angular.module('sccnlp.relacionLaboral.consulta')
 .controller('ConsultaCtrl', ['$scope', 'consultaMessages', '$uibModal', 'RestClient','RestClientRelacionLaboral',
 	        'sessionService','$resource', '$filter', 'ingIndivMessages','Trabajador','Empleador','Contrato','Domicilio',
 	        'Labor','loadAcuerdoJornadaLaboral','loadAcuerdoDescanso','ModalEsperaCarga','RegistrarContrato',
+	        'GoogleMapsAutoComplete',
 	
 	function($scope, consultaMessages, $uibModal, RestClient, RestClientRelacionLaboral,sessionService,
 			$resource, $filter, ingIndivMessages, Trabajador,Empleador,Contrato,Domicilio,Labor,loadAcuerdoJornadaLaboral,
-			loadAcuerdoDescanso,ModalEsperaCarga,RegistrarContrato) {
+			loadAcuerdoDescanso,ModalEsperaCarga,RegistrarContrato,GoogleMapsAutoComplete) {
 
 	// Model Ingreso Relación Laboral
 	$scope.relLab = {
@@ -232,8 +233,8 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	
     	var dat = contratoData;
 
-    	var _contrato = new Contrato(dat.fechaCelebContrato,dat.idTipoContrato,dat.fechaInicioContrato,
-    			                    dat.fechaTerminoContrato,dat.idModalidadPago,dat.labores, true);
+    	var _contrato = new Contrato(dat.idContrato, dat.fechaCelebContrato,dat.idTipoContrato,dat.fechaInicioContrato,
+    			                    dat.fechaTerminoContrato,dat.idModalidad,dat.labores, true);
     	
     	return _contrato;
     }
@@ -251,11 +252,10 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	
     	return data.pasaporte;
     }
-    
-    
+
     /** al cambiar de región se recarga la lista de comunas **/
     $scope.cambioRegion = function(){
-    	$scope.comunas = RestClient.getComunasByIdRegion($scope.datos.trabajador.domicilio.idRegion);
+    	$scope.comunas = RestClient.getComunasByIdRegion($scope.trabajador.domicilio.idRegion);
     }
     
     $scope.validateFechaTerminoContrato = function(){
@@ -333,13 +333,14 @@ angular.module('sccnlp.relacionLaboral.consulta')
 	    	    $scope.tabs[2].disable = true;
 		    	$scope.tabs[3].disable = false;
 		    	$scope.tabsActive = 3;
-		    	
+
 		    	var user_data = sessionService.getUserData();
-		    
+
 		    	var modal_carga = ModalEsperaCarga();
-		    	
+
 		    	// registro del contrato
-		    	var _result = RegistrarContrato.actualizar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
+		    	var _result = RegistrarContrato.actualizar(user_data.id, user_data.rutEmpresa,user_data.dvEmpresa,
+		    			                                   $scope.trabajador, $scope.contrato,
 		    		function(response){
 		    		
 		    		modal_carga.close(true);
@@ -424,7 +425,9 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	$scope.regiones = RestClient.getRegion(_count);
         $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa,_count);
     	
-    	$scope.datos = RestClientRelacionLaboral.getDetalleRelacionLaboral(relLab.idContrato,_count);
+    	$scope.datos = RestClientRelacionLaboral.getDetalleContrato(relLab.idContrato,_count);
+    	
+    	var autocomplete = GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'));
     }
     
     $scope.ingresoContinue = function(nTab, form){

@@ -78,8 +78,8 @@ angular.module('sccnlp.common')
 		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'},{},_callback_fn,_callback_error);
 	}
 
-	wrapper.getDatosEmpresa = function(_rut, _callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut},{}, _callback_fn);
+	wrapper.getDatosEmpresa = function(_rut, _dv,_callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut+'/'+_dv},{}, _callback_fn);
 		
 	}
 	

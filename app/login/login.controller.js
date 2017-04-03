@@ -2,18 +2,31 @@
 
 angular.module('sccnlp.login')
 
-.controller('LoginCtrl', ['$scope', '$state', 'sessionService','loginMessages',
-	function($scope, $state, sessionService, loginMessages) {
+.controller('LoginCtrl', ['$scope', '$state', 'sessionService','loginMessages','RestClient',
+	function($scope, $state, sessionService, loginMessages,RestClient) {
 	
 	$scope.messages = loginMessages;
-		
+	
 	$scope.dataLoading = false;
 	
 	$scope.loginData = {username: null, password: null};
 	
+	$scope.idPuerto = null;
+	
+	$scope.isLoggedIn = false;
+
+	$scope.puertos = null;
+	
 	$scope.loginClaveUnica = function(){
 		
 		
+	}
+	
+	$scope.redirectMain = function(){
+		
+		// guardamos el puerto seleccionado
+		sessionService.setIdPuerto($scope.idPuerto);
+		$state.go('main.composite');		
 	}
 	
 	$scope.ingresarClaveEmpresa = function() {
@@ -24,8 +37,13 @@ angular.module('sccnlp.login')
 				function(loginSuccessful, error_data){
 			
 			$scope.dataLoading = false;
-			if(loginSuccessful)
-				$state.go('main.composite');
+			
+			if(loginSuccessful){
+
+				$scope.puertos = RestClient.getPuerto(function(){ // esperamos hasta cargar los puertos
+					$scope.isLoggedIn = true;	
+				});
+			}
 			else {
 
 				if(error_data){

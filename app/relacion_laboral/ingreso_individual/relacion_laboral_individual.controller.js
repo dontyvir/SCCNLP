@@ -4,10 +4,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 .controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient',
 	                              'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
-	                              'loadAcuerdoDescanso', 'loadAcuerdoJornadaLaboral',
+	                              'loadAcuerdoDescanso', 'loadAcuerdoJornadaLaboral','Trabajador',
+	                              'Contrato','Empleador','Labor','GoogleMapsAutoComplete',
 	
 	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,
-			 sessionService, RegistrarContrato,loadAcuerdoDescanso,loadAcuerdoJornadaLaboral) {
+			 sessionService, RegistrarContrato,loadAcuerdoDescanso,loadAcuerdoJornadaLaboral,
+			 Trabajador, Contrato, Empleador, Labor,GoogleMapsAutoComplete) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -40,76 +42,17 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	
 	// Datos del empleador Model
 	
-	$scope.empleador = {
-			
-			rutEmpleador : null,
-			nombreEmpresa :null,
-			tipoEmpresa : null,
-			domicilio : null,
-			terminoDeVigencia : null,
-			rutRepresentanteLegal : null,
-			nombreCompletoRepresentanteLegal :null,
-			emailRepresentanteLegal : null,
-
-			rutUsuarioQueRegistra : null,
-			nombreCompletoUsuarioQueRegistra : null,
-			cargoEnLaEmpresaQueRegistraData : null
-			
-	};
+	$scope.empleador = new Empleador();
 	
     // Datos del trabajador Model
 	
-	$scope.trabajador = {
-		
-			loading : false, // flag para elemento en pantalla
-
-			AFPSelected : null,
-			ISAPRESelected : null,
-			domicilio : null,
-			email : null,
-			documentoIdentificador : 'rut', // opción por defecto
-			numDocIdentificador : null,
-			sexo : {id:null,glosa:null},
-			nombres : null,
-			apellidos : null,
-			nacionalidad : {id:null, glosa:null},
-			fechaDeNacimiento : null,
-			estadoCivil : {id:null,glosa:null},
-			
-	};
+	$scope.trabajador = new Trabajador();
+	$scope.trabajador.documentoIdentificador = 'rut'; // pot defecto
 	
-	
-	// prototipo datos Labores
-	
-	function DatosLabores(_id) {
-		
-		this.id = _id,
-		this.laborSelect = null;
-		this.funcionSelect = null;
-		this.lugarPrestacionServicios = null;
-		this.horario = null;
-		this.acuerdoDescanso = null;
-		this.remunBruta = null;
-		this.tipoJornada = null;
-		this.acuerdoEmpty = true;
-		this.horarioEmpty = true;
-		
-	}
 	
 	// información del contrato Model
 	
-	$scope.contrato = {
-			
-		    lugarDeCelebracionDelContrato : null,
-		    fechaDeCelebracionDelContrato : null,
-		    tipoContratoSelected : null,
-		    fechaDeInicioDelContrato : null,
-		    fechaTerminoDelContrato : null,
-		    diaDePagoSelected : null,
-		    total : 0,
-		    datosLabores : [new DatosLabores(0)]
-			
-	};
+	$scope.contrato = new Contrato();
 	
     /**
      * Variables para recibir listados en combobox
@@ -166,9 +109,9 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	
     	var _ret = true;
     	
-    	for(var i=0;i<$scope.contrato.datosLabores.length;i++){
+    	for(var i=0;i<$scope.contrato.labores.length;i++){
     		
-    		var lab = $scope.contrato.datosLabores[i];
+    		var lab = $scope.contrato.labores[i];
     		
     		if(!lab.acuerdoDescanso) {
     			_ret = false;
@@ -183,11 +126,16 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	
     	return _ret;
     }
+
+    /** al cambiar de región se recarga la lista de comunas **/
+    $scope.cambioRegion = function(){
+    	$scope.comunas = RestClient.getComunasByIdRegion($scope.trabajador.domicilio.idRegion);
+    }
     
     $scope.addRow = function () {
     	    	
-    	var id = $scope.contrato.datosLabores.length;
-    	$scope.contrato.datosLabores.push(new DatosLabores(id));
+    	var id = $scope.contrato.labores.length;
+    	$scope.contrato.labores.push(new Labor(id));
     };
     
     $scope.deleteRow = function(rowModel) {
@@ -195,7 +143,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	if(!confirm($scope.messages.estaSeguro))
     		return;
 
-    	var datos = $scope.contrato.datosLabores;
+    	var datos = $scope.contrato.labores;
     	
     	datos.splice(rowModel.id, 1); // remove 1 element from index rowModel.id
     	
@@ -210,11 +158,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.updateTotal = function () {
 
     	var total = 0;
-    	var length = $scope.contrato.datosLabores.length;
+    	var length = $scope.contrato.labores.length;
     	
     	for(var i=0; i < length; i++) {
     		
-    		var remun = $scope.contrato.datosLabores[i].remunBruta;
+    		var remun = $scope.contrato.labores[i].remuneracionBruta;
     		if(remun && !isNaN(remun))
     		total += remun;
     	}
@@ -279,15 +227,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	
 	    	if(!$scope.validateHorariosAcuerdos())
 	    		return;
-	    	
-	    	$scope.ingresoIdNum = (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-	    	
+
 		    var modalInstance = $uibModal.open({
 
 			      ariaLabelledBy: 'modal-title',
 			      ariaDescribedBy: 'modal-body',
-			      templateUrl: 'relacion_laboral/recordatorio_legal/recordatorio_legal.modal.view.html',
-			      controller: 'RecordatorioLegalController',
+			      templateUrl: 'relacion_laboral/confirmacion_guardado/recordatorio_legal.modal.view.html',
+			      controller: 'ConfirmacionGuardadoCtrl',
 			      controllerAs: '$ctrl'
 			    });
 
@@ -303,7 +249,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			    	var user_data = sessionService.getUserData();
 			    
 			    	// registro del contrato
-			    	var _result = RegistrarContrato.registrar(user_data.id, $scope.trabajador, $scope.empleador, $scope.contrato,
+			    	var _result = RegistrarContrato.registrar(user_data.id, $scope.empleador.rut,$scope.empleador.dv, $scope.trabajador, $scope.contrato,
 			    		function(response){
 			    		
 			    		$scope.relLab.loading = false;
@@ -366,30 +312,17 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    		_pasaporte = id_doc;
 	    	}
 	    	
-	    	RestClient.getDatosPersona(_rut, _pasaporte, function(data){
+	    	RestClient.getDatosPersona(_rut, _dv, _pasaporte, function(dat){
 
-	    		for(var i=0;i<$scope.AFP.length;i++){
-	    			if($scope.AFP[i].id == data.idAFP)
-	    				$scope.trabajador.AFPSelected = $scope.AFP[i];
-	    		}
-	    		
-	    		for(var i=0;i<$scope.ISAPRE.length;i++){
-	    			if($scope.ISAPRE[i].id == data.idISAPRE)
-	    				$scope.trabajador.ISAPRESelected = $scope.ISAPRE[i];
-	    		}
-	    		
-	    		
-	    		if(data.idSexo && data.idSexo == 2)
-	    			$scope.trabajador.sexo = {id: 2, glosa: "Femenino"};
-	    		else
-	    			$scope.trabajador.sexo = {id: 1, glosa: "Masculino"};
-	    		
-		        $scope.trabajador.nombres = data.nombres;
-		        $scope.trabajador.apellidos = data.apellidoPaterno+" "+data.apellidoMaterno;
-		        $scope.trabajador.nacionalidad = {id: data.idNacionalidad,glosa: data.nombreNacionalidad};
-		        $scope.trabajador.fechaDeNacimiento = new Date(data.fechaNacimiento);
-		        $scope.trabajador.estadoCivil = {id: data.idEstadoCivil, glosa: data.estadoCivil};
-		        $scope.trabajador.email = data.email;
+	        	var _trabajador = new Trabajador(dat.rut,dat.dv,dat.pasaporte,dat.nombres,dat.apellidoPaterno,
+	        			                         dat.apellidoMaterno,dat.idSexo,dat.fechaNacimiento,dat.email,dat.domicilio);
+
+	        	_trabajador.setISAPRE(dat.idIsapre, $scope.ISAPRE);
+	        	_trabajador.setAFP(dat.idAFP, $scope.AFP);
+	        	_trabajador.setEstadoCivil(dat.idEstadoCivil, $scope.estadoCivil);
+	        	_trabajador.setNacionalidad(dat.idNacionalidad, $scope.nacionalidades);
+	        	
+	        	$scope.trabajador = _trabajador;
 		        
 		        $scope.trabajadorLoading = false;
 	    	});
@@ -408,11 +341,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	 });
 	    };
 	    
-	    $scope.loadDataEmpresa = function(_rut){
+	    $scope.loadDataEmpresa = function(_rut, _dv){
 	    	
-	        var dat = RestClient.getDatosEmpresa(_rut, function(){
+	        var dat = RestClient.getDatosEmpresa(_rut,_dv, function(){
 	        	
-		        $scope.empleador.rutEmpleador = dat.rutEmpresa+"-"+dat.dvEmpresa;
+		        $scope.empleador.rut = dat.rutEmpresa
+		        $scope.empleador.dv = dat.dvEmpresa;
 		        $scope.empleador.nombreEmpresa = dat.razonSocial;
 		        $scope.empleador.tipoEmpresa = dat.actividades[dat.idActividadPrincipal].glosaActividad;
 		        		        
@@ -449,6 +383,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        $scope.tiposJornada = RestClientRelacionLaboral.getTipoJornada();
 	        $scope.modalidadDePago = RestClientRelacionLaboral.getModalidadPago();
 	        $scope.nacionalidades = RestClient.getNacionalidad();
+	    	$scope.regiones = RestClient.getRegion();
 
 	        /**
 	         * traemos los datos de sesión
@@ -464,7 +399,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	         */
 	        var session_data = sessionService.getUserData();
 
-	        $scope.loadDataEmpresa(session_data.rutEmpresa);
+	        $scope.loadDataEmpresa(session_data.rutEmpresa,session_data.dvEmpresa);
 	        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa);
 	        $scope.loadDataUsuario(session_data.id);
 	        
@@ -474,22 +409,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        });
 	    };
 
-	    $scope.googlemapsInit = function(){
-	    	
-	        // inicialización google maps autocompletar
-	        
-	        var defaultBounds = new google.maps.LatLngBounds(
-	        		  new google.maps.LatLng(-33.8902, 151.1759),
-	        		  new google.maps.LatLng(-33.8474, 151.2631));
-
-    		var input = document.getElementById('domicilioGoogleMaps');
-    		var options = {
-    		 // bounds: defaultBounds,
-    		  types: ['address']
-    		};
-
-    		var autocomplete = new google.maps.places.Autocomplete(input, options);
-	    }
+	    $scope.googlemapsInit = function(){GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'));}
 	    
 	    // se llaman las funciones de inicialización dinámicas
 	    $scope.init();

@@ -1,16 +1,20 @@
 'use strict';
 
 // definición de módulo menu
-angular.module('sccnlp.nombradas')
+angular.module('sccnlp.jornadas')
 
 .controller('jornadasIndividualCtrl', ['$scope', '$state', '$filter', 'jornadasMessages', '$uibModal', '$rootScope', 'RestClient', 'sessionService', 'RestClientJornada', 'validateRut',
 
-    function($scope, $state, $filter, nombradasMessages, $uibModal, $rootScope, RestClient, sessionService, RestClientJornada, validateRut) {
+    function($scope, $state, $filter, jornadasMessages, $uibModal, $rootScope, RestClient, sessionService, RestClientJornada, validateRut) {
 
         //--------------------------- Controller for NombradanIndividualTab.html ------------------------------------
-        $scope.messages = nombradasMessages;
+        $scope.messages = jornadasMessages;
         var session_data = sessionService.getUserData();
+        $scope.blockButton = true;
         var vm = this;
+        $scope.ingreso = {
+            rutTrabajador: null
+        };
 
         $scope.tableDatosRegistro = [];
         //tabs
@@ -44,7 +48,8 @@ angular.module('sccnlp.nombradas')
 
         // Disable weekend selection
         var dateFormat = 'yyyy-MM-dd';
-        var timeFormat = 'HH:MM';
+        var timeFormat = 'HH:mm';
+        $scope.format = 'dd/MM/yyyy'
 
         function disabled(data) {
             var date = data.date,
@@ -59,45 +64,17 @@ angular.module('sccnlp.nombradas')
             minDate: new Date(),
             startingDay: 1
         };
-        // ------------- fin datepicker --------------------
 
-        // PAGINACION DE LA TABLA 
-        $scope.currentPage = 0;
+
+        //---- paginacion
+        $scope.totalItems = 0;
+        $scope.currentPage = 1;
         $scope.pageSize = 5;
-        $scope.pages = [];
-
-        $scope.configPages = function() {
-            $scope.pages.length = 0;
-            var ini = $scope.currentPage - 4;
-            var fin = $scope.currentPage + 5;
-            if (ini < 1) {
-                ini = 1;
-                if (Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) > 5)
-                    fin = 5;
-                else
-                    fin = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize);
-            } else {
-                if (ini >= Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) - 5) {
-                    ini = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) - 5;
-                    fin = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize);
-                }
-            }
-            if (ini < 1) ini = 1;
-            for (var i = ini; i <= fin; i++) {
-                $scope.pages.push({
-                    no: i
-                });
-            }
-
-            if ($scope.currentPage >= $scope.pages.length)
-                $scope.currentPage = $scope.pages.length - 1;
+        $scope.setPage = function(pageNo) {
+            $scope.currentPage = pageNo;
         };
 
-        $scope.setPage = function(index) {
-            $scope.currentPage = index - 1;
-        };
-
-        // ---FIN DE PAGINACION DE TABLA----
+        // --- fin paginacion
 
         //funcion para mostrar un alert
         $scope.messageModal = function(message) {
@@ -115,24 +92,6 @@ angular.module('sccnlp.nombradas')
             });
         }
 
-        //---- FIN VALIDADOR DE RUT ----
-
-        $scope.validateRut = function(documentoIdentificador) {
-            var response = validateRut.validate(documentoIdentificador);
-            if (response) {
-                $scope.messagerut = ""
-                $scope.validadoRut = true;
-                $scope.messagevalidateRut = false;
-
-            } else {
-                $scope.messagerut = "El Rut no es válido :'( "
-                $scope.messagevalidateRut = true;
-                $scope.validadoRut = false;
-            }
-        }
-
-        //---- FIN VALIDADOR DE RUT ----
-
         //--- SERVICIOS ---------------
         $scope.init = function() {
 
@@ -141,6 +100,11 @@ angular.module('sccnlp.nombradas')
         };
 
         $scope.loadTrabajador = function(dato, documentoIdentificador) {
+
+            if (dato == "" || dato == undefined) {
+                $scope.validadoRut = false;
+                return;
+            }
 
             if (documentoIdentificador == 'rut') {
                 var rutTrabajador = dato.split("-")[0];
@@ -156,6 +120,7 @@ angular.module('sccnlp.nombradas')
                     $scope.animationsEnabled = true;
                     var message = "Persona no encontrada";
                     $scope.messageModal(message);
+                    $scope.validadoRut = false;
                 } else {
                     $scope.tableDatosTrabajadores.push({
                         id: $scope.tableDatosTrabajadores.length + 1,
@@ -167,24 +132,27 @@ angular.module('sccnlp.nombradas')
                         apellidosTrabajador: data.apellidoPaterno + " " + data.apellidoMaterno,
                     });
                     $scope.showTableTrabajadores = true;
-                    $scope.configPages();
+                    $scope.validadoRut = false;
+                    $scope.totalItems = $scope.tableDatosTrabajadores.length;
+                    $scope.blockButton = false;
+
                 }
             }, function(error) {
                 $scope.animationsEnabled = true;
                 var message = "Problemas en la conexión, intente mas tarde";
                 $scope.messageModal(message);
+                $scope.validadoRut = false;
             });
         }
 
         // se llaman las funciones de inicialización dinámicas
         $scope.init();
 
-        //---FIN DE  SERVICIOS ---------------
-
         // FUNCION QUE AÑADE UN TRABAJADOR AL LISTADO
         $scope.agregarTrabajador = function(rutTrabajador, documentoIdentificador) {
 
             var encontro = false;
+            $scope.validadoRut = true;
 
             $scope.popupInicio.push({
                 opened: false
@@ -193,46 +161,55 @@ angular.module('sccnlp.nombradas')
                 opened: false
             })
 
-            angular.forEach($scope.tableDatosTrabajadores, function(item, index) {
+            var response = validateRut.validate(documentoIdentificador);
+            if (response) {
+                $scope.messagerut = ""
+                $scope.messagevalidateRut = false;
+                angular.forEach($scope.tableDatosTrabajadores, function(item, index) {
 
-                if (documentoIdentificador == 'rut') {
-                    var rutTrabajadorIngresado = item.rutTrabajador + "-" + item.dv;
-                    if (rutTrabajadorIngresado == rutTrabajador) {
-                        encontro = true;
+                    if (documentoIdentificador == 'rut') {
+                        var rutTrabajadorIngresado = item.rutTrabajador + "-" + item.dv;
+                        if (rutTrabajadorIngresado == rutTrabajador) {
+                            encontro = true;
+                        }
+                    } else {
+                        if (item.pasaporteTrabajador == rutTrabajador) {
+                            encontro = true;
+                        }
                     }
+
+                });
+
+                if (encontro) {
+                    $scope.animationsEnabled = true;
+                    var message = "Se encontro un rut o pasaporte existente, por favor ingrese un nuevo rut";
+                    $scope.messageModal(message);
+                    $scope.validadoRut = false;
                 } else {
-                    if (item.pasaporteTrabajador == rutTrabajador) {
-                        encontro = true;
-                    }
+
+                    $scope.loadTrabajador(rutTrabajador, documentoIdentificador);
+                    $scope.ingreso.rutTrabajador = "";
+                    $scope.verTablaTrabajador = false;
+                    $scope.messagevalidateRut = false;
+                    $scope.totalItems = $scope.tableDatosTrabajadores.length;
+
                 }
 
-            });
-
-            if (encontro) {
-                $scope.animationsEnabled = true;
-                var message = "Se encontro un rut o pasaporte existente, por favor ingrese un nuevo rut";
-                $scope.messageModal(message);
             } else {
-
-                $scope.loadTrabajador(rutTrabajador, documentoIdentificador);
-
-                $scope.rutTrabajador = "";
+                $scope.messagerut = "El Rut no es válido"
+                $scope.messagevalidateRut = true;
                 $scope.validadoRut = false;
-                $scope.verTablaTrabajador = false;
-                $scope.messagevalidateRut = false;
-                document.getElementById('txt_rut').value = "";
-                $scope.configPages();
-
             }
 
         }
 
         // FUNCION QUE ELIMINA UN TRABAJADOR DE LA LISTADO
         $scope.eliminarTrabajador = function(id) {
-            var itemEliminar = id - 1;
+            var itemEliminar = id;
             var itemMover = id++;
             $scope.tableDatosTrabajadores.splice(itemEliminar, 1);
-            $scope.configPages();
+            $scope.totalItems = $scope.tableDatosTrabajadores.length;
+            //$scope.configPages();
         };
 
         $scope.continuar = function(tab) {
@@ -241,6 +218,7 @@ angular.module('sccnlp.nombradas')
             $scope.DatosTrabajadores = [];
             $scope.validateCampos = true;
             $scope.validateHora = true;
+            $scope.validateHoraDescanso = true;
             $scope.validateFecha = true;
 
 
@@ -248,27 +226,33 @@ angular.module('sccnlp.nombradas')
                 $scope.tableDatosTrabajadores[index].validateRow = false;
 
                 if ($scope.tableDatosTrabajadores[index].fechaInicioJornada == undefined ||
-                    $scope.tableDatosTrabajadores[index].horaInicioJornada == undefined) {
+                    $scope.tableDatosTrabajadores[index].horaInicioJornada == undefined ||
+                    ($scope.tableDatosTrabajadores[index].naveSelect == null && $scope.tableDatosTrabajadores[index].locacionSelect == null)) {
 
                     $scope.tableDatosTrabajadores[index].validateRow = true;
                     $scope.validateCampos = false;
                 } else {
 
-                    if ($scope.tableDatosTrabajadores[index].horaInicioJornada >= $scope.tableDatosTrabajadores[index].horaTerminoJornada) {
-
+                    if (($scope.tableDatosTrabajadores[index].horaInicioJornada >= $scope.tableDatosTrabajadores[index].horaTerminoJornada) && ($scope.tableDatosTrabajadores[index].fechaInicioJornada >= $scope.tableDatosTrabajadores[index].fechaTerminoJornada)) {
                         $scope.validateHora = false;
                         $scope.tableDatosTrabajadores[index].validateRow = true;
                     }
-                    if ($scope.tableDatosTrabajadores[index].fechaInicioJornada >= $scope.tableDatosTrabajadores[index].fechaTerminoJornada) {
 
+                    if ($scope.tableDatosTrabajadores[index].horaInicioDescanso >= $scope.tableDatosTrabajadores[index].horaTerminoDescanso) {
+                        $scope.validateHoraDescanso = false;
+                        $scope.tableDatosTrabajadores[index].validateRow = true;
+                    }
+
+                    if ($scope.tableDatosTrabajadores[index].fechaInicioJornada > $scope.tableDatosTrabajadores[index].fechaTerminoJornada) {
                         $scope.validateFecha = false;
                         $scope.tableDatosTrabajadores[index].validateRow = true;
                     }
+
                 }
 
                 if ($scope.validateCampos && $scope.validateHora && $scope.validateFecha) {
                     $scope.DatosTrabajadores.push({
-                        IdEmpresa: 2,
+                        idEmpresa: session_data.idEmpresa,
                         nombre: $scope.tableDatosTrabajadores[index].nombresTrabajador,
                         apellidos: $scope.tableDatosTrabajadores[index].apellidosTrabajador,
                         rut: $scope.tableDatosTrabajadores[index].rutTrabajador,
@@ -294,7 +278,7 @@ angular.module('sccnlp.nombradas')
 
             });
 
-            if ($scope.validateCampos && $scope.validateHora && $scope.validateFecha) {
+            if ($scope.validateCampos && $scope.validateHora && $scope.validateFecha && $scope.validateHoraDescanso) {
 
                 $scope.registrarJornada($scope.DatosTrabajadores);
 
@@ -309,6 +293,11 @@ angular.module('sccnlp.nombradas')
                     var message = "La hora de inicio de jornada debe ser menor a la de término de jornada";
                     $scope.messageModal(message);
                 }
+                if (!$scope.validateHoraDescanso) {
+                    $scope.animationsEnabled = true;
+                    var message = "La hora de inicio de descanso debe ser menor a la de término de descanso";
+                    $scope.messageModal(message);
+                }
                 if (!$scope.validateFecha) {
                     $scope.animationsEnabled = true;
                     var message = "El dia de inicio de jornada debe ser menor a la de término de jornada";
@@ -321,41 +310,49 @@ angular.module('sccnlp.nombradas')
 
         $scope.registrarJornada = function(data) {
 
+            $scope.blockButton = true;
+            $scope.validadoRut = true;
+
             RestClientJornada.registrarJornada(data, function(response) {
 
                 angular.forEach(response, function(item, index) {
-                    if (item.pasaporte == null) {
+                    if (item.rut != null) {
                         $scope.rutPasaporte = item.rut + "-" + item.dv;
                     } else {
                         $scope.rutPasaporte = item.pasaporte;
                     }
 
                     $scope.tableDatosRegistro.push({
-                        id: '1',
                         idTrabajador: item.id,
                         rutPasaporteTrabajador: $scope.rutPasaporte,
                         nombresTrabajador: item.nombre,
                         apellidosTrabajador: item.apellidos,
                         nave: item.nave,
                         lugar: item.lugar,
-                        FechaInicioJornadaTrabajador: $filter('date')(item.fechaInicioJornada, dateFormat),
+                        FechaInicioJornadaTrabajador: $filter('date')(item.fechaInicioJornada, $scope.format),
                         HoraInicioJornadaTrabajador: $filter('date')(item.horaInicioJornada, timeFormat),
                         HoraInicioDescansoTrabajador: $filter('date')(item.horaInicioDescanso, timeFormat),
                         HoraTerminoDescansoTrabajador: $filter('date')(item.horaTerminoDescanso, timeFormat),
-                        FechaTerminoJornadaTrabajador: $filter('date')(item.fechaFinJornada, dateFormat),
+                        FechaTerminoJornadaTrabajador: $filter('date')(item.fechaFinJornada, $scope.format),
                         HoraTerminoJornadaTrabajador: $filter('date')(item.horaTerminoJornada, timeFormat),
                     });
 
-                    var modalInstance = $uibModal.open({
-                        templateUrl: 'jornadas/jornadas.modal.view.html',
-                        controller: 'ModalIndividualCtrl',
-                        size: 'lg'
-                    });
                 })
+                var modalInstance = $uibModal.open({
+                    templateUrl: 'jornadas/jornadas.modal.view.html',
+                    controller: 'ModalIndividualCtrl',
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                $scope.totalItems = $scope.tableDatosRegistro.length;
+                $scope.blockButton = false;
+                $scope.validadoRut = false;
 
             }, function(error) {
                 $scope.animationsEnabled = true;
                 var message = error.statusText;
+                $scope.blockButton = false;
+                $scope.validadoRut = false;
             });
         }
 
@@ -438,6 +435,21 @@ angular.module('sccnlp.nombradas')
 
             };
 
+            angular.forEach($scope.tableDatosRegistro, function(data, i){
+
+                if (data.FechaTerminoJornadaTrabajador == null)
+                    data.FechaTerminoJornadaTrabajador = "";
+                if (data.lugar == null)
+                    data.lugar = "";
+                if (data.nave == null)
+                    data.nave = "";
+                if (data.HoraInicioDescansoTrabajador == null)
+                    data.HoraInicioDescansoTrabajador = "";
+                if (data.HoraTerminoDescansoTrabajador == null)
+                    data.HoraTerminoDescansoTrabajador = "";
+                if (data.HoraTerminoJornadaTrabajador == null)
+                    data.HoraTerminoJornadaTrabajador = "";
+            })
 
             alasql('SELECT * INTO XLS("Reporte Copia Registro de Jornada - ' + new Date() + '.xls",?) FROM ?', [mystyle, $scope.tableDatosRegistro]);
 
@@ -452,29 +464,20 @@ angular.module('sccnlp.nombradas')
 
 ])
 
-.filter('startFromGrid', function() {
-        return function(input, start) {
-            console.log(input);
-            console.log(start);
-            start = +start;
-            return input.slice(start);
-        }
+.controller('ModalIndividualCtrl', function($scope, $uibModalInstance, $rootScope) {
 
-    })
-    .controller('ModalIndividualCtrl', function($scope, $uibModalInstance, $rootScope) {
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+    $scope.ok = function() {
 
-        $scope.cancel = function() {
-            $uibModalInstance.dismiss('cancel');
-        };
-        $scope.ok = function() {
+        $uibModalInstance.close();
+        if (!$rootScope.tab || $rootScope.tab < 1 || $rootScope.tab > 2)
+            return;
 
-            $uibModalInstance.close();
-            if (!$rootScope.tab || $rootScope.tab < 1 || $rootScope.tab > 2)
-                return;
+        $rootScope.tabs[$rootScope.tab].disable = false;
+        $rootScope.tabs[0].disable = true;
+        $rootScope.tabsActive = $rootScope.tab;
 
-            $rootScope.tabs[$rootScope.tab].disable = false;
-            $rootScope.tabs[0].disable = true;
-            $rootScope.tabsActive = $rootScope.tab;
-
-        };
-    })
+    };
+})

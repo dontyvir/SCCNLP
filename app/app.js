@@ -22,4 +22,7 @@ angular.module('sccnlp', [
     'sccnlp.comiteParitario',
     'sccnlp.administradorGeograf-crear',
     'sccnlp.administradorGeograf-consultar'
-]);
+]).constant('IPSERVER', {
+          DESARROLLO: 'http://7.212.100.165/sccnlp/'
+          //  DESARROLLO: 'http://localhost:59123/'
+        });

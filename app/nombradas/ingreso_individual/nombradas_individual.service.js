@@ -1,12 +1,12 @@
 angular.module('sccnlp.nombradas')
 
-.factory('RestClientNombrada', ['$resource',
+.factory('RestClientNombrada', ['$resource', 'IPSERVER',
 
-    function($resource) {
+    function($resource, IPSERVER) {
 
         var wrapper = {};
 
-        wrapper.baseResource = $resource('http://10.212.129.28/sccnlp/api/:serviceName');
+        wrapper.baseResource = $resource(IPSERVER.DESARROLLO+'/api/:serviceName');
 
         wrapper.guardarNombradas = function(data, _callback_fn, callback_error) {
             return wrapper.baseResource.save({
@@ -18,15 +18,15 @@ angular.module('sccnlp.nombradas')
             )
         }
 
-        wrapper.getDatosTrabajador = function(_idEmpresa, _rut, _dv, _pasaporte, _callback_fn, callback_error) {
+        wrapper.getDatosTrabajador = function(_idEmpresa, _rut, _pasaporte, _callback_fn, callback_error) {
+
+            if (_rut) 
+                _data = _rut
+            if (_pasaporte)
+                _data = _pasaporte
+
             return wrapper.baseResource.save({
-                serviceName: '/RelacionLab/getDatosTrabajador/'
-            }, {
-                idEmpresa: _idEmpresa,
-                rutTrabajador: _rut,
-                dvTrabajador: _dv,
-                pasaporteTrabajador: _pasaporte
-            }, _callback_fn, callback_error)
+                serviceName: '/RelacionLab/getDatosTrabajador/' + _idEmpresa + '/' + _data}, {}, _callback_fn, callback_error)
 
         }
         return wrapper;

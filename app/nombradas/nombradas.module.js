@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sccnlp.nombradas', ['ui.router', 'ui.bootstrap', 'ngTableToCsv', 'sccnlp.common'])
+angular.module('sccnlp.nombradas', ['ui.router', 'ui.bootstrap', 'sccnlp.common'])
 
 .config(['$stateProvider', function($stateProvider) {
 

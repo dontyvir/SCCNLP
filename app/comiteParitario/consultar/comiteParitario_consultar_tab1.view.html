@@ -1,5 +1,10 @@
 <form name="formTab1">
-	<h4>{{messages.consultarComiteParitario}}</h4>
+	<h4>{{messages.consultarComiteParitario}}
+	<small ng-show="comiteLoading">
+	<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+	Cargando...
+	</small>
+	</h4>
 	<hr/>
 	<div class="alert alert-danger" ng-show="mostrarError">
 		<strong>Error!</strong> {{messageError}}.
@@ -43,25 +48,49 @@
 		</div>
 	</div>
 	<!-- <div class="form-group row">
-		<label class="control-label col-md-3">{{messages.region}} *</label>
-		<div class="col-md-4">
-			<select class="form-control" ng-model="consultar.region" ng-options="reg.id as reg.glosa for reg in regiones" class="form-control"  ng-change="seleccionarComuna(consultar.region)" ng-required="true">
-				<option value="">-- Elija opción --</option>
-			</select>
-		</div>
+						<label class="control-label col-md-3">{{messages.region}} *</label>
+						<div class="col-md-4">
+											<select class="form-control" ng-model="consultar.region" ng-options="reg.id as reg.glosa for reg in regiones" class="form-control"  ng-change="seleccionarComuna(consultar.region)" ng-required="true">
+																<option value="">-- Elija opción --</option>
+											</select>
+						</div>
 	</div>
 	<div class="form-group row">
-		<label class="control-label col-xs-3">{{messages.comuna}}</label>
-		<div class="col-xs-4">
-			<select class="form-control" ng-model="consultar.comuna" ng-options="com.id as com.glosa for com in comunas" class="form-control" ng-disabled="!consultar.region" ng-required="true">
-				<option value="">-- Elija opción --</option>
-			</select>
-		</div>
+						<label class="control-label col-xs-3">{{messages.comuna}}</label>
+						<div class="col-xs-4">
+											<select class="form-control" ng-model="consultar.comuna" ng-options="com.id as com.glosa for com in comunas" class="form-control" ng-disabled="!consultar.region" ng-required="true">
+																<option value="">-- Elija opción --</option>
+											</select>
+						</div>
 	</div> -->
 	<div class="form-group row">
 		<div class="col-md-3 form-inline">
-			<button class="btn btn-primary" type="button" ng-click="buscarComite()">{{messages.BTN_buscar}}</button>
+			<button type="button" class="btn btn-primary" ng-click="buscarComite()" ng-disable="activarBuscar" ng-show="mostrarBuscar">
+			
+			<span ng-show="!activarBuscar">
+				<span class="glyphicon glyphicon-search"></span>
+				{{messages.BTN_buscar}}
+			</span>
+			
+			<span ng-show="activarBuscar">
+				<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+				Cargando...
+			</span>
+			
+			</button>
 		</div>
+		<div class="pull-right" ng-show="viewTableEmpresa" style="margin-right: 15px" >
+			<a class="btn btn-success" title="Export Table" ng-click="getExcel()" ng-href="{{ csv.link() }}" download="LIstadoNombradas.csv">
+				{{messages.BTN_exportar}} <i class="glyphicon glyphicon-cloud-download"></i>
+			</a>
+		</div>
+	</div>
+	<div class="alert alert-success" ng-show="mostrarEliminar">
+		<span ng-show="activarEliminar">
+			<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+			Eliminando registro...
+		</span>
+		<strong>Exito!</strong> El registro se a eliminado exitosamente.
 	</div>
 	<div class="row" ng-show="viewTableEmpresa">
 		<div class="col-md-12">
@@ -72,17 +101,21 @@
 						<th><small>{{messages.nombreRazon}}</small></th>
 						<th><small>{{messages.rutRepresentante}}</small></th>
 						<th><small>{{messages.nombreRepresentanteLegal}}</small></th>
+						<th><small>{{messages.tipoComite}}</small></th>
+						<th><small>{{messages.fechaActoEleccionario}}</small></th>
 						<th><small>{{messages.comuna}}</small></th>
 						<th><small>Modificar Comité</small></th>
 						<th><small>Eliminar Comité</small></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat = "com in comite">
+					<tr ng-repeat = "com in comite | limitTo : pageSize : (currentPage - 1) * pageSize track by $index">
 						<td><a href ng-click="detalleComite(1, $index)">{{com.rutEmpresa}}</a></td>
 						<td>{{com.nombreRazon}}</td>
 						<td>{{com.rutRepresentante}}</td>
 						<td>{{com.nombreRepresentanteLegal}}</td>
+						<td>{{com.tipoComite}}</td>
+						<td>{{com.fechaActoEleccionario}}</td>
 						<td>{{com.comuna}}</td>
 						<td><a type="button" class="btn" ng-click="modificarComite($index)"><i class="glyphicon glyphicon-pencil"></i></a></td>
 						<td>
@@ -92,12 +125,13 @@
 					</tr>
 				</tbody>
 			</table>
-		</div>
+		<ul style="float: right;" uib-pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" items-per-page="pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
 	</div>
-	<br>
-	<br>
-	<br>
-	<div class="row" style="float:right; margin-right: 0px;">
-		<button class="btn btn-danger" type="button" ng-click="">{{messages.BTN_salir}}</button>
-	</div>
+</div>
+<br>
+<br>
+<br>
+<div class="row" style="float:right; margin-right: 0px;">
+	<button class="btn btn-danger" type="button" ui-sref="main.composite">{{messages.BTN_salir}}</button>
+</div>
 </form>

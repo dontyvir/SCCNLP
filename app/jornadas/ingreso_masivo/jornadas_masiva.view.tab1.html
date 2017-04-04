@@ -2,8 +2,8 @@
 	<br>
 	<p>{{messages.messageJornadaMasiva}}</p>
 	<p>{{messages.messageJornadaMasiva2}}</p>
-	<button class="btn btn-info" href ng-click="url()">{{messages.BTN_Ejemplo}}</button>
-	<p>{{seleccionArchivo}}</p>
+	<button class="btn btn-success" href ng-click="url()">{{messages.BTN_Ejemplo}}</button>
+	<p></p>
 	<div class="custom-file-upload">
 		<input type="file" id="file" ng-model="fileUpload" name="myfiles[]" multiple />
 	</div>
@@ -12,8 +12,8 @@
 <br>
 <div class="container-fluid col-lg-6  pull-right">
 	<div class="pull-right">
-		<button class="btn btn-warning" ui-sref="main.composite" type="submit">{{messages.BTN_cancelar}}</button>
-		<button href class="btn btn-primary" ng-click="continuar(1)" data-toggle="tab">{{messages.BTN_continuar}}</button>
+		<button class="btn btn-danger" ui-sref="main.composite" ng-disabled="activarBotones">{{messages.BTN_cancelar}}</button>
+		<button href class="btn btn-primary" ng-click="continuar(1)" data-toggle="tab" ng-disabled="activarBotones">{{messages.BTN_continuar}}</button>
 	</div>
 	<br>
 	<br>

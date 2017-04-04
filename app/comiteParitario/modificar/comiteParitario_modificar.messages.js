@@ -39,6 +39,7 @@ angular.module('sccnlp.comiteParitario')
         BTN_anadirRepresentante: "Añadir Representante",
         BTN_eliminar: "Eliminar",
         BTN_finalizar: "Finalizar",
-        BTN_salir: "Salir"
+        BTN_salir: "Salir",
+        BTN_volver: "Volver"
     };
 });

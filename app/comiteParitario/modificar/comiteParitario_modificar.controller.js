@@ -12,6 +12,19 @@ angular.module('sccnlp.comiteParitario')
     $scope.representantesTrabajadores = [];
     $scope.trabajadorLoading = false;
     $scope.empresaLoading = false;
+    $scope.mostrarBuscar = false;
+    $scope.activarBuscar = true;
+
+    $scope.tabs = [{
+            disable: false
+        }, //tab ingreso de nombrada
+        {
+            disable: true
+        }, // tab resolucion
+        {
+            disable: true
+        }
+    ]
 
     $scope.comite = {
 
@@ -93,13 +106,13 @@ angular.module('sccnlp.comiteParitario')
 
         $scope.session_data = sessionService.getUserData();
         $scope.regiones = RestClient.getRegion();
-
-
         $scope.comunas = RestClient.getComunasByIdRegion($scope.detalleComite.idRegion);
+
+        console.log($scope.detalleComite)
 
         $scope.comite = {
 
-            direccion: $scope.detalleComite.calle,
+            direccion: $scope.detalleComite.idDireccion,
             region: $scope.detalleComite.idRegion,
             comuna: $scope.detalleComite.idComuna,
             fechaActoEleccionario: new Date($scope.detalleComite.fechaActoEleccion),
@@ -109,38 +122,15 @@ angular.module('sccnlp.comiteParitario')
             idComite: $scope.detalleComite.idComite
         };
 
-        if ($scope.detalleComite.empresaPari.length > 1) {
+        if ($scope.detalleComite.empresaPari.length > 0) {
             $scope.viewTableEmpresa = true;
             $scope.representantesEmpresa = $scope.detalleComite.empresaPari;
         }
 
-        if ($scope.detalleComite.empleadoPari.length > 1) {
+        if ($scope.detalleComite.empleadoPari.length > 0) {
             $scope.viewTableTrabajador = true;
             $scope.representantesTrabajadores = $scope.detalleComite.empleadoPari;
         }
-
-
-
-        $scope.empresa = {
-            rut: null,
-            apellidoMaterno: null,
-            apellidoPaterno: null,
-            nombres: null,
-            tipo: null,
-            cargo: null,
-        }
-
-        $scope.trabajador = {
-            rut: null,
-            apellidoMaterno: null,
-            apellidoPaterno: null,
-            nombres: null,
-            tipo: null,
-            cargo: null,
-            posicion: null,
-            aforado: false
-        }
-
 
     };
 
@@ -157,6 +147,15 @@ angular.module('sccnlp.comiteParitario')
         $scope.tabsActive = tab;
 
     };
+
+    $scope.volverPestana = function(tab) {
+
+        if (!tab || tab < 0 || tab > 2)
+            return;
+
+        $scope.tabs[tab].disable = false;
+        $scope.tabsActive = tab;
+    }
 
     $scope.seleccionarComuna = function(id_region) {
 
@@ -195,11 +194,7 @@ angular.module('sccnlp.comiteParitario')
         ]
         //------
 
-    $scope.buscarEmpleado = function(tipo, form) {
-
-        if (form && form.$invalid) {
-            return;
-        }
+    $scope.buscarEmpleado = function(tipo) {
 
         if (tipo == 'empresa') {
             var rut = $scope.empresa.rut
@@ -208,7 +203,10 @@ angular.module('sccnlp.comiteParitario')
             var rut = $scope.trabajador.rut
         }
 
-        $scope.personas = RestClient.getDatosPersona(rut.split("-")[0], null, function(data) {
+        if (!rut || rut == null)
+            return
+
+        $scope.personas = RestClient.getDatosPersona(rut.split("-")[0], rut.split("-")[1], null, function(data) {
 
             if (tipo == 'empresa') {
                 $scope.idEmpleado = data.id;
@@ -232,7 +230,7 @@ angular.module('sccnlp.comiteParitario')
 
     $scope.anadirRepresentanteEmpresa = function() {
 
-        if ($scope.tipo != null && $scope.cargo != null && $scope.empresa.nombres != null && $scope.empresa.apellidoPaterno != null && $scope.empresa.apellidoMaterno != null) {
+        if ($scope.empresa.tipo != null && $scope.empresa.cargo != null && $scope.empresa.nombres != null && $scope.empresa.apellidoPaterno != null && $scope.empresa.apellidoMaterno != null) {
 
             if ($scope.representantesEmpresa.length < 7) {
 
@@ -262,7 +260,7 @@ angular.module('sccnlp.comiteParitario')
 
         if ($scope.trabajador.tipo != null && $scope.trabajador.cargo != null && $scope.trabajador.nombres != null && $scope.trabajador.apellidoPaterno != null && $scope.trabajador.apellidoMaterno != null && $scope.trabajador.posicion != null && $scope.trabajador.aforado) {
 
-            if ($scope.representantesTrabajadores.length < 7) {
+            if ($scope.representantesTrabajadores.length <= 7) {
 
                 $scope.representantesTrabajadores.push({
                     idEmpleado: $scope.idEmpleado,
@@ -288,7 +286,7 @@ angular.module('sccnlp.comiteParitario')
     }
 
     $scope.eliminarRegistro = function(id, tipo) {
-        var itemEliminar = id - 1;
+        var itemEliminar = id;
         var itemMover = id++;
         if (tipo == 'empresa') {
             $scope.representantesEmpresa.splice(itemEliminar, 1);
@@ -316,15 +314,25 @@ angular.module('sccnlp.comiteParitario')
         $scope.trabajador.posicion = null;
         $scope.trabajador.aforado = false;
     }
+    $scope.ingresoLimpiar = function() {
+
+        $scope.comite.direccion = null;
+        $scope.comite.region = null;
+        $scope.comite.comuna = null;
+        $scope.comite.fechaActoEleccionario = new Date();
+        $scope.comite.tipoComite = null;
+        $scope.comite.cantidadTrabajadores = null;
+        $scope.comite.asumefuncion = null;
+        $scope.comite.manual = false
+
+    }
 
     $scope.registrarComite = function() {
 
-        console.log($scope.comite);
-
         $scope.data = {
 
-            idEmpresa: parseInt($scope.session_data.id),
-            idDireccion: 1,
+            idEmpresa: parseInt($scope.session_data.idEmpresa),
+            idDireccion: 1, //dato en duro
             idRegion: $scope.comite.region,
             idComuna: $scope.comite.comuna,
             fechaActoEleccion: $filter('date')($scope.comite.fechaActoEleccionario, format),
@@ -335,7 +343,6 @@ angular.module('sccnlp.comiteParitario')
             empleadoPari: $scope.representantesTrabajadores,
             idComite: $scope.comite.idComite
         }
-        console.log($scope.data);
 
         RestClientComiteParitarioModificar.ModificarComite($scope.data, function(data) {
             $scope.urlCompleta = "";
@@ -358,8 +365,7 @@ angular.module('sccnlp.comiteParitario')
     }
 
     $scope.btnSalir = function() {
-        
-        console.log("pase")
+
         var emprRutRepre = $scope.detalleComite.emprRutRepre;
         var emprDvRepre = $scope.detalleComite.emprDvRepre;
         var idEmpresa = $scope.detalleComite.idEmpresa;

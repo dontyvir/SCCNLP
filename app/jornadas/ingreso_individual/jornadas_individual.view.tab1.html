@@ -1,29 +1,40 @@
-<div class="container-fluid">
-    <div class="col-lg-12">
-        <div class="col-lg-4" ng-init ="documentoIdentificador = 'rut'" >
-            <input type="radio"  name="identificadorTrabajador" ng-click="documentoIdentificador = 'rut'" ng-checked="true"/> {{messages.rut}}
-            <input type="radio" style="margin-left: 30px;" ng-click="documentoIdentificador = 'pasaporte'" name="identificadorTrabajador" ng-checked='false'/> {{messages.pasaporte}} :
-            *
-        </div>
-        <div class="col-lg-4" >
-            <input type="text" class="form-control" ng-style="{'border-color' : (messagevalidateRut == true) ? 'red' : ''}" placeholder="Ingrese Rut, ej: 11111111-1" aria-describedby="sizing-addon1" id="txt_rut" ng-keyup="$event.keyCode == 13 && validateRut(documentoIdentificador)" ng-model="rutTrabajador">
-            <p style="color: red" ng-show="messagevalidateRut">{{messagerut}}</p>
-        </div>
-        <div class="col-lg-2">
-            <button class="btn btn-warning" ng-click="agregarTrabajador(rutTrabajador,documentoIdentificador)" ng-disabled="!validadoRut">{{messages.BTN_AnadirTrabajador}}</button>
-        </div>
+<div class="form-group row">
+    <div class="col-lg-3" ng-init ="documentoIdentificador = 'rut'" >
+        <input type="radio"  name="identificadorTrabajador" ng-click="documentoIdentificador = 'rut'" ng-checked="true"/> {{messages.rut}}
+        <input type="radio" style="margin-left: 30px;" ng-click="documentoIdentificador = 'pasaporte'" name="identificadorTrabajador" ng-checked='false'/> {{messages.pasaporte}} :
+        *
     </div>
-    <div class="container-fluid" style="overflow: auto;" ng-show="showTableTrabajadores">
-        <br>
+    <div class="col-md-6 form-inline">
+        <input type="text" class="form-control" ng-style="{'border-color' : (messagevalidateRut) ? 'red' : ''}" placeholder="{{documentoIdentificador == 'rut' ? 'Ingrese Rut, ej: 11111111-1' : 'Ingrese Pasaporte'}}" aria-describedby="sizing-addon1" ng-model="ingreso.rutTrabajador" ng-required="false">
+        <p style="color: red" ng-show="messagevalidateRut">{{messagerut}}</p>
         
-        <table  ng-init='configPages()' class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0"  ng-enabled="verTablaTrabajador">
+        <button type="button" class="btn btn-primary" ng-click="agregarTrabajador(ingreso.rutTrabajador,documentoIdentificador)" ng-disable="validadoRut">
+        
+        <span ng-show="!validadoRut">
+            <span class="glyphicon glyphicon-search"></span>
+            {{messages.BTN_AnadirTrabajador}}
+        </span>
+        
+        <span ng-show="validadoRut">
+            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+            Cargando...
+        </span>
+        
+        </button>
+        
+    </div>
+</div>
+<div class="row" style="overflow: auto;" ng-show="showTableTrabajadores">
+    <br>
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" ng-enabled="verTablaTrabajador">
             <thead>
                 <tr style="background-color: #D3D3D3">
                     <th><small>Rut o Pasaporte</small></th>
                     <th><small>Nombres</small></th>
                     <th><small>Apellidos</small></th>
                     <th><small>Nave</small></th>
-                    <th><small>Lugar</small></th>
+                    <th><small>Lugar*</small></th>
                     <th><small>Fecha Inicio de Jornada*</small></th>
                     <th><small>Hora Inicio de Jornada*</small></th>
                     <th><small>Hora Inicio de Descanso</small></th>
@@ -34,24 +45,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat='datosTrabajador in tableDatosTrabajadores | startFromGrid: currentPage * pageSize | limitTo: pageSize' ng-style="{'background-color' : (datosTrabajador.validateRow == true) ? '#F5F561' : ''}">
+                <tr ng-repeat='datosTrabajador in tableDatosTrabajadores | limitTo : pageSize : (currentPage - 1) * pageSize track by $index' ng-style="{'background-color' : (datosTrabajador.validateRow == true) ? '#F5F561' : ''}">
                     <td ng-if="datosTrabajador.rutTrabajador != null">{{datosTrabajador.rutTrabajador}}-{{datosTrabajador.dv}}</td>
                     <td ng-if="datosTrabajador.rutTrabajador == null || datosTrabajador.rutTrabajador == 0">{{datosTrabajador.pasaporteTrabajador}}</td>
                     <td>{{datosTrabajador.nombresTrabajador}}</td>
                     <td>{{datosTrabajador.apellidosTrabajador}}</td>
                     <td>
-                        <select ng-model="datosTrabajador.naveSelect" ng-options="nav.id as nav.glosa for nav in naves" class="form-control" ng-disabled="datosTrabajador.locacionSelect">
-                            <option value="">-- Seleccionar --</option>
+                        <select ng-model="datosTrabajador.naveSelect" ng-options="nav.id as nav.glosa for nav in naves | orderBy:'glosa':false" class="form-control" ng-disabled="datosTrabajador.locacionSelect" ng-required="true">
+                            <option value="">{{messages.selectElijaOpcion}}</option>
                         </select>
                     </td>
                     <td>
-                        <select ng-model="datosTrabajador.locacionSelect" ng-options="lug.id as lug.lugar for lug in locacion" class="form-control" ng-disabled="datosTrabajador.naveSelect">
-                            <option value="">-- Seleccionar --</option>
+                        <select ng-model="datosTrabajador.locacionSelect" ng-options="lug.id as lug.lugar for lug in locacion | orderBy:'lugar':false" class="form-control" ng-disabled="datosTrabajador.naveSelect" >
+                            <option value="">{{messages.selectElijaOpcion}}</option>
                         </select>
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaInicioJornada" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaInicioJornada" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true"/>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openDataPickerInicio($index)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
@@ -68,7 +79,7 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaTerminoJornada" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaTerminoJornada" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true"/>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openDataPickerTermino($index)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
@@ -78,29 +89,27 @@
                         <div uib-timepicker ng-model="datosTrabajador.horaTerminoJornada" show-meridian="false" show-spinners="false"></div>
                     </td>
                     <td>
-                        <a type="button" class="btn" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarTrabajador(datosTrabajador.id)" style="font-size: 20px">
+                        <a type="button" class="btn" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarTrabajador($index)" style="font-size: 20px">
                             <i class="glyphicon glyphicon-trash" aria-hidden="true" style="color: red"></i>
                         </a>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div class="btn-group pull-right">
-            <button type='button' class='btn btn-default' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
-            <button type='button' class='btn btn-default' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
-            <button type='button' class='btn btn-default' ng-disabled='currentPage >= tableDatosTrabajadores.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
-        </div>
-    </div>
+    <ul style="float: right;" uib-pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" items-per-page="pageSize" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+</div>
 </div>
 <br>
-<br>
-<div class="container-fluid col-lg-6  pull-left">
+<hr/>
+<div class="form-group row">
+<div class="col-lg-6  pull-left">
     <label class="control-label">{{messages.camposObligatoriosIngresar}}</label>
 </div>
-<div class="container-fluid col-lg-6  pull-right">
+<div class="col-lg-6  pull-right">
     <div class="pull-right" style="padding-right: 14px;">
-        <button class="btn btn-info" type="button" ng-click="cleanForm()">{{messages.BTN_limpiar}}</button>
-        <button class="btn btn-warning" ui-sref="main.composite" type="submit">{{messages.BTN_cancelar}}</button>
-        <button href="#" class="btn btn-primary" ng-click="continuar(1)" data-toggle="tab">{{messages.BTN_continuar}}</button>
+        <button class="btn btn-warning" type="button" ng-click="cleanForm()" ng-disabled="blockButton">{{messages.BTN_limpiar}}</button>
+        <button class="btn btn-danger" ui-sref="main.composite" ng-disabled="blockButton">{{messages.BTN_cancelar}}</button>
+        <button type="submit" class="btn btn-primary" ng-click="continuar(1)" data-toggle="tab" ng-disabled="blockButton">{{messages.BTN_continuar}}</button>
     </div>
+</div>
 </div>

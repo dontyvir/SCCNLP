@@ -1,15 +1,22 @@
 angular.module('sccnlp.comiteParitario')
 
-.factory('RestClientComiteParitarioConsultar', ['$resource',
+.factory('RestClientComiteParitarioConsultar', ['$resource','IPSERVER',
 
-    function($resource) {
+    function($resource,IPSERVER) {
 
         var wrapper = {};
 
-        wrapper.comiteResource = $resource('http://10.212.129.22/sccnlp/api:serviname', {}, {
-            save: {
+        wrapper.comiteResource = $resource(IPSERVER.DESARROLLO+'api:serviname', {}, {
+            saveArray: {
                 method: 'POST',
                 isArray: true,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8'
+                }
+
+            },
+            save: {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8'
                 }
@@ -17,9 +24,8 @@ angular.module('sccnlp.comiteParitario')
             }
         });
 
-
         wrapper.ConsultarComite = function(_idEmpresa, _trabRutRepre, _trabDvRepre, _emprRutRepre, _emprDvRepre, _callback_fn, callback_error) {
-            return wrapper.comiteResource.save({
+            return wrapper.comiteResource.saveArray({
                     serviname: '/comite/ConsultarComite'
                 }, {
                     idEmpresa: _idEmpresa,
@@ -35,7 +41,9 @@ angular.module('sccnlp.comiteParitario')
         wrapper.EliminarComite = function(_idComite, _callback_fn, callback_error) {
             return wrapper.comiteResource.save({
                     serviname: '/comite/EliminarComite'
-                }, _idComite,
+                }, {
+                    idComite: _idComite
+                },
                 _callback_fn, callback_error
             )
         }

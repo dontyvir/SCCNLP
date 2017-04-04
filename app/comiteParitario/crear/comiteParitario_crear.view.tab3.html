@@ -55,7 +55,7 @@
             <input type="text" ng-required="true" class="form-control" ng-model="trabajador.rut">
         </div>
         <div class="col-md-1">
-            <button class="btn btn-primary" ng-click="buscarEmpleado('trabajador', formTab3)" ng-disabled="trabajadorLoading">
+            <button class="btn btn-primary" type="submit" ng-click="buscarEmpleado('trabajador')" ng-disabled="trabajadorLoading">
             
             <span ng-show="!trabajadorLoading">
                 <span class="glyphicon glyphicon-search"></span>
@@ -84,7 +84,7 @@
     </div>
     <div class="form-group row">
         <div class="col-md-6 pull-left">
-            <button class="btn btn-warning" type="submit" ng-click="">{{messages.BTN_limpiar}}</button>
+            <button class="btn btn-warning" type="button" ng-click="">{{messages.BTN_limpiar}}</button>
             <button class="btn btn-default" type="button" ng-click="anadirRepresentanteTrabajadores()">{{messages.BTN_anadirRepresentante}}</button>
         </div>
         
@@ -93,7 +93,7 @@
         <div class="col-md-12">
             <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" >
                 <thead>
-                    <tr>
+                    <tr style="background-color: #D3D3D3">
                         <th><small>{{messages.cargo}}</small></th>
                         <th><small>{{messages.tipo}}</small></th>
                         <th><small>{{messages.posicionVotacion}}</small></th>
@@ -134,8 +134,8 @@
         
         <div class="col-md-3 form-inline" style="text-align: right;">
             
-            <button class="btn btn-danger" type="button" ui-sref="main.composite">{{messages.BTN_cancelar}}</button>
-            <button class="btn btn-primary" type="submit" ng-really-message="¿Desea guardar el Comité Paritario de Higiene y Seguridad? " ng-really-click="registrarComite()">{{messages.BTN_finalizar}}</button>
+            <button class="btn btn-danger" type="button" ng-click="volverPestana(1)">{{messages.BTN_volver}}</button>
+            <button class="btn btn-primary" type="button" ng-really-message="¿Desea guardar el Comité Paritario de Higiene y Seguridad? " ng-really-click="registrarComite()">{{messages.BTN_finalizar}}</button>
             
         </div>
     </div>
@@ -143,7 +143,7 @@
 <div ng-show="!mostrarFormulario">
     <p>Se ha procesado satisfactoriamente su solicitud. </p>
     <p>Si desea descargar el comprobante del proceso de constitución de Comité Paritario de Higiene y Seguridad, presione aquí: <a href ng-click="descargaComite()" class="btn btn-lg" style="font-size: 32px;"><i class="glyphicon glyphicon-floppy-open"></i></a></p>
-    <div class="col-md-3 form-inline" style="float:right;">
-        <button class="btn btn-danger" type="button" ng-click="btnSalir()">{{messages.BTN_salir}}</button>
-    </div>
+    <div class="row" style="float:right; margin-right: 0px;">
+    <button class="btn btn-danger" type="button" ng-click="btnSalir()">{{messages.BTN_salir}}</button>
+</div>
 </div>

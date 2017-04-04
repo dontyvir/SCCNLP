@@ -3,7 +3,7 @@
 // definición de módulo menu
 angular.module('sccnlp.nombradas')
 
-.controller('NombradasIndividualCtrl', ['$scope', '$state', 'nombradasMessages', '$uibModal', '$rootScope', 'RestClient', 'sessionService', 'RestClientNombrada', 'validateRut', function($scope, $state, nombradasMessages, $uibModal, $rootScope, RestClient, sessionService, RestClientNombrada, validateRut) {
+.controller('NombradasIndividualCtrl', ['$scope', '$state', 'nombradasMessages', '$uibModal', '$rootScope', 'RestClient', 'sessionService', 'RestClientNombrada', 'RestClientRelacionLaboral', 'validateRut', function($scope, $state, nombradasMessages, $uibModal, $rootScope, RestClient, sessionService, RestClientNombrada, RestClientRelacionLaboral, validateRut) {
 
     //--------------------------- Controller for NombradanIndividualTab.html ------------------------------------
     $scope.messages = nombradasMessages;
@@ -13,8 +13,6 @@ angular.module('sccnlp.nombradas')
     $scope.tableDatosTrabajadores = [];
 
     var session_data = sessionService.getUserData();
-
-    console.log(session_data);
 
     var vm = this;
 
@@ -73,12 +71,12 @@ angular.module('sccnlp.nombradas')
     $scope.init = function() {
 
         $scope.naves = RestClient.getNave();
-        $scope.tipoContrato = RestClient.getTipoContrato();
-        $scope.labores = RestClient.getLabor();
+        $scope.tipoContrato = RestClientRelacionLaboral.getTipoContrato();
+        $scope.labores = RestClientRelacionLaboral.getLabor();
         $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa, session_data.dvEmpresa);
-        $scope.funciones = RestClient.getFuncion();
-        $scope.jornadas = RestClient.getTipoJornada();
-        $scope.tiposTurno = RestClient.getTurno();
+        $scope.funciones = RestClientRelacionLaboral.getFuncion();
+        $scope.jornadas = RestClientRelacionLaboral.getTipoJornada();
+        $scope.tiposTurno = RestClientRelacionLaboral.getTurno();
     };
 
     $scope.loadTrabajador = function(dato, documentoIdentificador) {
@@ -90,20 +88,15 @@ angular.module('sccnlp.nombradas')
 
         if (documentoIdentificador == 'rut') {
             var rutTrabajador = dato.split("-")[0];
-            var dvTrabajador = dato.split("-")[1];
-            /* var rutTrabajador = '1';
-             var dvTrabajador = 'k';*/
-            var pasaporte = "";
+            //var dvTrabajador = dato.split("-")[1];
+            var pasaporte = null;
         } else {
-            var rutTrabajador = "";
-            var dvTrabajador = "";
+            var rutTrabajador = null;
+            //var dvTrabajador = "";
             var pasaporte = dato;
         }
 
-        rutTrabajador = '1';
-        dvTrabajador = 'k';
-
-        RestClientNombrada.getDatosTrabajador(idEmpresa, rutTrabajador, dvTrabajador, pasaporte, function(data) {
+        RestClientNombrada.getDatosTrabajador(idEmpresa, rutTrabajador, pasaporte, function(data) {
             if (data.activo) {
                 var activo = 1;
             } else {

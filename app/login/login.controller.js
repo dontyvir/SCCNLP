@@ -11,21 +11,19 @@ angular.module('sccnlp.login')
 	
 	$scope.loginData = {username: null, password: null};
 	
-	$scope.idPuerto = null;
+	$scope.userData = null;
 	
 	$scope.isLoggedIn = false;
 
 	$scope.puertos = null;
 	
 	$scope.loginClaveUnica = function(){
-		
-		
+
 	}
 	
 	$scope.redirectMain = function(){
-		
-		// guardamos el puerto seleccionado
-		sessionService.setIdPuerto($scope.idPuerto);
+
+		sessionService.savePuerto($scope.userData.puerto);
 		$state.go('main.composite');		
 	}
 	
@@ -34,14 +32,15 @@ angular.module('sccnlp.login')
 		$scope.dataLoading = true;
 		
 		sessionService.login_empresa($scope.loginData.username, $scope.loginData.password,
-				function(loginSuccessful, error_data){
+		function(loginSuccessful, error_data){
 			
 			$scope.dataLoading = false;
 			
 			if(loginSuccessful){
 
 				$scope.puertos = RestClient.getPuerto(function(){ // esperamos hasta cargar los puertos
-					$scope.isLoggedIn = true;	
+					$scope.userData = sessionService.getUserData();
+					$scope.isLoggedIn = true;
 				});
 			}
 			else {

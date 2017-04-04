@@ -32,7 +32,7 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaInicioJornadaTrabajador" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" ng-disabled="true"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaInicioJornadaTrabajador" is-open="popup1.opened1" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" datepicker-append-to-body="true"/>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openDataPickerInicio($index)" ng-disabled="true"><i class="glyphicon glyphicon-calendar" ></i></button>
                             </span>
@@ -49,9 +49,9 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaTerminoJornadaTrabajador" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaTerminoJornadaTrabajador" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"/>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="openDataPickerTermino($index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                <button type="button" class="btn btn-default" ng-click="open1()"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
                         </div>
                     </td>

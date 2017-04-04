@@ -18,8 +18,14 @@ angular.module('sccnlp.menu', ['sccnlp.session', 'ui.router'])
 	
 	$scope.getUserName = function(){
 		
-		$scope.userData = sessionService.getUserData();
-		return $scope.userData.username;
+		var userData = sessionService.getUserData();
+		return userData.username;
+	}
+	
+	$scope.getPuerto = function(){
+		
+		var userData = sessionService.getUserData();
+		return userData.puerto.glosa;
 	}
 }])
 

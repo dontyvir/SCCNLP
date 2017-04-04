@@ -1,10 +1,10 @@
 angular.module('sccnlp.jornadas')
 
-.factory('RestClientJornadaConsulta', ['$resource', function($resource) {
+.factory('RestClientJornadaConsulta', ['$resource', 'IPSERVER', function($resource, IPSERVER) {
 
     var wrapper = {};
 
-    wrapper.jornadaResource = $resource('http://7.212.100.165/sccnlp/api/:serviceName', {}, {
+    wrapper.jornadaResource = $resource(IPSERVER.DESARROLLO + 'api/:serviceName', {}, {
         saveArray: {
             method: 'POST',
             isArray: true,
@@ -23,6 +23,28 @@ angular.module('sccnlp.jornadas')
 
 
     wrapper.consultarJornada = function(_idEmpresa, _fechaInicioJornada, _horaInicioJornada, _rut, _dv, _pasaporte, _idNave, _idLugar, _fechaTerminoJornada, _horaTerminoJornada, _idSitio, callback_fn, callback_error) {
+
+        if (_fechaInicioJornada == "")
+            _fechaInicioJornada = null
+        if (_horaInicioJornada == "")
+            _horaInicioJornada = null
+        if (_rut == "")
+            _rut = null
+        if (_dv == "")
+            _dv = null
+        if (_pasaporte == "")
+            _pasaporte = null
+        if (_idNave == "")
+            _idNave = null
+        if (_idLugar == "")
+            _idLugar = null
+        if (_fechaTerminoJornada == "")
+            _fechaTerminoJornada = null
+        if (_horaTerminoJornada == "")
+            _horaTerminoJornada = null
+        if (_idSitio == "")
+            _idSitio = null
+
 
         return wrapper.jornadaResource.saveArray({
                 serviceName: 'Jornada/ConsultarJornada'

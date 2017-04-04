@@ -43,6 +43,7 @@ angular.module('sccnlp.comiteParitario')
 
         BTN_buscar: "Buscar",
         BTN_salir: "Salir",
-        BTN_volver: "Volver"
+        BTN_volver: "Volver",
+        BTN_exportar : "Exportar a excel"
     };
 });

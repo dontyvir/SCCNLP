@@ -149,6 +149,11 @@
 			</ul>
 			
 			<ul class="nav navbar-nav navbar-right">
+			
+			<li><a ui-sref="main.composite" ng-click="isCollapsed = !isCollapsed">
+					Puerto: {{getPuerto()}}
+				</a>
+			</li>
 
 			<li><a ui-sref="main.composite" ng-click="isCollapsed = !isCollapsed">
 					<span class="glyphicon glyphicon-user"></span> {{ getUserName() }}

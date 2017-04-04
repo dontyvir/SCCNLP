@@ -1,12 +1,12 @@
 angular.module('sccnlp.jornadas')
 
-.factory('RestClientJornada', ['$resource',
+.factory('RestClientJornada', ['$resource','IPSERVER',
 
-    function($resource) {
+    function($resource,IPSERVER) {
 
         var wrapper = {};
 
-        wrapper.jornadaResource = $resource('http://7.212.100.165/sccnlp/api/Jornada/RegistrarJornada', {}, {
+        wrapper.jornadaResource = $resource(IPSERVER.DESARROLLO+'api/Jornada/RegistrarJornada', {}, {
             save: {
                 method: 'POST',
                 isArray : true,

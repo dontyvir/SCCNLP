@@ -20,6 +20,15 @@ angular.module('sccnlp.jornadas')
         opened2: false
     };
 
+    $scope.rutTrabajador = null;
+    $scope.fechaInicioJornada = null;
+    $scope.horaInicioJornada = null;
+    $scope.naveSelect = null;
+    $scope.LugarSelected = null;
+    $scope.fechaTerminoJornada = null;
+    $scope.horaTerminoJornada = null;
+    $scope.sitioJornada = null;
+
     $scope.formats = ['dd-MM-yyyy', 'shortDate'];
     $scope.format = $scope.formats[0];
 
@@ -34,6 +43,7 @@ angular.module('sccnlp.jornadas')
 
     var dateFormat = 'yyyy-MM-dd';
     var timeFormat = 'HH:mm';
+    $scope.format = 'dd/MM/yyyy';
 
     function disabled(data) {
         var date = data.date,
@@ -51,45 +61,15 @@ angular.module('sccnlp.jornadas')
 
     // ---------------fin de fecha ------------------------
 
-
-    // --------------PAGINACION DE LA TABLA ---------------
-    $scope.currentPage = 0;
-    $scope.pageSize = 10;
-    $scope.pages = [];
-
-    $scope.configPages = function() {
-        $scope.pages.length = 0;
-        var ini = $scope.currentPage - 4;
-        var fin = $scope.currentPage + 10;
-        if (ini < 1) {
-            ini = 1;
-            if (Math.ceil($rootScope.tableDatosRegistroJornada.length / $scope.pageSize) > 10)
-                fin = 10;
-            else
-                fin = Math.ceil($rootScope.tableDatosRegistroJornada.length / $scope.pageSize);
-        } else {
-            if (ini >= Math.ceil($rootScope.tableDatosRegistroJornada.length / $scope.pageSize) - 10) {
-                ini = Math.ceil($rootScope.tableDatosRegistroJornada.length / $scope.pageSize) - 10;
-                fin = Math.ceil($rootScope.tableDatosRegistroJornada.length / $scope.pageSize);
-            }
-        }
-        if (ini < 1) ini = 1;
-        for (var i = ini; i <= fin; i++) {
-            $scope.pages.push({
-                no: i
-            });
-        }
-
-        if ($scope.currentPage >= $scope.pages.length)
-            $scope.currentPage = $scope.pages.length - 1;
+    //---- paginacion
+    $scope.totalItems = 0;
+    $scope.currentPage = 1;
+    $scope.pageSize = 5;
+    $scope.setPage = function(pageNo) {
+        $scope.currentPage = pageNo;
     };
 
-    $scope.setPage = function(index) {
-        $scope.currentPage = index - 1;
-    };
-
-    //----------------- FIN DE PAGINACION DE TABLA-----------------
-
+    // --- fin paginacion
     //-------------- LLAMADA DE SERVICIOS ----------------------
     $scope.init = function() {
         $scope.naves = RestClient.getNave();
@@ -137,6 +117,9 @@ angular.module('sccnlp.jornadas')
 
     $scope.buscarJornada = function(documentoIdentificador) {
 
+        $scope.activarBuscar = true;
+        $rootScope.tableDatosRegistroJornada = [];
+
         if (($scope.rutTrabajador == "" || $scope.rutTrabajador == undefined) &&
             ($scope.fechaInicioJornada == "" || $scope.fechaInicioJornada == undefined) &&
             ($scope.horaInicioJornada == "" || $scope.horaInicioJornad == undefined) &&
@@ -148,6 +131,7 @@ angular.module('sccnlp.jornadas')
             $scope.animationsEnabled == true;
             var message = "No ha ingresado ningún criterio de búsqueda. Vuelva a intentarlo";
             $scope.messageModal(message);
+            $scope.activarBuscar = false;
         } else {
 
             if (documentoIdentificador == 'rut' && $scope.rutTrabajador != undefined) {
@@ -164,14 +148,14 @@ angular.module('sccnlp.jornadas')
             var fechaTerminoJornada = $filter('date')($scope.fechaTerminoJornada, dateFormat);
             var horaTerminoJornada = $filter('date')($scope.horaTerminoJornada, timeFormat);
             var sitio = $scope.sitioJornada;
-            var idEmpresa = session_data.id;
+            var idEmpresa = session_data.idEmpresa;
 
 
             RestClientJornadaConsulta.consultarJornada(idEmpresa, fechaInicioJornada, horaInicioJornada, rut, dv, pasaporte, nave, lugar, fechaTerminoJornada, horaTerminoJornada, sitio, function(data) {
 
                     angular.forEach(data, function(item, index) {
 
-                        if (item.pasaporte == null) {
+                        if (item.rut != null) {
                             $scope.rutTrabajadorJornada = item.rut + "-" + item.dv
                         } else {
                             $scope.rutTrabajadorJornada = item.pasaporte;
@@ -209,11 +193,11 @@ angular.module('sccnlp.jornadas')
                             nave: item.nave,
                             idLugar: item.idEmprLocacion,
                             lugar: item.lugar,
-                            FechaInicioJornadaTrabajador: $filter('date')(item.fechaInicioJornada, dateFormat),
+                            FechaInicioJornadaTrabajador: $filter('date')(item.fechaInicioJornada, $scope.format),
                             HoraInicioJornadaTrabajador: $filter('date')(horaInicioJornada, timeFormat),
                             HoraInicioDescansoTrabajador: $filter('date')(horaInicioDescanso, timeFormat),
                             HoraTerminoDescansoTrabajador: $filter('date')(horaTerminoDescanso, timeFormat),
-                            FechaTerminoJornadaTrabajador: $filter('date')(item.fechaFinJornada, dateFormat),
+                            FechaTerminoJornadaTrabajador: $filter('date')(item.fechaFinJornada, $scope.format),
                             HoraTerminoJornadaTrabajador: $filter('date')(horaTerminoJornada, timeFormat),
                             extencionJornada: item.extensionJornada,
                             idJornada: item.idJornada,
@@ -227,20 +211,32 @@ angular.module('sccnlp.jornadas')
                     })
 
                     if (data.length == 0) {
-                        $scope.animationsEnabled = true;
+                        /*$scope.animationsEnabled = true;
                         var message = "Los criterios de búsqueda ingresados, no tienen resultados asociados. Vuelva a intentarlo.";
-                        $scope.messageModal(message);
+                        $scope.messageModal(message);*/
+                        alert("Los criterios de búsqueda ingresados, no tienen resultados asociados. Vuelva a intentarlo.");
                     } else {
                         $scope.mostrarTabla = true;
-                        $scope.configPages();
                     }
 
+                    $scope.totalItems = $rootScope.tableDatosRegistroJornada.length;
+                    $scope.activarBuscar = false;
 
+                    $scope.rutTrabajador = null;
+                    $scope.fechaInicioJornada = null;
+                    $scope.horaInicioJornada = null;
+                    $scope.naveSelect = null;
+                    $scope.LugarSelected = null;
+                    $scope.fechaTerminoJornada = null;
+                    $scope.horaTerminoJornada = null;
+                    $scope.sitioJornada = null;
                 },
                 function(error) {
-                    $scope.animationsEnabled = true;
+                    /*$scope.animationsEnabled = true;
                     var message = error.statusText;
-                    $scope.messageModal(message);
+                    $scope.messageModal(message);*/
+                    alert("En estos momentos no se puede conectar a los servicios, intente mas tarde");
+                    $scope.activarBuscar = false;
                 })
         }
 
@@ -339,6 +335,22 @@ angular.module('sccnlp.jornadas')
 
         };
 
+        angular.forEach($rootScope.tableDatosRegistroJornada, function(data, i) {
+
+            if (data.FechaTerminoJornadaTrabajador == null)
+                data.FechaTerminoJornadaTrabajador = "";
+            if (data.lugar == null)
+                data.lugar = "";
+            if (data.nave == null)
+                data.nave = "";
+            if (data.HoraInicioDescansoTrabajador == null)
+                data.HoraInicioDescansoTrabajador = "";
+            if (data.HoraTerminoDescansoTrabajador == null)
+                data.HoraTerminoDescansoTrabajador = "";
+            if (data.HoraTerminoJornadaTrabajador == null)
+                data.HoraTerminoJornadaTrabajador = "";
+        })
+
         alasql('SELECT * INTO XLS("Consulta de Jornadas - ' + new Date() + '.xls",?) FROM ?', [mystyle, $rootScope.tableDatosRegistroJornada]);
 
     };
@@ -346,14 +358,14 @@ angular.module('sccnlp.jornadas')
     $scope.modificarJornada = function(data, index) {
 
         $rootScope.registroModificar = data;
-        console.log($rootScope.registroModificar)
         $rootScope.index = index;
         $scope.animationsEnabled = true;
 
         var modalInstance = $uibModal.open({
             templateUrl: 'jornadas/consulta/jornadas_consultarModal.view.html',
             controller: 'ModalModificarCtrl',
-            size: 'lg'
+            size: 'lg',
+            windowClass: 'modalModifcar'
         });
 
     }
@@ -378,6 +390,13 @@ angular.module('sccnlp.jornadas')
     var dateFormat = 'yyyy-MM-dd';
     var timeFormat = 'HH:mm';
 
+    $scope.popup1 = {
+        opened: false
+    };
+
+    $scope.open1 = function() {
+        $scope.popup1.opened = true;
+    };
 
     $scope.naveSelected = $scope.registroModificar.idNave;
     $scope.lugarSelected = $scope.registroModificar.idLugar;
@@ -405,14 +424,13 @@ angular.module('sccnlp.jornadas')
         var horaTerminoJornada = $scope.registroModificar.HoraTerminoJornadaTrabajador.split(':');
         $scope.horaTerminoJornadaTrabajador = new Date(1970, 0, 1, horaTerminoJornada[0], horaTerminoJornada[1]);
     }
-    console.log($scope.registroModificar)
     $scope.guardar = function() {
 
         var registroModificado = {
 
             idJornada: $scope.registroModificar.idJornada,
             idIngresoJornada: $scope.registroModificar.idIngresoJornada,
-            idEmpresa: parseInt(session_data.id),
+            idEmpresa: parseInt(session_data.idEmpresa),
             nombre: $scope.registroModificar.nombresTrabajador,
             apellidos: $scope.registroModificar.apellidosTrabajador,
             rut: $scope.registroModificar.rut,
@@ -434,8 +452,6 @@ angular.module('sccnlp.jornadas')
 
         RestClientJornadaConsulta.modificarJornada(registroModificado, function(response) {
 
-            console.log(response);
-
             if (response.horaInicioJornada != undefined) {
                 var horaInicioJornada = new Date(1970, 0, 1, response.horaInicioJornada.split(":")[0], response.horaInicioJornada.split(":")[1], response.horaInicioJornada.split(":")[2]);
             }
@@ -454,8 +470,6 @@ angular.module('sccnlp.jornadas')
             $rootScope.tableDatosRegistroJornada[$scope.index].HoraTerminoDescansoTrabajador = $filter('date')(horaTerminoDescanso, timeFormat);
             $rootScope.tableDatosRegistroJornada[$scope.index].FechaTerminoJornadaTrabajador = $filter('date')(response.fechaFinJornada, dateFormat);
             $rootScope.tableDatosRegistroJornada[$scope.index].HoraTerminoJornadaTrabajador = $filter('date')(horaTerminoJornada, timeFormat);
-
-            console.log($rootScope.tableDatosRegistroJornada[$scope.index])
 
             if (response.error == null) {
                 var modalInstance = $uibModal.open({

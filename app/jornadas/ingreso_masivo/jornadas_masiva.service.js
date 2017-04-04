@@ -1,6 +1,6 @@
 angular.module('sccnlp.jornadas')
 
-.factory('RestClientJornadaMasiva', ['$resource', function($resource) {
+.factory('RestClientJornadaMasiva', ['$resource','IPSERVER', function($resource,IPSERVER) {
 
     var wrapper = {};
 
@@ -13,16 +13,14 @@ angular.module('sccnlp.jornadas')
     }
 
 
-    wrapper.jornadaResource = $resource('http://7.212.100.165/sccnlp/api/:serviceName', {}, {
+    wrapper.jornadaResource = $resource(IPSERVER.DESARROLLO+'api/:serviceName', {}, {
         save: {
             method: 'POST',
-            isArray: false,
-            transformRequest: formDataObject,
             headers: {
                 'Content-Type': undefined,
                 enctype: 'multipart/form-data'
-            }
-
+            },
+            transformRequest: formDataObject
         },
         saveArray: {
             method: 'POST',
@@ -37,15 +35,17 @@ angular.module('sccnlp.jornadas')
 
     wrapper.postFile = function(file, _callback_fn, _callback_error) {
 
+        console.log(file);
+
         return wrapper.jornadaResource.save({
-                serviceName: 'Jornada/postFile'
+                serviceName: 'Transversal/postFile/'
             }, {
                 file
             },
             _callback_fn, _callback_error);
     }
 
-    wrapper.registrarJornadas = function(file, empresa, callback_fn, callback_error) {
+    wrapper.registrarJornadasMasiva = function(file, empresa, callback_fn, callback_error) {
 
         return wrapper.jornadaResource.saveArray({
                 serviceName: 'Jornada/RegistrarJornadas'

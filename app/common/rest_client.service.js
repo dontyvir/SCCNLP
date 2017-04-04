@@ -1,12 +1,12 @@
 angular.module('sccnlp.common')
 
-        .factory('RestClient', ['$resource', '$httpParamSerializer',
+        .factory('RestClient', ['$resource', '$httpParamSerializer','IPSERVER',
 
-            function ($resource, $httpParamSerializer) {
+            function ($resource, $httpParamSerializer,IPSERVER) {
 
                 var wrapper = {};
 
-	wrapper.baseResource = $resource('http://7.212.100.165/sccnlp/api/:serviceName',{},{
+	wrapper.baseResource = $resource(IPSERVER.DESARROLLO+'api/:serviceName',{},{
 
 		save : {
 	        method: 'POST',
@@ -89,10 +89,10 @@ angular.module('sccnlp.common')
 			_pasaporte = 0;
 
 		if(!_rut)
-			_rut = {};
+			_rut = 0;
 
 		if(!_dv)
-			_dv = {};
+			_dv = 0;
 		
 		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_dv+'/'+_pasaporte},{}, _callback_fn, _callback_error);		
 	}

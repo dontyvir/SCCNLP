@@ -1,12 +1,12 @@
 angular.module('sccnlp.comiteParitario')
 
-.factory('RestClientComiteParitario', ['$resource',
+.factory('RestClientComiteParitario', ['$resource','IPSERVER',
 
-    function($resource) {
+    function($resource,IPSERVER) {
 
         var wrapper = {};
 
-        wrapper.comiteResource = $resource('http://10.212.129.22/sccnlp/api:serviname', {}, {
+        wrapper.comiteResource = $resource(IPSERVER.DESARROLLO+'api:serviname', {}, {
             save: {
                 method: 'POST',
                 headers: {

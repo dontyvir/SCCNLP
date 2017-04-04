@@ -7,12 +7,24 @@ angular.module('sccnlp.comiteParitario')
 
     $scope.messages = comiteParitarioMessages;
     $scope.dateFormat = 'dd/MM/yyyy';
+    $scope.formatPlaceholder = 'dd/mm/aaaa';
     var format = 'yyyy/MM/dd';
     $scope.mostrarFormulario = true;
     $scope.representantesEmpresa = [];
     $scope.representantesTrabajadores = [];
     $scope.trabajadorLoading = false;
     $scope.empresaLoading = false;
+
+    $scope.tabs = [{
+            disable: false
+        }, //tab ingreso de nombrada
+        {
+            disable: true
+        }, // tab resolucion
+        {
+            disable: true
+        }
+    ]
 
     $scope.comite = {
 
@@ -22,7 +34,8 @@ angular.module('sccnlp.comiteParitario')
         fechaActoEleccionario: null,
         tipoComite: null,
         cantidadTrabajadores: null,
-        asumefuncion: null
+        asumefuncion: null,
+        manual: false
     };
     $scope.empresa = {
         rut: null,
@@ -79,7 +92,9 @@ angular.module('sccnlp.comiteParitario')
         if (!tab || tab < 1 || tab > 2)
             return;
 
-        if ($scope.comite.tipoComite == null || $scope.comite.tipoComite == null) {}
+        if ($scope.comite.tipoComite == null || $scope.comite.asumefuncion == null) {
+
+        }
 
         $scope.tabs[tab].disable = false;
         $scope.tabsActive = tab;
@@ -90,22 +105,6 @@ angular.module('sccnlp.comiteParitario')
 
         $scope.comunas = RestClient.getComunasByIdRegion(id_region);
     }
-    $timeout(function() {
-        var defaultBounds = new google.maps.LatLngBounds(
-            new google.maps.LatLng(-33.8902, 151.1759),
-            new google.maps.LatLng(-33.8474, 151.2631));
-
-
-        var options = {
-            // bounds: defaultBounds,
-            types: ['address']
-        };
-
-        var input = document.getElementById('direccionGoogleMaps');
-        console.log(input);
-
-        var autocomplete = new google.maps.places.Autocomplete(input, options);
-    }, 500);
 
     // se llaman las funciones de inicialización dinámicas
     $scope.init();
@@ -125,10 +124,10 @@ angular.module('sccnlp.comiteParitario')
         //------
 
     //------- DATEPICKER ---------------
-    $scope.today = function() {
+ /*   $scope.today = function() {
         $scope.comite.fechaActoEleccionario = new Date();
     };
-    $scope.today();
+    $scope.today();*/
 
     $scope.open2 = function() {
         $scope.popup2.opened = true;
@@ -143,11 +142,24 @@ angular.module('sccnlp.comiteParitario')
     };
     //------- FIN DATEPICKER ---------------
 
-    $scope.buscarEmpleado = function(tipo, form) {
+    $timeout(function() {
+        var defaultBounds = new google.maps.LatLngBounds(
+            new google.maps.LatLng(-33.8902, 151.1759),
+            new google.maps.LatLng(-33.8474, 151.2631));
 
-        if (form && form.$invalid) {
-            return;
-        }
+
+        var options = {
+            // bounds: defaultBounds,
+            types: ['address']
+        };
+
+        var input = document.getElementById('direccionGoogleMaps');
+        console.log(input);
+
+        var autocomplete = new google.maps.places.Autocomplete(input, options);
+    }, 500);
+
+    $scope.buscarEmpleado = function(tipo) {
 
         if (tipo == 'empresa') {
             var rut = $scope.empresa.rut
@@ -155,6 +167,9 @@ angular.module('sccnlp.comiteParitario')
         if (tipo == 'trabajador') {
             var rut = $scope.trabajador.rut
         }
+
+        if (!rut || rut==null)
+            return
 
         $scope.personas = RestClient.getDatosPersona(rut.split("-")[0], rut.split("-")[1], null, function(data) {
 
@@ -186,9 +201,9 @@ angular.module('sccnlp.comiteParitario')
 
     $scope.anadirRepresentanteEmpresa = function() {
 
-        if ($scope.tipo != null && $scope.cargo != null && $scope.empresa.nombres != null && $scope.empresa.apellidoPaterno != null && $scope.empresa.apellidoMaterno != null) {
+        if ($scope.empresa.tipo != null && $scope.empresa.cargo != null && $scope.empresa.nombres != null && $scope.empresa.apellidoPaterno != null && $scope.empresa.apellidoMaterno != null) {
 
-            if ($scope.representantesEmpresa.length < 7) {
+            if ($scope.representantesEmpresa.length <= 7) {
 
                 $scope.representantesEmpresa.push({
                     idEmpleado: $scope.idEmpleado,
@@ -242,7 +257,7 @@ angular.module('sccnlp.comiteParitario')
     }
 
     $scope.eliminarRegistro = function(id, tipo) {
-        var itemEliminar = id - 1;
+        var itemEliminar = id;
         var itemMover = id++;
         if (tipo == 'empresa') {
             $scope.representantesEmpresa.splice(itemEliminar, 1);
@@ -259,6 +274,7 @@ angular.module('sccnlp.comiteParitario')
         $scope.empresa.nombres = "";
         $scope.empresa.tipo = null;
         $scope.empresa.cargo = null;
+
     }
     $scope.limpiarTrabajador = function() {
         $scope.trabajador.rut = "";
@@ -271,11 +287,24 @@ angular.module('sccnlp.comiteParitario')
         $scope.trabajador.aforado = false;
     }
 
+    $scope.ingresoLimpiar = function() {
+
+        $scope.comite.direccion = null;
+        $scope.comite.region = null;
+        $scope.comite.comuna = null;
+        $scope.comite.fechaActoEleccionario = new Date();
+        $scope.comite.tipoComite = null;
+        $scope.comite.cantidadTrabajadores = null;
+        $scope.comite.asumefuncion = null;
+        $scope.comite.manual = false;
+
+    }
+
     $scope.registrarComite = function() {
 
         $scope.data = {
 
-            idEmpresa: parseInt($scope.session_data.id),
+            idEmpresa: parseInt($scope.session_data.idEmpresa),
             idDireccion: 1,
             idRegion: $scope.comite.region,
             idComuna: $scope.comite.comuna,

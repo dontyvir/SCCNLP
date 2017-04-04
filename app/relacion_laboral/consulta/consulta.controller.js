@@ -427,7 +427,13 @@ angular.module('sccnlp.relacionLaboral.consulta')
     	
     	$scope.datos = RestClientRelacionLaboral.getDetalleContrato(relLab.idContrato,_count);
     	
-    	var autocomplete = GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'));
+    	var componentForm = {
+	        street_number: 'numero',
+	        route: 'calle'
+	        //locality: 'block', // comuna
+	        //administrative_area_level_1: '' // región
+    	};
+    	var autocomplete = GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'), componentForm);
     }
     
     $scope.ingresoContinue = function(nTab, form){

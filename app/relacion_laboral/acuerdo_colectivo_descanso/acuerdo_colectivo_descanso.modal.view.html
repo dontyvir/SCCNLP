@@ -36,6 +36,7 @@
  <div class="modal-footer">
      <button type="reset" class="btn btn-default">{{messages.BTN_limpiar}}</button>
      <button type="reset"  class="btn btn-danger" ng-click="dismissModal(acuerdoDescanso)">{{messages.BTN_cancelar}}</button>
-     <button type="submit" class="btn btn-primary" ng-click="saveAcuerdoColectivoDescanso(acuerdoDescanso)">{{messages.BTN_guardar}}</button>
+     <button type="submit" class="btn btn-primary" ng-disabled="acuerdoDescanso.$invalid"
+             ng-click="saveAcuerdoColectivoDescanso(acuerdoDescanso)">{{messages.BTN_guardar}}</button>
  </div>
  </form>

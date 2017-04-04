@@ -35,7 +35,7 @@ function(localStorageService, RestClient, jwtHelper) {
 
 	/* model interno datos de usuario */
 	wrapper.UserData = function(_id, _idEmpresa, _username,
-			_rutEmpresa, _dvEmpresa, _permissions) {
+			_rutEmpresa, _dvEmpresa, _permissions, _is_clave_empresa) {
 		
 		this.id = _id, this.idEmpresa = _idEmpresa;
 		this.username = _username;
@@ -43,6 +43,7 @@ function(localStorageService, RestClient, jwtHelper) {
 		this.dvEmpresa = _dvEmpresa;
 		this.puerto = null;
 		this.permissions = _permissions || [];
+		this.isClaveEmpresa = _is_clave_empresa;
 	};
 
 	wrapper.userData = null;
@@ -61,10 +62,7 @@ function(localStorageService, RestClient, jwtHelper) {
 
 		if(!wrapper.userData)
 			return false;
-		
-		if(!wrapper.userData.puerto)
-			return false;
-		
+
 		return true;
 	};
 
@@ -103,6 +101,8 @@ function(localStorageService, RestClient, jwtHelper) {
 
 	wrapper.login_clave_unica = function(token) {
 
+		//callback para login con clave única
+		
 	};
 
 	wrapper.logout = function() {

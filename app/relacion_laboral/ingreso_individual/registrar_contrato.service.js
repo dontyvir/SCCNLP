@@ -12,46 +12,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 		var dateFormat = 'yyyy/MM/dd';
 		var timeFormat = 'HH:mm';
-
-		var generarHorario = function(_horariosIn){
-			
-			if(!_horariosIn)
-				return null;
-			
-			var _horarioOut = {
-					dia : null,
-					horaDesde : null,
-					horaHasta : null,
-			};
-			
-			for(var i=0;i<_horariosIn.length;i++){
-				
-				var h = _horariosIn[i];
-				
-				if(h.selected){
-					_horarioOut.dia = i;
-					_horarioOut.horaDesde = $filter('date')(h.scheduleStart, timeFormat);
-					_horarioOut.horaHasta = $filter('date')(h.scheduleEnd, timeFormat);
-				}
-			}
-			
-			return _horarioOut;
-		}
-		
-		var generarAcuerdoDescanso = function(_acuerdoIn){
-			
-			if(!_acuerdoIn)
-				return null;
-			
-			var _acuerdoOut = {
-					idSindicato : _acuerdoIn.docId,
-					nombreAcuerdo : _acuerdoIn.acuerdo,
-					horaDesde : $filter('date')(_acuerdoIn.horaDesde, timeFormat),
-					horaHasta : $filter('date')(_acuerdoIn.horaHasta, timeFormat)
-			}
-			
-			return _acuerdoOut;
-		}
 		
 		// objeto a ser enviado
 		
@@ -104,8 +64,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 				idFuncion        : labor.idFuncion,
 				idLocacion       : labor.idLugar,
 				idJornada        : labor.idJornada,
-				horario          : generarHorario(labor.horario),
-				acuerdoDescanso  : generarAcuerdoDescanso(labor.acuerdoDescanso),
+				horario          : labor.horario,
+				acuerdoDescanso  : labor.acuerdoDescanso,
 				remuneracionBruta: labor.remuneracionBruta
 			});		
 		}
@@ -127,7 +87,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 		var _contrato = wrapper.prepararDatos(userId,rut_empleador,dv_empleador,trabajador,contrato);
 		var outFormat = [_contrato];
-		
+
 		return RestClientRelacionLaboral.registrarRelacionLaboral(outFormat, _callback_fn, function(error){
 			console.log(error);
 		});

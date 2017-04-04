@@ -2,7 +2,7 @@
 
 angular.module('sccnlp.relacionLaboral')
 
-.factory('Trabajador', function () {
+.factory('Trabajador', ['Domicilio', function (Domicilio) {
 	
 	 /** Prototipo para trabajador **/
 	
@@ -11,6 +11,9 @@ angular.module('sccnlp.relacionLaboral')
 		 	if(_fecNac && typeof _fecNac == 'string')
 		 		_fecNac = Date.parse(_fecNac);
 		 
+		 	if(!_domicilio)
+		 		_domicilio = new Domicilio();
+		 		
 	    	this.sexo = null;
 			this.AFP = null;
 			this.ISAPRE = null;
@@ -112,4 +115,4 @@ angular.module('sccnlp.relacionLaboral')
 		}
 	
 	 return Trabajador;
-});
+}]);

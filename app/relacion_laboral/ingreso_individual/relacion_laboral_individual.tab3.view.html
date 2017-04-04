@@ -209,7 +209,7 @@
 		    <div class="col-md-3 form-inline">
 	        	<button class="btn btn-warning" type="button" ng-click="limpiarContrato()">{{messages.BTN_limpiar}}</button>	        
         		<button class="btn btn-danger" type="button" ng-click="ingresoCancelar()">{{messages.BTN_cancelar}}</button>
-	        	<button class="btn btn-primary" type="submit" ng-click="ingresoSubmit(formTab3)">{{messages.BTN_finalizar}}</button>
+	        	<button class="btn btn-primary" type="submit" ng-disabled="formTab3.$invalid" ng-click="ingresoSubmit(formTab3,formTab2)">{{messages.BTN_finalizar}}</button>
 	        	        	        
 	        </div>
 		</div>

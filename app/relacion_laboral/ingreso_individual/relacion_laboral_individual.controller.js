@@ -5,11 +5,11 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 .controller('RelIndividualCtrl', ['$scope', 'ingIndivMessages', '$uibModal', 'RestClient',
 	                              'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
 	                              'loadAcuerdoDescanso', 'loadAcuerdoJornadaLaboral','Trabajador',
-	                              'Contrato','Empleador','Labor','GoogleMapsAutoComplete',
+	                              'Contrato','Empleador','Labor','GoogleMapsAutoComplete','ModalEsperaCarga',
 	
 	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,
 			 sessionService, RegistrarContrato,loadAcuerdoDescanso,loadAcuerdoJornadaLaboral,
-			 Trabajador, Contrato, Empleador, Labor,GoogleMapsAutoComplete) {
+			 Trabajador, Contrato, Empleador, Labor,GoogleMapsAutoComplete,ModalEsperaCarga) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -192,90 +192,99 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.loadAcuerdoJornadaLaboral = loadAcuerdoJornadaLaboral;
     $scope.loadAcuerdoDescanso = loadAcuerdoDescanso;
 
-	    $scope.clearDataTrabajador = function(){
-	    	$scope.trabajador.numDocIdentificador = null,
-			$scope.trabajador.nombres = null;
-			$scope.trabajador.apellidos = null;			
-			$scope.trabajador.nacionalidad = null;
-			$scope.trabajador.sexo = null;
-			$scope.trabajador.fechaDeNacimiento = null;
-			$scope.trabajador.estadoCivil = null;
-	    }
-
-	    $scope.ingresoContinue = function(tab, form) {
-	    	
-	    	if(form && form.$invalid){
-	    		return;
+    $scope.ingresoContinueT1 = function(){
+    	
+    	$scope.tabs[1].disable = false;
+    	$scope.tabsActive = 1;
+    }
+    
+    $scope.ingresoContinueT2 = function(form){
+    	
+    	if(form) {
+	    	for(var key in form.$error){
+	    		console.log(form.$error[key]);
+	    		form.$error[key][0].$$element[0].className ="has-danger form-control form-control-danger";
 	    	}
-	    	
-	    	if(!tab || tab < 1 || tab > 2)
-	    		return;
+    	}
+    	
+    	if(form && form.$invalid){
+    		return;
+    	}   	
 
-	    	$scope.tabs[tab].disable = false;
-	    	$scope.tabsActive = tab;
-	    	
-	    };
+    	$scope.tabs[2].disable = false;
+    	$scope.tabsActive = 2;
+    }
 	    
-	    $scope.ingresoSubmit = function(form) {
+    $scope.selectTab2 = function(){
+    	$scope.tabs[2].disable = true;
+        $scope.googlemapsInit();
+    }
+    
+    $scope.ingresoSubmit = function(form) {
+    	
+    	if(form && form.$invalid){
+    		return;
+    	}
+    	
+    	if(!$scope.validateFechaTerminoContrato)
+    		return;
+    	
+    	if(!$scope.validateHorariosAcuerdos())
+    		return;
 
-	    	if(form && form.$invalid){
-	    		return;
-	    	}
-	    	
-	    	if(!$scope.validateFechaTerminoContrato)
-	    		return;
-	    	
-	    	if(!$scope.validateHorariosAcuerdos())
-	    		return;
+	    var modalInstance = $uibModal.open({
 
-		    var modalInstance = $uibModal.open({
+		      ariaLabelledBy: 'modal-title',
+		      ariaDescribedBy: 'modal-body',
+		      templateUrl: 'relacion_laboral/confirmacion_guardado/recordatorio_legal.modal.view.html',
+		      controller: 'ConfirmacionGuardadoCtrl',
+		      controllerAs: '$ctrl'
+		    });
 
-			      ariaLabelledBy: 'modal-title',
-			      ariaDescribedBy: 'modal-body',
-			      templateUrl: 'relacion_laboral/confirmacion_guardado/recordatorio_legal.modal.view.html',
-			      controller: 'ConfirmacionGuardadoCtrl',
-			      controllerAs: '$ctrl'
-			    });
+		    modalInstance.result.then(function () {
+		    
+		    	var modalEsperaCarga = ModalEsperaCarga();
+		    	
+		    	//paso4
+	    	    $scope.tabs[0].disable = true;
+	    	    $scope.tabs[1].disable = true;
+	    	    $scope.tabs[2].disable = true;
+		    	$scope.tabs[3].disable = false;
+		    	$scope.tabsActive = 3;
+		    	
+		    	var user_data = sessionService.getUserData();
+		    
+		    	// registro del contrato
+		    	var _result = RegistrarContrato.registrar(user_data.id, $scope.empleador.rut,$scope.empleador.dv, $scope.trabajador, $scope.contrato,
+		    		function(response){
+		    		
+		    		$scope.relLab.loading = false;
+		    		
+		    		modalEsperaCarga.close(true);
+		    		
+		    		if(response[0].error == ""){
+		    			
+		    			$scope.relLab.data = response[0];
+		    			$scope.relLab.ingresada = true;
+		    			
+		    		} else {
+		    			$scope.relLab.ingresoError = true;
+		    			$scope.relLab.errorMSG = response[0].error;
+		    		}	
+		    	}, function(error){
+		    		
+		    		modalEsperaCarga.close(true);
+		    		
+		    		$scope.relLab.loading = false;
+		    		$scope.relLab.ingresoError = true;
+		    		$scope.relLab.errorMSG = error.message;
+		    	});
 
-			    modalInstance.result.then(function () {
-			    
-			    	//paso4
-		    	    $scope.tabs[0].disable = true;
-		    	    $scope.tabs[1].disable = true;
-		    	    $scope.tabs[2].disable = true;
-			    	$scope.tabs[3].disable = false;
-			    	$scope.tabsActive = 3;
-			    	
-			    	var user_data = sessionService.getUserData();
-			    
-			    	// registro del contrato
-			    	var _result = RegistrarContrato.registrar(user_data.id, $scope.empleador.rut,$scope.empleador.dv, $scope.trabajador, $scope.contrato,
-			    		function(response){
-			    		
-			    		$scope.relLab.loading = false;
-			    		
-			    		if(response[0].error == ""){
-			    			
-			    			$scope.relLab.data = response[0];
-			    			$scope.relLab.ingresada = true;
-			    			
-			    		} else {
-			    			$scope.relLab.ingresoError = true;
-			    			$scope.relLab.errorMSG = response[0].error;
-			    		}
-			    		
-			    			
-			    	}, function(error){
-			    		$scope.relLab.loading = false;
-			    		$scope.relLab.ingresoError = true;
-			    		$scope.relLab.errorMSG = error.message;
-			    	});
-
-			    }, function () {
-			    	
-			      console.log('Modal dismissed at: ' + new Date());
-			    });
-	    }
+		    }, function () {
+		    	
+		      console.log('Modal dismissed at: ' + new Date());
+		    });
+    }
 	    
 	    $scope.tryAgain = function(){
     	    $scope.tabs[0].disable = false;
@@ -286,6 +295,21 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 
 	    	$scope.relLab.ingresoError = false;
 	    	$scope.relLab.loading = true;
+	    }
+	    
+	    $scope.ingresoLimpiarTrab = function(docId){
+	    	
+	    	if(!docId)
+	    		docId = 'rut';
+	    	
+	    	var trab = new Trabajador();
+	    	trab.documentoIdentificador = docId;
+	    	
+	    	$scope.trabajador = trab;
+	    }
+
+	    $scope.ingresoLimpiarCont = function(){
+	    	$scope.contrato = new Contrato();
 	    }
 	    
 	    /**
@@ -408,8 +432,13 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        	$scope.empleador.terminoDeVigencia = data.fechavigencia;
 	        });
 	    };
-
-	    $scope.googlemapsInit = function(){GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'));}
+    	var componentForm = {
+    	        street_number: 'numero',
+    	        route: 'calle'
+    	        //locality: 'block', // comuna
+    	        //administrative_area_level_1: '' // región
+        };
+	    $scope.googlemapsInit = function(){GoogleMapsAutoComplete(document.getElementById('domicilioGoogleMaps'),componentForm);}
 	    
 	    // se llaman las funciones de inicialización dinámicas
 	    $scope.init();

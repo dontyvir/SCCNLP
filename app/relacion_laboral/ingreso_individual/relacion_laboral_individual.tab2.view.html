@@ -10,13 +10,13 @@
        
          <label class="form-check-label">            
            <input class="form-check-input" type="radio" name="identificadorTrabajador" ng-model="trabajador.documentoIdentificador"
-           	      id="identificadorTrabajador" value="rut"  ng-checked="true" ng-click="clearDataTrabajador()"/>
+           	      id="identificadorTrabajador" value="rut"  ng-checked="true" ng-click="ingresoLimpiarTrab('rut')"/>
            	{{messages.rut}} 
          </label>
          
         <label class="form-check-label">
          	<input type="radio" value="pasaporte" ng-model="trabajador.documentoIdentificador"
-          		   name="identificadorTrabajador" ng-checked="false" ng-click="clearDataTrabajador()"/>
+          		   name="identificadorTrabajador" ng-checked="false" ng-click="ingresoLimpiarTrab('pasaporte')"/>
           		   {{messages.pasaporteTrabajador}}
          </label>
     
@@ -26,7 +26,7 @@
 			<input id="inputRut" ng-model="trabajador.numDocIdentificador" ng-required="true"="true"  type="text" ng-maxlength="50" class="form-control">
 			
 			 <button type="button" class="btn btn-primary" ng-show="trabajador.documentoIdentificador == 'rut'"
-			         ng-click="loadDataTrabajador(trabajador.numDocIdentificador)" ng-disable="trabajadorLoading">
+			         ng-click="loadDataTrabajador(trabajador.numDocIdentificador)" ng-disabled="trabajadorLoading">
 			 
 			 <span ng-show="!trabajadorLoading">
 			 	   <span class="glyphicon glyphicon-search"></span>
@@ -115,13 +115,13 @@
 	<!-- Fecha de nacimiento Trabajador -->
 
 	<div class="form-group row">
-		<label for="fecha-nac-trabajador" class="col-md-3 col-form-label">{{messages.fechaDeNacimientoTrabajador}}</label>
+		<label for="fecha-nac-trabajador" class="col-md-3 col-form-label">{{messages.fechaDeNacimientoTrabajador}} *</label>
 		
 		<div class="col-md-4">
 		    <p class="input-group">
-		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="trabajador.fechaNacimiento"
+		      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="trabajador.fechaNacimiento" ng-required="true"
 		       is-open="popupFecNacTrab.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
-		       id="fecha-nac-trabajador" ng-readonly="trabajador.documentoIdentificador == 'rut'"/>
+		       id="fecha-nac-trabajador" name="fecNacTrab" ng-readonly="trabajador.documentoIdentificador == 'rut'"/>
 		       
 		      <span class="input-group-btn" >
 		        <button type="button" class="btn btn-default" ng-click="openDatePicker(popupFecNacTrab)"
@@ -159,9 +159,9 @@
 	    
 	    <div class="col-md-3 form-inline">
 	    
-        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>
+        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiarTrab()">{{messages.BTN_limpiar}}</button>
         	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
-        	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(2,formTab2)">{{messages.BTN_continuar}}</button>
+        	<button class="btn btn-primary" type="submit" ng-disabled="formTab2.$invalid" ng-click="ingresoContinueT2(formTab2)">{{messages.BTN_continuar}}</button>
         	        	        
         </div>
 	</div>

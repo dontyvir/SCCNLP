@@ -31,8 +31,7 @@ angular.module('sccnlp.relacionLaboral.consulta')
 		tabHeaderOne : 'Búsqueda',
 		tabHeaderTwo : 'Datos del Trabajador',
 		tabHeaderThree : 'Datos del Contrato',
-		tabHeaderFour : 'Finalización'
-			
-
+		tabHeaderFour : 'Finalización',
+		tabHeaderFinRL1 : 'Finalización Relación Laboral'
 	};
 });

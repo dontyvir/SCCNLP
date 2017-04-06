@@ -1,4 +1,4 @@
-angular.module('sccnlp.relacionLaboral.ingresoMasivo',[ 'ui.router', 'sccnlp.common', 'sccnlp.session' ])
+angular.module('sccnlp.relacionLaboral.ingresoMasivo',[ 'ui.router', 'sccnlp.common', 'sccnlp.session','angularFileUpload'])
 
 .config([ '$stateProvider', function($stateProvider) {
 
@@ -8,4 +8,4 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo',[ 'ui.router', 'sccnlp.com
 		controller : 'RelMasivoCtrl',
 		controllerAs : 'relMasCtl'
 	})
-} ]);
+} ])

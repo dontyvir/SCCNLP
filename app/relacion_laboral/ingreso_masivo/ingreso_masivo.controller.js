@@ -2,120 +2,117 @@
 
 angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 
-.controller('RelMasivoCtrl', ['$scope', 'ingMasMessages', '$uibModal', 'RestClient', 'sessionService','RegistrarContrato',
+.controller('RelMasivoCtrl', ['$scope', 'ingMasMessages','ingIndivMessages', 'RestClient', 'sessionService',
+							'Empleador','LoadDataEmpleador','RecordatorioLegal','ModalEsperaCarga','FileUploader',
+							'Contrato','procesarCSV',
 	
-	function($scope, ingMasMessages, $uibModal, RestClient, sessionService, RegistrarContrato) {
+	function($scope, ingMasMessages, ingIndivMessages, RestClient, sessionService,Empleador,
+			 LoadDataEmpleador,RecordatorioLegal,ModalEsperaCarga,FileUploader,
+			 Contrato,procesarCSV) {
 	
 	$scope.messages = ingMasMessages;
-	
+	angular.merge($scope.messages, ingIndivMessages);
+    
+	//tabs
 	$scope.empresaLoading = true;
 	$scope.tabsActive = 0;
 	$scope.tabs = [
 		{disable : false}, //tab datos de la empresa
-	    {disable : true}, // tab datos del trabajador
-	    {disable : true}, // tab datos del contrato
+	    {disable : true}, // tab carga relaciones laborales
 	    {disable : true}  // tab finalización del proceso
-	];
-	
-	// Datos del empleador Model
-	
-	$scope.empleador = {
-			
-			rutEmpleador : null,
-			nombreEmpresa :null,
-			tipoEmpresa : null,
-			domicilio : null,
-			terminoDeVigencia : null,
-			rutRepresentanteLegal : null,
-			nombreCompletoRepresentanteLegal :null,
-			emailRepresentanteLegal : null,
-
-			rutUsuarioQueRegistra : null,
-			nombreCompletoUsuarioQueRegistra : null,
-			cargoEnLaEmpresaQueRegistraData : null
-			
+	]
+	$scope.error = {
+		msg : null,
+		tooltipIsOpen : false
+	}	
+	// Model Ingreso Relación Laboral
+	$scope.relLab = {
+		
+			loading : true,
+			ingresada : false,
+			ingresoError : false,
+			errorMsg : null,
+			data : null
 	};
 	
-    $scope.ingresoContinue = function(tab, form) {
-    	
-    	if(form && form.$invalid){
-    		return;
-    	}
-    	
-    	if(!tab || tab < 1 || tab > 2)
-    		return;
-
-    	$scope.tabs[tab].disable = false;
-    	$scope.tabsActive = tab;
-    	
-    };
+	$scope.fileUploader = new FileUploader();
+	$scope.results = {contratos: null, validaciones: null};
+	// Datos del empleador Model
 	
-    $scope.loadDataUsuario = function(idUsuario) {
-    	
-   	 var dat = RestClient.getDatosUsuario(idUsuario, function(){
-
-   		if(dat.pasaporte) 
-   			$scope.empleador.rutUsuarioQueRegistra = dat.pasaporte;
-   		else
-   			$scope.empleador.rutUsuarioQueRegistra = dat.rut+"-"+dat.dv;
-   		
-	        $scope.empleador.nombreCompletoUsuarioQueRegistra = dat.nombres+" "+dat.apellidoPaterno+" "+dat.apellidoMaterno;
-   	 });
-   };
+	$scope.empleador = new Empleador();
 	
-   $scope.loadDataEmpresa = function(_rut){
-    	
-        var dat = RestClient.getDatosEmpresa(_rut, function(){
-        	
-	        $scope.empleador.rutEmpleador = dat.rutEmpresa+"-"+dat.dvEmpresa;
-	        $scope.empleador.nombreEmpresa = dat.razonSocial;
-	        $scope.empleador.tipoEmpresa = dat.actividades[dat.idActividadPrincipal].glosaActividad;
-	        		        
-	        for(var i=0;i<dat.direcciones.length;i++){
-	        	if(dat.direcciones[i].esCasaMatriz)
-	    	        $scope.empleador.domicilio = dat.direcciones[i].calle+" "+dat.direcciones[i].numero;
-	        }
-	        
-	        // si ninguna dirección es casa matriz
-	        if(!$scope.empleador.domicilio && dat.direcciones.length > 0)
-	        	$scope.empleador.domicilio = dat.direcciones[0].calle+" "+dat.direcciones[0].numero;
-	        
-	        
-	        $scope.empleador.rutRepresentanteLegal = dat.representante.rut+"-"+dat.representante.dv;
-	        $scope.empleador.nombreCompletoRepresentanteLegal = dat.representante.glosa;
-	        $scope.empleador.emailRepresentanteLegal = dat.representante.email;
+	$scope.ingresoContinueT1 = function(){
+		$scope.tabs[1].disable = false;
+		$scope.tabsActive = 1;
+	}
+	
+	$scope.masivoSubmit = function(){
+		
+		var recordatorioModal = RecordatorioLegal();
+		
+		recordatorioModal.result.then(function () {
+	    	var modalEsperaCarga = ModalEsperaCarga();
+	    	
+	    	//paso4
+    	    $scope.tabs[0].disable = true;
+    	    $scope.tabs[1].disable = true;
+    	    $scope.tabs[2].disable = false;
+	    	$scope.tabsActive = 2;
+	    	
+	    	var user_data = sessionService.getUserData();
+	    
+	    	// registro del contrato
+	    	var _result = RegistrarContrato.registrar(user_data.id, $scope.empleador.rut,$scope.empleador.dv, $scope.trabajador, $scope.contrato,
+	    		function(response){
+	    		
+	    		$scope.relLab.loading = false;
+	    		
+	    		modalEsperaCarga.close(true);
+	    		
+	    		if(response[0].error == ""){
+	    			
+	    			$scope.relLab.data = response[0];
+	    			$scope.relLab.ingresada = true;
+	    			
+	    		} else {
+	    			$scope.relLab.ingresoError = true;
+	    			$scope.relLab.errorMSG = response[0].error;
+	    		}	
+	    	}, function(error){
+	    		
+	    		modalEsperaCarga.close(true);
+	    		
+	    		$scope.relLab.loading = false;
+	    		$scope.relLab.ingresoError = true;
+	    		$scope.relLab.errorMSG = error.message;
+	    	});
+		})
+	}
+	
+	$scope.fileProcess = function(fileItem){
+		
+		if(!fileItem)
+			return;
+		
+		var file = document.getElementById('csvMasivo').files[0];
 
-	        
-	        $scope.empresaLoading = false;
-        });
-    	
-        $scope.empleador.terminoDeVigencia = null;
+		var data = Papa.parse(file,{delimiter:";",complete: function(results) {
 
-   }
-    
-    $scope.init = function() {
-
-        /**
-         * traemos los datos de sesión
-          
-          	var _userData = {
-				id,
-				username,
-				rutEmpresa,
-				dvEmpresa,
-				role,
-				permissions
-			};
-         */
+			$scope.results = procesarCSV(results.data);
+		}});
+	}
+	
+    function init(){
         var session_data = sessionService.getUserData();
 
-        $scope.loadDataEmpresa(session_data.rutEmpresa);
-        $scope.loadDataUsuario(session_data.id);
-    	
+        $scope.empleador = LoadDataEmpleador(function(){
+        	$scope.empresaLoading = false;
+        });
+        
+
     };
-    
-    // se llaman las funciones de inicialización dinámicas
-    $scope.init();
+
+    init();
 	
 }]);
 	

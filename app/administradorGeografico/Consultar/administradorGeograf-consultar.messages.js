@@ -6,9 +6,10 @@ angular.module('sccnlp.administradorGeograf-consultar')
 
             return {
                 CONSULTAR_LOCACIONES: "Consultar Locaciones",                
-                RUT_EMPRESA:    "Rut Empresa",
-                NOMBRE_EMPRESA: "Nombre Empresa",
+                RUT_EMPRESA:    "Rut empresa",
+                NOMBRE_EMPRESA: "Nombre empresa",
                 DIRECCION_CASA_MATRIZ:  "Dirección casa matriz",
+                DIRECCION_CASA_MATRIZ_header:  "Dirección Casa Matriz",
                 PUERTO: "Puerto",
                 POSICION:  "Posición",
                 LUGAR:  "Lugar",

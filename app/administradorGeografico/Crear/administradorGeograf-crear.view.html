@@ -3,9 +3,9 @@
 
     <h4>{{messages.CREAR_LOCACION}}</h4>
 
-<form id="formulario" name="formulario" class="form-group">
-    <div  id="formDiv" ng-submit="addNewLocation" class="col-md-12">
-        
+    <form id="formulario" name="formulario" class="form-group">
+        <div  id="formDiv" ng-submit="addNewLocation" class="col-md-12">
+
             <div id="rutEmpresaDiv" class="row">
                 <h5 class="col-md-3"><strong>{{messages.RUT_EMPRESA}}</strong></h5>                
                 <h5 class="col-md-9">{{rutEmpresaData}}</h5>                
@@ -34,7 +34,7 @@
 
                 <h5 class="col-md-3"><strong>{{messages.LUGAR}}*</strong></h5>                        
                 <div class="col-md-5">
-                    <input required="true" class="form-control" ng-model="lugarData" >
+                    <input required="true" maxlength="500" class="form-control" ng-model="lugarData" >
                 </div>
             </div>            
 
@@ -52,72 +52,79 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" ng-disabled="formulario.$invalid" ng-click="addNewLocation()" class="btn btn-default">{{messages.ADD_LOCATION_BTN}}</button>
+                <button type="submit" ng-disabled="formulario.$invalid" ng-click="addNewLocation()" class="btn btn-primary">{{messages.ADD_LOCATION_BTN}}</button>
             </div>
-        <br>
-    </div>
-
-    <div class="col-md-12" >
-
-        <table class="table table-striped table-bordered table-responsive table-hover ">
-            <thead >
-                <tr>
-                    <th><small>{{messages.RUT_EMPRESA}}</small></th>
-                    <th><small>{{messages.NOMBRE_EMPRESA}}</small></th>
-                    <th><small>{{messages.DIRECCION_CASA_MATRIZ}}</small></th>
-                    <th><small>{{messages.PUERTO}}</small></th>
-                    <th><small>{{messages.LUGAR}}</small></th>
-                    <th><small>{{messages.POSICION}}</small></th>
-                    <th><small>{{messages.VER_MAPA}}</small></th>
-                    <th><small>{{messages.ELIMINAR_BTN}}</small></th>                                
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="locacion in tablaLocacion">
-                    <td >
-                        <p>{{locacion.rutEmpresa}}</p>
-                    </td>
-                    <td >
-                        <p>{{locacion.nombreEmpresa}}</p>
-                    </td>
-                    <td >
-                        <p>{{locacion.direccionCasaMatriz}}</p>
-                    </td>
-                    <td >
-                        <p>{{locacion.puerto}}</p>
-                    </td>
-                    <td >
-                        <p>{{locacion.lugar}}</p>
-                    </td>
-                    <td >
-                        <p>{{locacion.posicion}}</p>
-                    </td>
-                    <td >
-                        <button  ng-click="showModal('table', $index)"  style="background-color: transparent; border-color: #000\9" class="btn col-md-1 glyphicon glyphicon-map-marker"></button> <h6 >{{messages.VER_MAPA}}</h6>
-                    </td>
-                    <td >                        
-                        <button  ng-click="removeLocation($index)"  style="background-color: transparent; border-color: #000\9" class="btn col-md-1 glyphicon glyphicon-trash"></button> <h6 >{{messages.ELIMINAR_BTN}}</h6>
-                    </td>
-                </tr>
-            </tbody>
-
-        </table>
-
-</div>
-
-    <div class="col-md-12">
-        <div class="row">
-            <h5 class="col-md-3">{{messages.CAMPOS_OBLIGATORIOS}}</h5>
+            <br>
         </div>
 
-    
-        <div class="pull-right">
+        <div class="col-md-12" >
 
-            <button class="btn btn-danger" ng-click="clear()">{{messages.CANCELAR_BTN}}</button>
-            <button class="btn btn-primary" ng-click="save()">{{messages.GUARDAR_BTN}}</button>        	        
+            <table class="table table-striped table-bordered table-responsive table-hover "  style="background-color: #D3D3D3">
+                <thead >
+                    <tr>
+                        <th><small>N°</small></th>
+                        <th><small>{{messages.RUT_EMPRESA}}</small></th>
+                        <th><small>{{messages.NOMBRE_EMPRESA}}</small></th>
+                        <th><small>{{messages.DIRECCION_CASA_MATRIZ}}</small></th>
+                        <th><small>{{messages.PUERTO}}</small></th>
+                        <th><small>{{messages.LUGAR}}</small></th>
+                        <th><small>{{messages.POSICION}}</small></th>
+                        <th><small>{{messages.VER_MAPA}}</small></th>
+                        <th><small>{{messages.ELIMINAR_BTN}}</small></th>                                
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="locacion in tablaLocacion| limitTo : pageSize : (currentPage - 1) * pageSize track by $index">
+                        <td class="text-center">
+                            <p>{{($index + 1 + (currentPage - 1) * pageSize)}}</p>
+                        </td>
+
+                        <td class="text-center">
+                            <p>{{locacion.rutEmpresa}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p>{{locacion.nombreEmpresa}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p>{{locacion.direccionCasaMatriz}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p>{{locacion.puerto}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p>{{locacion.lugar}}</p>
+                        </td>
+                        <td class="text-center">
+                            <p>{{locacion.posicion}}</p>
+                        </td>
+                        <td >
+                            <button  ng-click="showModal('table', $index  + (currentPage - 1) * pageSize)"  style="background-color: transparent; border-color: #000\9" class="btn col-md-1 glyphicon glyphicon-map-marker"></button> <h6 >{{messages.VER_MAPA}}</h6>
+                        </td>
+                        <td >                        
+                            <button  ng-click="removeLocation($index  + (currentPage - 1) * pageSize)"  style="background-color: transparent; border-color: #000\9" class="btn  col-md-push-3 glyphicon glyphicon-trash"></button>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+            <div class="col-md-12">
+                <ul class="pull-right" ng-show="(tablaLocacion).length > 0" uib-pagination total-items="totalItems" ng-model="currentPage" items-per-page="pageSize" previous-text="Anterior" next-text="Siguiente" ></ul>
+            </div>
         </div>
-    </div>
-     </form>
+
+        <div class="col-md-12">
+            <div class="row">
+                <h5 class="col-md-3">{{messages.CAMPOS_OBLIGATORIOS}}</h5>
+            </div>
+
+
+            <div class="pull-right">
+
+                <button class="btn btn-danger" ng-click="clear()" ui-sref="main.composite" href="#!/main">{{messages.CANCELAR_BTN}}</button>
+                <button class="btn btn-primary" ng-click="save()">{{messages.GUARDAR_BTN}}</button>        	        
+            </div>
+        </div>
+    </form>
 </div>
 
 <script type="text/ng-template" id="myModalContent.html">
@@ -128,4 +135,18 @@
     <div class="modal-footer">
     <button class="btn btn-primary center-block" type="button" ng-click="$ctrl.ok()">{{$ctrl.message.ACEPTAR_BTN}}</button>            
     </div>
+</script>
+
+<script type="text/ng-template" id="messageComponentConsulta2.html">
+    <div>
+    <div class="modal-header"></div>
+    <div class="modal-body" id="modal-body-consulta">
+    {{customMessage}}
+    </div>
+    <div class="modal-footer ">
+    <div class="col-md-4"></div>
+    <button class="btn btn-primary col-md-2 center-block" type="button" ng-click="ok()">{{alertMessages.OK_BTN}}</button>            
+    <button class="btn btn-danger col-md-2 center-block" ng-show="type === 'confirm'" type="button" ng-click="cancel()">{{alertMessages.CANCELAR_BTN}}</button>            
+    </div>
+    </div>    
 </script>

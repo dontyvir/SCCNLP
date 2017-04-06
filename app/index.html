@@ -21,7 +21,9 @@
         <script src="bower_components/angular/angular-locale_es-cl.js"></script>
       
         <script src="bower_components/alasql/dist/alasql.min.js" type="text/javascript"></script>
-
+        <script src="bower_components/papaparse/papaparse.min.js"></script>
+        <script src="bower_components/angular-file-upload/dist/angular-file-upload.min.js"></script>
+        
         <!-- Main App JS -->
         
         <script src="app.js"></script>
@@ -30,8 +32,7 @@
         <script src="common/validate_rut_service.js"></script>
         <script src="common/rest_client_relacion_laboral.js"></script>
         <script src="common/google_maps_autocomplete.service.js"></script>
-        <script src="common/date_parse.service.js"></script>
-        
+        <script src="common/date_parse.service.js"></script>        
         <script src="session/session.module.js"></script>
         <script src="session/session.service.js"></script>
         
@@ -62,14 +63,17 @@
 	    <script src="relacion_laboral/acuerdo_jornada_laboral/acuerdo_jornada_laboral.controller.js"></script>
 	    <script src="relacion_laboral/acuerdo_colectivo_descanso/acuerdo_colectivo_descanso.controller.js"></script>
 	    <script src="relacion_laboral/confirmacion_guardado/confirmacion_guardado.modal.controller.js"></script>
+	    <script src="relacion_laboral/confirmacion_guardado/confirmacion_guardado.service.js"></script>
 	    
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.module.js"></script>
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.messages.js"></script>
 	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo.controller.js"></script>
+	    <script src="relacion_laboral/ingreso_masivo/ingreso_masivo_procesar_CSV.service.js"></script>
 	    
 	    <script src="relacion_laboral/consulta/consulta.module.js"></script>
 	    <script src="relacion_laboral/consulta/consulta.messages.js"></script>	    
 	    <script src="relacion_laboral/consulta/consulta.controller.js"></script>
+	    <script src="relacion_laboral/relacion_laboral_load_data.service.js"></script>
 
 	    <!-- Nombradas -->
 	    

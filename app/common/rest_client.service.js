@@ -76,13 +76,25 @@ angular.module('sccnlp.common')
     
 	wrapper.getEstadoCivil = function(_callback_fn,_callback_error){
 		return wrapper.baseResource.query({serviceName : 'Mantenedor/getEstadoCivil'},{},_callback_fn,_callback_error);
+    }
+    
+    wrapper.getPuertoPorIDEmpresa = function (_idEmpresa,_callback_fn, _callback_error) {
+    	return wrapper.baseResource.query({serviceName: 'Mantenedor/getPuertosPorEmpresa/'+ _idEmpresa }, {}, _callback_fn, _callback_error);
+    }
+    
+    wrapper.getIngresoMinimoMensual = function (_callback_fn, _callback_error) {
+    	return wrapper.baseResource.get({serviceName: 'Mantenedor/getImm'}, {}, _callback_fn, _callback_error);
+    }    
+
+    wrapper.getCausalTermino = function (_callback_fn, _callback_error) {
+    	return wrapper.baseResource.query({serviceName: 'Mantenedor/getCausalTermino'}, {}, _callback_fn, _callback_error);
+    }   
+    
+	wrapper.getDatosEmpresa = function(_rut, _dv, _idPuerto,_callback_fn){
+		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut+'/'+_dv+'/'+_idPuerto},
+				                        {}, _callback_fn);
 	}
 
-	wrapper.getDatosEmpresa = function(_rut, _dv,_callback_fn){
-		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosEmpresa/'+_rut+'/'+_dv},{}, _callback_fn);
-		
-	}
-	
 	wrapper.getDatosPersona = function(_rut, _dv, _pasaporte, _callback_fn, _callback_error) {
 		
 		if(!_pasaporte)
@@ -93,9 +105,9 @@ angular.module('sccnlp.common')
 
 		if(!_dv)
 			_dv = 0;
-		
+	
 		return wrapper.baseResource.get({serviceName : 'Administracion/getDatosPersona/'+_rut+'/'+_dv+'/'+_pasaporte},{}, _callback_fn, _callback_error);		
-	}
+    }
 
 	/** Clientes Administración **/
 	
@@ -107,7 +119,7 @@ angular.module('sccnlp.common')
 	wrapper.getDatosRepresentante = function(_rut, _dv){
 		return wrapper.baseResource.query({serviceName : 'Administracion/getDatosRepresentante/'+_rut+'/'+_dv});
 	}
-    
+	
 	wrapper.getLocacion = function(_rutEmpresa,_callback_fn,_callback_error) {
 		return wrapper.baseResource.query({serviceName : 'Administracion/getLocacion/'+_rutEmpresa},{},_callback_fn,_callback_error);		
 	}
@@ -140,6 +152,29 @@ angular.module('sccnlp.common')
         return wrapper.baseResource.save_Array_JSON({serviceName: 'Administracion/modificarUsuario'}, _userlist, _callback_fn, _callback_error);
     };
 	
+    wrapper.getConsultarLocacionFiltro = function ( _rutBodyEmpresa,_idPuerto, _lugar,_posicion, _callback_fn, _callback_error) {       
+        
+        return wrapper.baseResource.query({serviceName: 'Administracion/getLocacion',RUT: _rutBodyEmpresa, idPuerto: _idPuerto, lugar: _lugar, posicion: _posicion}, {}, _callback_fn, _callback_error);
+    };
+    wrapper.modificarLocaciones = function ( _id,_idEmpresa, _idPuerto,_nombrePuerto,_lugar,_posicion,_isActive, _callback_fn, _callback_error) {       
+        
+        return wrapper.baseResource.save({serviceName: 'Administracion/modificarLocacion'}, {            
+            id: _id,
+            idEmpresa: _idEmpresa,
+            idPuerto: _idPuerto,
+            nombrePuerto: _nombrePuerto,
+            lugar:_lugar,
+            posicion:_posicion,
+            activo:_isActive
+        }, _callback_fn, _callback_error);
+    };
+        wrapper.guardarLocaciones = function ( _listLocacion, _callback_fn, _callback_error) {       
+        
+        return wrapper.baseResource.save_Array_JSON({serviceName: 'Administracion/guardarLocaciones'}, _listLocacion                    
+        , _callback_fn, _callback_error);
+    };
+
+        
 	return wrapper;
 	
 }]);

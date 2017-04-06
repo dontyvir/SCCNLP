@@ -9,10 +9,20 @@ angular.module('sccnlp.nombradas')
     $scope.messages = nombradasMessages;
     $scope.messagevalidateRut = false;
     $scope.mostrarmensaje = false;
-    $scope.datosNombrada = [];
     $scope.tableDatosTrabajadores = [];
-
+    $scope.validadoRut = false;
     var session_data = sessionService.getUserData();
+    console.log(session_data)
+    $scope.nombradasLoading = true;
+    $scope.resolucionNombradas = [];
+
+    $scope.naves = null;
+    $scope.tipoContrato = null;
+    $scope.labores = null;
+    $scope.lugares = null;
+    $scope.funciones = null;
+    $scope.jornadas = null;
+    $scope.tiposTurno = null;
 
     var vm = this;
 
@@ -26,6 +36,22 @@ angular.module('sccnlp.nombradas')
         }, // tab resolucion
     ]
 
+    $scope.fechaTurno = {
+        fecha: null,
+        TurnSelected: null
+    }
+
+    $scope.trabajo = {
+        puerto: null,
+        NaveSelected: null,
+        LocationSelected: null,
+        posicion: null
+    }
+
+    $scope.trabajador = {
+        rutTrabajador: null
+    }
+
 
     //---------------- inicio de fecha --------------------
 
@@ -33,13 +59,13 @@ angular.module('sccnlp.nombradas')
         value: new Date()
     };
 
-
     $scope.popup1 = {
         opened: false
     };
 
-    $scope.formats = ['dd-MM-yyyy', 'shortDate'];
+    $scope.formats = ['dd/MM/yyyy', 'shortDate'];
     $scope.format = $scope.formats[0];
+    $scope.formatPlaceholder = 'dd/mm/aaaa'
 
     $scope.openDataPicker = function() {
         $scope.popup1.opened = true;
@@ -73,27 +99,36 @@ angular.module('sccnlp.nombradas')
         $scope.naves = RestClient.getNave();
         $scope.tipoContrato = RestClientRelacionLaboral.getTipoContrato();
         $scope.labores = RestClientRelacionLaboral.getLabor();
-        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa, session_data.dvEmpresa);
+        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa);
         $scope.funciones = RestClientRelacionLaboral.getFuncion();
         $scope.jornadas = RestClientRelacionLaboral.getTipoJornada();
         $scope.tiposTurno = RestClientRelacionLaboral.getTurno();
+
+        if ($scope.naves != null &&
+            $scope.tipoContrato != null &&
+            $scope.labores != null &&
+            $scope.lugares != null &&
+            $scope.funciones != null &&
+            $scope.jornadas != null &&
+            $scope.tiposTurno != null) {
+
+            $scope.nombradasLoading = false;
+        }
     };
 
-    $scope.loadTrabajador = function(dato, documentoIdentificador) {
+    $scope.loadTrabajador = function(rut, documentoIdentificador) {
 
-        if (!dato)
-            return;
-
-        var idEmpresa = 1; //session_data.id;
+        var idEmpresa = session_data.idEmpresa;
+        $scope.validadoRut = true;
 
         if (documentoIdentificador == 'rut') {
-            var rutTrabajador = dato.split("-")[0];
-            //var dvTrabajador = dato.split("-")[1];
+            var rutTrabajador = rut.split("-")[0];
+            //var dvTrabajador = rut.split("-")[1];
             var pasaporte = null;
         } else {
             var rutTrabajador = null;
             //var dvTrabajador = "";
-            var pasaporte = dato;
+            var pasaporte = rut;
         }
 
         RestClientNombrada.getDatosTrabajador(idEmpresa, rutTrabajador, pasaporte, function(data) {
@@ -105,13 +140,13 @@ angular.module('sccnlp.nombradas')
             $scope.tableDatosTrabajadores.push({
                 idTrabajador: $scope.tableDatosTrabajadores.length + 1,
                 id: 0,
-                idNombrada: 0, // dato en duro no lo trae el servicio,
+                idNombrada: 0, 
                 activo: activo,
-                idContrato: 14, // dato en duro, no lo trae el servicio
-                idContratoNuevo: 0,
+                idContrato: data.idContrato,
                 idEstado: data.idEstado,
-                fechaCreacion: $scope.date.value, //dato que no es
-                rutPasaporteTrabajador: data.rut,
+                fechaCreacion: "2017-01-10T00:00:00", 
+                rutTrabajador: data.rut,
+                pasaporte: data.pasaporte,
                 dv: data.dv,
                 nombresTrabajador: data.nombres,
                 apellidosTrabajador: data.apellidoPaterno + " " + data.apellidoMaterno,
@@ -120,11 +155,15 @@ angular.module('sccnlp.nombradas')
                 remuneracionBrutaTrabajador: data.remuneracionBruta
             });
             $scope.showTableTrabajadores = true;
+            $scope.validadoRut = false;
+            $scope.trabajador.rutTrabajador = null;
         }, function(error) {
             console.log(error);
-            $scope.animationsEnabled = true;
+            /*$scope.animationsEnabled = true;
             var message = error.statusText;
-            $scope.messageModal(message);
+            $scope.messageModal(message);*/
+            alert("Problemas en la conexión, intente mas tarde");
+            $scope.validadoRut = false;
         });
 
     }
@@ -132,56 +171,17 @@ angular.module('sccnlp.nombradas')
     // se llaman las funciones de inicialización dinámicas
     $scope.init();
     //-------------- FIN LLAMADA DE SERVICIOS ----------------------
-
-
-    // PAGINACION DE LA TABLA 
-   /* $scope.currentPage = 0;
-    $scope.pageSize = 5;
-    $scope.pages = [];
-
-    $scope.configPages = function() {
-        $scope.pages.length = 0;
-        var ini = $scope.currentPage - 4;
-        var fin = $scope.currentPage + 5;
-        if (ini < 1) {
-            ini = 1;
-            if (Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) > 5)
-                fin = 5;
-            else
-                fin = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize);
-        } else {
-            if (ini >= Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) - 5) {
-                ini = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize) - 5;
-                fin = Math.ceil($scope.tableDatosTrabajadores.length / $scope.pageSize);
-            }
-        }
-        if (ini < 1) ini = 1;
-        for (var i = ini; i <= fin; i++) {
-            $scope.pages.push({
-                no: i
-            });
-        }
-
-        if ($scope.currentPage >= $scope.pages.length)
-            $scope.currentPage = $scope.pages.length - 1;
-    };
-
-    $scope.setPage = function(index) {
-        $scope.currentPage = index - 1;
-    };*/
-
-    // FIN DE PAGINACION DE TABLA
-    // ------------------------- TAB 1 ---------------------------
+    // ------------------------- GOOGLE MAPS ---------------------------
 
     $scope.showModal = function(param) {
-        var _puerto = "valparaiso";
+        var _puerto = "San isidro 292";
         var _coordenadas = param;
 
         console.log(_coordenadas);
 
         $scope.modal = $uibModal.open({
             templateUrl: 'nombradas/ingreso_individual/googleMaps.html',
-            controller: 'ModalShowMap',
+            controller: 'ModalShowMapNombradas',
             resolve: {
                 store: function() {
                     return {
@@ -198,6 +198,31 @@ angular.module('sccnlp.nombradas')
         });
 
     };
+    $scope.getLocation = function(puerto) {
+
+        puerto = "San isidro 292"; // en duro
+        var geocoder = new google.maps.Geocoder(); //  Google function to decode an address
+        if (geocoder) {
+            geocoder.geocode({
+                'address': puerto
+            }, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();;
+
+                    if (latitude !== null && longitude !== null) {
+                        $scope.center = [latitude, longitude];
+                        $scope.position = [latitude, longitude];
+                        $scope.infoMarkerLabel = "Latitud: " + latitude + " | Longitud: " + longitude;
+                    }
+                }
+            });
+        }
+        $scope.trabajo.posicion = "-33.3935486,-70.79356710000002"; // en duro
+        $scope.viewPosicion = true;
+    };
+
+    // -------------------------FIN GOOGLE MAPS ---------------------------
 
     $scope.getTableDatosTrabajadoresModel = function() {
         return $scope.tableDatosTrabajadores;
@@ -205,7 +230,11 @@ angular.module('sccnlp.nombradas')
 
     $scope.agregarTrabajador = function(rutTrabajador, documentoIdentificador) {
 
+        if (!rutTrabajador)
+            return
+
         var encontro = false;
+        $scope.validadoRut = true;
         angular.forEach($scope.tableDatosTrabajadores, function(item, index) {
 
             if (item.rutPasaporteTrabajador == rutTrabajador) {
@@ -214,18 +243,17 @@ angular.module('sccnlp.nombradas')
         });
 
         if (encontro == true) {
-            $scope.animationsEnabled = true;
+            /*$scope.animationsEnabled = true;
             var message = "Se encontro un rut o pasaporte existente, por favor ingrese un nuevo rut";
-            $scope.messageModal(message);
+            $scope.messageModal(message);*/
+            alert("Se encontro un rut o pasaporte existente, por favor ingrese un nuevo rut");
+            $scope.validadoRut = false;
         } else {
 
             $scope.loadTrabajador(rutTrabajador, documentoIdentificador);
-
             $scope.rutTrabajador = "";
-            $scope.validadoRut = false;
             $scope.verTablaTrabajador = false;
             $scope.messagevalidateRut = false;
-            document.getElementById('txt_rut').value = "";
         }
 
         //$scope.configPages();
@@ -238,41 +266,19 @@ angular.module('sccnlp.nombradas')
         //$scope.configPages();
     };
 
-    $scope.gettrabajadoresIncluidosNombrada = function() {
-        return $scope.trabajadoresIncluidosNombrada;
-    }
-
     $scope.validateRut = function(documentoIdentificador) {
-            var response = validateRut.validate(documentoIdentificador);
-            if (response) {
-                $scope.messagerut = ""
-                $scope.validadoRut = true;
-                $scope.messagevalidateRut = false;
+        var response = validateRut.validate(documentoIdentificador);
+        if (response) {
+            $scope.messagerut = ""
 
-            } else {
-                $scope.messagerut = "El Rut no es válido :'( "
-                $scope.messagevalidateRut = true;
-                $scope.validadoRut = false; 
-            }
+            $scope.messagevalidateRut = false;
+
+        } else {
+            $scope.messagerut = "El Rut no es válido :'( "
+            $scope.messagevalidateRut = true;
+
         }
-
-    //--- inicio de Datos de duro
-    $scope.puertoUnico = 'Valparaiso'
-
-    $scope.trabajadoresIncluidosNombrada = [{
-        rutPasaporteTrabajador: '12345678',
-        nombresTrabajador: 'Maria Zenair',
-        apellidosTrabajador: 'Yepez Ruiz',
-        turnoTrabajador: 'Turno 2',
-        fechaInicioJornadaTrabajador: '10/11/2017 13:00',
-        fechaTerminoJornadaTrabajador: '10/11/2017 13:00',
-        naveTrabajador: 'Ocean Dream',
-        sitioTrabajador: '1',
-        LugarTrabajador: 'Sin lugar',
-        EstadoTrabajador: 'APROBADO'
-    }];
-
-    //--- fin de Datos de duro
+    }
 
     // ------------------------- TAB 2 ---------------------------
 
@@ -295,55 +301,28 @@ angular.module('sccnlp.nombradas')
 
     $scope.changeTabByButton = function(tab) {
 
-        if ($scope.date.value < date_now) {
+        $scope.datosNombrada = [];
+
+        $scope.blockButtons = true;
+        if ($scope.fechaTurno.fecha < date_now) {
             $scope.messageValidateDate = true;
             $scope.messageValidateDate = "La fecha de inicio de nombrada no puede ser menor a la actual.";
             $scope.mostrarmensaje = true;
+            $scope.blockButtons = false;
         } else {
-            if ($scope.date.value == "" || $scope.date.value == undefined) {
-                $scope.messageValidate = true;
-            } else {
-                $scope.messageValidate = false;
-            }
 
-            if (vm.TurnSelected == "" || vm.TurnSelected == undefined) {
-                $scope.ValidateTurno = true;
-            } else {
-                $scope.ValidateTurno = false;
-            }
-
-            if (vm.NaveSelected == "" || vm.NaveSelected == undefined) {
-                $scope.ValidateNave = true;
-            } else {
-                $scope.ValidateNave = false;
-            }
-
-            if (vm.LugarSelected == "" || vm.LugarSelected == undefined) {
-                $scope.ValidateLugar = true;
-            } else {
-                $scope.ValidateLugar = false;
-            }
-
-            if ($scope.messageValidate || $scope.ValidateTurno || ($scope.ValidateNave && $scope.ValidateLugar)) {
-
-                $scope.animationsEnabled = true;
-                var message = "Debe completar todos los campos obligatorios";
-                $scope.messageModal(message);
+            if ($scope.trabajo.NaveSelected == null && $scope.trabajo.LocationSelected == null) {
+                $scope.blockButtons = false;
+                return false;
 
             } else {
 
-                $scope.ValidateLugar = false;
-                $scope.ValidateNave = false;
-
-                // muestra el mensaje de resolucion
                 var camposVacios = false;
                 if (!$scope.showTableTrabajadores) {
-                    var message = "Debe agregar los trabajadores";
-                    $scope.messageModal(message);
+                    alert("Debe agregar los trabajadores");
+                    $scope.blockButtons = false;
                 } else {
                     angular.forEach($scope.tableDatosTrabajadores, function(item, index) {
-
-                        var indextab = item.id - 1;
 
                         if ($scope.tableDatosTrabajadores[index].laborSelect[index] == "" || $scope.tableDatosTrabajadores[index].laborSelect[index] == undefined || $scope.tableDatosTrabajadores[index].funcionSelect[index] == "" || $scope.tableDatosTrabajadores[index].funcionSelect[index] == undefined || $scope.tableDatosTrabajadores[index].jornadaSelect[index] == "" || $scope.tableDatosTrabajadores[index].jornadaSelect[index] == undefined) {
                             camposVacios = true;
@@ -359,71 +338,70 @@ angular.module('sccnlp.nombradas')
 
                         var message = "Debe completar los campos de la tabla";
                         $scope.messageModal(message);
+                        $scope.blockButtons = false;
 
                     } else {
 
                         $scope.datosNombrada.push({
                             id: 0,
-                            fechaInicioNombrada: $scope.date.value,
-                            idTurnos: vm.TurnSelected,
-                            idEmpresa: 1, //dato de prueba,
-                            idNave: vm.NaveSelected,
-                            idLocacion: vm.LocationSelected,
-                            posicion: $scope.puertoUnico,
+                            fechaInicioNombrada: $scope.fechaTurno.fecha,
+                            idTurnos: $scope.fechaTurno.TurnSelected,
+                            idEmpresa: parseInt(session_data.idEmpresa),
+                            idNave: $scope.trabajo.NaveSelected,
+                            idLocacion: $scope.trabajo.LocationSelected,
+                            posicion: $scope.trabajo.posicion,
                             fechaCreacion: date_now,
-                            activo: 1,
-                            idEstado: 1,
+                            activo: "true",
                             trabajadores: $scope.tableDatosTrabajadores
                         })
 
-                        console.log($scope.datosNombrada);
-                        $scope.guardarNombrada($scope.datosNombrada);
+                        $scope.guardarNombrada($scope.datosNombrada, tab);
 
                     }
                 }
-
-
             }
         }
     };
-    $scope.guardarNombrada = function(data) {
+    $scope.guardarNombrada = function(data, tab) {
 
-        RestClientNombrada.guardarNombradas(data, function(data) {
-                if (!tab || tab < 1 || tab > 2)
-                    return;
+        RestClientNombrada.guardarNombradas(data, function(response) {
 
-                $scope.tabs[tab].disable = false;
-                $scope.tabs[0].disable = true;
-                $scope.tabsActive = tab;
+                $scope.blockButtons = false;
 
-                var message = "Se ha ingresado la nombrada";
-                $scope.messageModal(message);
-                console.log(data);
+                if (response[0].error == "") {
+
+                    $scope.resolucionNombradas = response[0].data;
+
+                    if (!tab || tab < 1 || tab > 2)
+                        return;
+                    $scope.tabs[tab].disable = false;
+                    $scope.tabs[0].disable = true;
+                    $scope.tabsActive = tab;
+                }else{
+                    alert(response[0].error)
+                }
 
             },
             function(error) {
-                var message = error.statusText;
+                var message = "no responde";
                 $scope.messageModal(message);
+                $scope.blockButtons = false;
             });
     };
 
 }])
 
-.controller('ModalShowMap', ['$scope', 'NgMap', '$uibModalInstance', 'store',
+.controller('ModalShowMapNombradas', ['$scope', 'NgMap', '$uibModalInstance', 'store',
     function($scope, NgMap, $uibModalInstance, store) {
 
-        console.log("entre");
         var address = store.puerto; //  Puert to seek in google
-        console.log(store.coordenadas);
         var result = store.coordenadas.split(",");
-        latitude = result[0].replace(/['"]+/g, ''); //  Port Latitude
-        longitude = result[1].replace(/['"]+/g, ''); //  Port Longitude
+        var latitude = result[0].replace(/['"]+/g, ''); //  Port Latitude
+        var longitude = result[1].replace(/['"]+/g, ''); //  Port Longitude
 
         var geocoder = new google.maps.Geocoder(); //  Google function to decode an address
         var evento = null;
         var mapa = null;
-
-        //  Seek in google the new lat, long values
 
         $scope.center = [latitude, longitude];
         $scope.position = [latitude, longitude];
@@ -443,36 +421,17 @@ angular.module('sccnlp.nombradas')
 
         });
 
-        /**
-         * Close the modal popup
-         * @returns {undefined}C
-         */
-        $scope.cancel = function() {
-            $uibModalInstance.dismiss();
-        };
-
-        /**
-         * Accept the new values and show them in the Lugar field
-         * @returns {undefined}
-         */
         $scope.ok = function() {
             $uibModalInstance.close(latitude + "," + longitude);
         };
     }
 ])
 
-/*.filter('startFromGrid', function() {
-    return function(input, start) {
-        start = +start;
-        return input.slice(start);
-    }
-
-})*/
-
-.controller('ModalInstanceCtrl', ['$scope', '$uibModalInstance', '$rootScope', 
+.controller('ModalInstanceCtrl', ['$scope', '$uibModalInstance', '$rootScope',
     function($scope, $uibModalInstance, $rootScope) {
 
-    $scope.cancel = function() {
-        $uibModalInstance.dismiss('cancel');
-    };
-}])
+        $scope.cancel = function() {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }
+])

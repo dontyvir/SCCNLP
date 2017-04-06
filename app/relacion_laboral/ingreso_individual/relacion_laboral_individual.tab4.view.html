@@ -1,17 +1,50 @@
 <div ng-show="relLab.ingresoError">
 
-<h4>Error al ingresar Relación Laboral</h4>
-
+<h4>{{relLab.errorTitle}}</h4>
+<hr/>
 <div class="alert alert-danger" role="alert">
 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
 <span class="sr-only">Error:</span>
 {{relLab.errorMSG}}</div>
 
+<br/>
 <div class="row">
     <div class="col-md-3 form-inline">     
       	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
        	<button class="btn btn-primary" type="submit" ng-click="tryAgain()">Volver Atrás</button>
        	        	        
+    </div>
+</div>
+</div>
+
+<div ng-show="relLab.finalizada">
+
+<h4>{{messages.datosIngresadosOK}}</h4>
+<hr/>
+
+<p>Se ha finalizado exitosamente la relación laboral : </p>
+<p>Si desea descargar una copia del registro presione aquí</p>
+
+<br/>
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-primary" role="button">Finalizar</a>       	        	        
+    </div>
+</div>
+</div>
+
+<div ng-show="relLab.modificada">
+
+<h4>{{messages.datosIngresadosOK}}</h4>
+<hr/>
+
+<p>Se ha modificado exitosamente la relación laboral : </p>
+<p>Si desea descargar una copia del registro presione aquí</p>
+
+<br/>
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-primary" role="button">Finalizar</a>       	        	        
     </div>
 </div>
 </div>
@@ -27,7 +60,7 @@
 
 <p>Si desea descargar una copia del registro presione aquí: </p>
 
-
+<br/>
 <div class="row">
     <div class="col-md-3 form-inline">     
       	<a href ui-sref="main.composite" class="btn btn-primary" role="button">Finalizar</a>       	        	        

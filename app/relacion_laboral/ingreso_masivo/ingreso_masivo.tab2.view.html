@@ -16,8 +16,25 @@
 		
 		  <div class="form-group">
 		    <label for="csvMasivo">Ingrese su nómina de trabajadores mediante la selección de un archivo: </label>
-		    <input type="file" class="form-control-file" id="csvMasivo" aria-describedby="csvLabel">
+		    
+		    <input type="file" class="form-control-file" id="csvMasivo" aria-describedby="csvLabel" nv-file-select uploader="fileUploader">
+		    
 		    <small id="csvLabel" class="form-text text-muted">Cargue aquí el archivo en formato csv con las relaciones laborales.</small>
+		  
+		    <ul>
+            <li ng-repeat="item in fileUploader.queue">
+                Name: <span ng-bind="item.file.name"></span><br/>
+                <button ng-click="fileProcess(item)">upload</button>
+            </li>
+        	</ul>
+
+			<h4>Validaciones</h4>
+		    <ul>
+            <li ng-repeat="item in results.validaciones">
+            	<div class="alert alert-danger" role="alert">fila : {{item.i}}, columna: {{item.j}}, error: {{item.errorMSG}}</div>
+            </li>
+        	</ul>
+		  
 		  </div>
 		
 		</form>
@@ -33,7 +50,7 @@
     <div class="col-md-3 form-inline">
 
        	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
-       	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(2,formTab2)">{{messages.BTN_continuar}}</button>
+       	<button class="btn btn-primary" type="submit" ng-click="masivoSubmit()">{{messages.BTN_continuar}}</button>
        	        	        
        </div>
 </div>

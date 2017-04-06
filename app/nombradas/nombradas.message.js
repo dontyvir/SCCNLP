@@ -29,6 +29,7 @@ angular.module('sccnlp.nombradas')
         rutPasaporte : "Rut o Pasaporte",
         camposObligatorios : "* Campos obligatorios",
         messageValidate : "Este campo no puede estar en vacio",
+        selectElijaOpcion : '-- elija una opción --',
         
         // Labels Tab 2
         messageResolucion : "A continuación, puede revisar la resolución de la Autoridad Maritima de acuerdo a los trabajadores incluido en la Nombrada.",

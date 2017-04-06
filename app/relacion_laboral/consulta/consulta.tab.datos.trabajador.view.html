@@ -3,43 +3,8 @@
 	<h4>{{messages.informacionDelTrabajador}}</h4>
 	<hr/>
 	
-	<div class="form-group row">
-       <div class="form-check col-md-3">
-			<div ng-show="trabajador.documentoIdentificador == 'rut'">{{messages.rut}}</div>
-			<div ng-show="trabajador.documentoIdentificador == 'pasaporte'">{{messages.pasaporteTrabajador}}</div>
-	   </div>
-		<div class="col-md-4">{{trabajador.numDocIdentificador}}</div>
-    </div>
-
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.nombresTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.nombres}}</div>
-	</div>
-
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.apellidosTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.getApellidos()}}</div>
-	</div>
-	
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.nacionalidadTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.nacionalidad.gentilicio}}</div>
-	</div>
-	
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.sexoTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.sexo.glosa}}</div>
-	</div>
-
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.fechaDeNacimientoTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.fechaNacimiento | date : dateFormat}}</div>
-	</div>
-
-	<div class="form-group row">
-		<div class="col-md-3">{{messages.estadoCivilTrabajador}}</div>
-		<div class="col-md-4">{{trabajador.estadoCivil.glosa}}</div>
-	</div>
+	<!-- datos sólo lectura del trabajador -->
+	<ng-include src="'relacion_laboral/datos_trabajador_ro.fragment.html'"></ng-include>
 
 	<!-- form domicilio, email, afp, isapre -->
 	<ng-include src="'relacion_laboral/datos_trabajador.fragment.html'"></ng-include>

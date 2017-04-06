@@ -4,7 +4,7 @@ angular.module('sccnlp.comiteParitario')
 
 .factory('comiteParitarioModificarMessages', function() {
     return {
-        ingresoComiteParaditario : "Modificar Comité Paraditario de Higiene y Seguridad",
+        ingresoComiteParitario : "Modificar Comité Paritario de Higiene y Seguridad",
         tabHeaderOne : "Datos de Comité",
         tabHeaderTwo : "Representantes de la Empresa",
         tabHeaderTree : "Representantes de los Trabajadores",

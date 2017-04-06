@@ -6,8 +6,9 @@ angular.module('sccnlp.relacionLaboral',['sccnlp.common'])
 	
 	// prototipo representante legal
 	
-	function RepresentanteLegal(rut,nombre,email){
+	function RepresentanteLegal(rut,dv,nombre,email){
 		this.rut = rut;
+		this.dv = dv;
 		this.nombre = nombre;
 		this.email = email;
 	}	
@@ -18,47 +19,56 @@ angular.module('sccnlp.relacionLaboral',['sccnlp.common'])
 
 	// prototipo domicilio
  	
-	function Domicilio(idRegion,idComuna,calle,numero,depto,block){
+	function Domicilio(idRegion,idComuna,calle,numero,depto,block,nomComuna){
 		this.idRegion = idRegion;
 		this.idComuna = idComuna;
+		this.nomComuna = nomComuna;
 		this.calle = calle;
 		this.numero = numero;
 		this.depto = depto;
 		this.block = block;
+		
+		this.toString = function(){
+			var dir = this.calle+" "+this.numero;
+			if(this.block) dir +=", block "+this.block;
+			if(this.depto) dir +=", depto "+this.depto;
+			dir += ", "+this.idComuna;
+			return dir
+		}
 	}
 	return Domicilio;
 })
 
-.factory('Empleador', function(){
+.factory('Empleador', ['RepresentanteLegal', function(RepresentanteLegal){
 	
 	// prototipo empleador Model
 	
-	function Empleador(_rut, _nombre, _tipo, _domicilio, _terminoVigencia,_representanteLegal,
+	function Empleador(_rut,_dv,_nombre, _tipo, _domicilio, _terminoVigencia,_representanteLegal,
 			_rutUsuario, _nombreUsuario){
 		
 		this.rut = _rut;
-		this.dv = null;
+		this.dv = _dv;
 		this.nombreEmpresa = _nombre;
 		this.tipoEmpresa = _tipo;
 		this.domicilio = _domicilio;
 		this.terminoDeVigencia = _terminoVigencia;
-
-		if(_representanteLegal){
-			this.rutRepresentanteLegal = _representanteLegal.rut;
-			this.nombreCompletoRepresentanteLegal = _representanteLegal.nombre;
-			this.emailRepresentanteLegal = _representanteLegal.email;
-		} else {
-			this.rutRepresentanteLegal = null;
-			this.nombreCompletoRepresentanteLegal = null;
-			this.emailRepresentanteLegal = null;		
-		}
+		this.representanteLegal = null;
+		
+		if(_representanteLegal)
+			this.representanteLegal = new RepresentanteLegal(
+					_representanteLegal.rut,
+					_representanteLegal.dv,
+					_representanteLegal.glosa,
+					_representanteLegal.email);
+		else
+			this.representanteLegal = new RepresentanteLegal();
 
 		this.rutUsuarioQueRegistra = _rutUsuario;
 		this.nombreCompletoUsuarioQueRegistra = _nombreUsuario;
 				
 	}
 	return Empleador;
-})
+}])
 
 .factory('Labor', ['DateParser',function(DateParser){
 	
@@ -106,7 +116,7 @@ angular.module('sccnlp.relacionLaboral',['sccnlp.common'])
 	
 	// prototipo Contrato
 	
-	function Contrato(_idContrato,_fechaCeleb,_idTipoContrato,_fechaInicio,_fechaFin,_idModalidadPago,_labores, _isLoaded){
+	function Contrato(_idContrato,_fechaCeleb,_idTipoContrato,_fechaInicio,_fechaFin,_idModalidadPago,_labores, _isLoaded, _trabajador){
 
 		this.id = _idContrato,
 		this.fechaCelebContrato = DateParser.strToDate(_fechaCeleb);
@@ -116,6 +126,7 @@ angular.module('sccnlp.relacionLaboral',['sccnlp.common'])
 	    this.idModalidadPago = _idModalidadPago;
 	    this.total = 0;
 	    this.labores = null;
+	    this.trabajador = _trabajador;
 	    
 	    if(_labores){
 	    	

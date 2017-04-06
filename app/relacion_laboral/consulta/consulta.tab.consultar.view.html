@@ -139,15 +139,16 @@
               	<td>{{(res.estado)?"Activo":"Inactivo"}}</td>
               	
               	<td>
-              		<button class="btn btn-primary" type="button" ng-click="modificarContrato(res)">
-              			<span ng-show="!editLoading" class="glyphicon glyphicon-edit"></span>
-              			<span ng-show="editLoading" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+              		<button class="btn btn-primary" type="button" ng-click="modificarContrato(res)" ng-disabled="editLoading">
+              			<span ng-show="!res.editLoading" class="glyphicon glyphicon-edit"></span>
+              			<span ng-show="res.editLoading" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
               		</button>
               	</td>
               	
               	<td>
-              		<button class="btn btn-danger" type="button">              		
-              			<span class="glyphicon glyphicon-trash"></span>
+              		<button class="btn btn-danger" type="button" ng-disabled="editLoading" ng-click="finalizarRelLab(res)">              		
+              			<span ng-show="!res.finLoading" class="glyphicon glyphicon-trash"></span>
+              			<span ng-show="res.finLoading" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
               		</button>
               	</td>
               </tr>

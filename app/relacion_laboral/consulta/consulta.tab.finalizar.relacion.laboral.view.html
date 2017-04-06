@@ -1,0 +1,78 @@
+ <div class="row">
+ <div class="col-md-6">
+
+<h4>{{messages.datosDelEmpleador}}</h4>
+<hr/>
+    
+<!-- datos empresa, representante legal y usuario registrante -->
+<ng-include src="'relacion_laboral/datos_empleador_ro.fragment.html'"></ng-include> 
+ 
+ </div>
+ <div class="col-md-6">
+
+<h4>{{messages.informacionDelTrabajador}}</h4>
+<hr/>
+
+<!-- datos sólo lectura del trabajador -->
+<ng-include src="'relacion_laboral/datos_trabajador_ro.fragment.html'"></ng-include>
+
+   <div class="form-group row">
+       <div class="col-md-3">{{messages.domicilio}}</div>
+       <div class="col-md-5 ">{{trabajador.domicilio.toString()}}</div>
+   </div>
+   <div class="form-group row">
+       <div class="col-md-3">{{messages.email}}</div>
+       <div class="col-md-5">{{trabajador.email}}</div>
+   </div>
+   <div class="form-group row">
+       <div class="col-md-3">{{messages.AFPTrabajador}}</div>
+       <div class="col-md-5">{{trabajador.AFP.glosa}}</div>
+   </div>
+
+   <div class="form-group row">
+       <div class="col-md-3">{{messages.ISAPRETrabajador}}</div>
+       <div class="col-md-5">{{trabajador.ISAPRE.glosa}}</div>
+   </div> 
+ 
+ </div>
+ </div>
+
+<h4>Finalización de la relación laboral</h4>
+<hr/>
+
+<form name="finRLForm">
+<div class="form-group row">
+	<label for="fecTermino" class="col-md-3 col-form-label">Fecha de Término *</label>
+	
+	<div class="col-md-4">
+	    <p class="input-group">
+	      <input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="terminoRL.fecha" ng-required="true"
+	       is-open="popupFecTermRL.opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats"
+	       id="fecTermino" name="fecTermino"/>
+	       
+	      <span class="input-group-btn" >
+	        <button type="button" class="btn btn-default" ng-click="popupFecTermRL.opened = true">
+	        	<i class="glyphicon glyphicon-calendar"></i>
+	        </button>
+	      </span>
+	      </p>
+	</div>
+</div>
+<div class="from-group row">
+	<label for="causalTermino" class="col-md-3 col-form-label">Causal de Término *</label>
+<div class="col-md-4">
+			 <select ng-model="terminoRL.idCausal" 
+			  class="form-control" ng-options="op.id as op.glosa for op in causalesTerm" ng-required="true">
+			 	<option value="">{{messages.selectElijaOpcion}}</option>
+			 </select>
+</div>
+</div>
+<hr/>
+<div class="form-group row">
+	<div class="col-md-9 form-inline">
+    	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
+    	<button class="btn btn-primary" type="submit" ng-disabled="finRLForm.$invalid" ng-click="submitFinalizarRL()">Finalizar Relación Laboral</button>        	        
+	</div>
+</div>
+
+</form>

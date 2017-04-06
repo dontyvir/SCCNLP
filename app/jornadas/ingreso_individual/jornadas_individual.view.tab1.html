@@ -1,5 +1,5 @@
 <div class="form-group row">
-    <div class="col-lg-3" ng-init ="documentoIdentificador = 'rut'" >
+    <div class="col-lg-2" ng-init ="documentoIdentificador = 'rut'" >
         <input type="radio"  name="identificadorTrabajador" ng-click="documentoIdentificador = 'rut'" ng-checked="true"/> {{messages.rut}}
         <input type="radio" style="margin-left: 30px;" ng-click="documentoIdentificador = 'pasaporte'" name="identificadorTrabajador" ng-checked='false'/> {{messages.pasaporte}} :
         *
@@ -27,29 +27,29 @@
 <div class="row" style="overflow: auto;" ng-show="showTableTrabajadores">
     <br>
     <div class="col-md-12">
-        <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0" ng-enabled="verTablaTrabajador">
+        <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px;" cellspacing="0" ng-enabled="verTablaTrabajador" border="0">
             <thead>
-                <tr style="background-color: #D3D3D3">
-                    <th><small>Rut o Pasaporte</small></th>
-                    <th><small>Nombres</small></th>
-                    <th><small>Apellidos</small></th>
-                    <th><small>Nave</small></th>
-                    <th><small>Lugar*</small></th>
-                    <th><small>Fecha Inicio de Jornada*</small></th>
-                    <th><small>Hora Inicio de Jornada*</small></th>
-                    <th><small>Hora Inicio de Descanso</small></th>
-                    <th><small>Hora Término de Descanso</small></th>
-                    <th><small>Fecha Término de Jornada</small></th>
-                    <th><small>Hora Término de Jornada</small></th>
-                    <th><small>Eliminar</small></th>
+                <tr style="background-color: #D3D3D3;">
+                    <th style="vertical-align: middle;"><small>Rut o Pasaporte</small></th>
+                    <th style="vertical-align: middle;"><small>Nombres</small></th>
+                    <th style="vertical-align: middle;"><small>Apellidos</small></th>
+                    <th style="vertical-align: middle;"><small>Nave</small></th>
+                    <th style="vertical-align: middle;"><small>Lugar*</small></th>
+                    <th style="vertical-align: middle;"><small>Fecha Inicio de Jornada*</small></th>
+                    <th style="vertical-align: middle;"><small>Hora Inicio de Jornada*</small></th>
+                    <th style="vertical-align: middle;"><small>Hora Inicio de Descanso</small></th>
+                    <th style="vertical-align: middle;"><small>Hora Término de Descanso</small></th>
+                    <th style="vertical-align: middle;"><small>Fecha Término de Jornada</small></th>
+                    <th style="vertical-align: middle;"><small>Hora Término de Jornada</small></th>
+                    <th style="vertical-align: middle;"><small>Eliminar</small></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat='datosTrabajador in tableDatosTrabajadores | limitTo : pageSize : (currentPage - 1) * pageSize track by $index' ng-style="{'background-color' : (datosTrabajador.validateRow == true) ? '#F5F561' : ''}">
-                    <td ng-if="datosTrabajador.rutTrabajador != null">{{datosTrabajador.rutTrabajador}}-{{datosTrabajador.dv}}</td>
-                    <td ng-if="datosTrabajador.rutTrabajador == null || datosTrabajador.rutTrabajador == 0">{{datosTrabajador.pasaporteTrabajador}}</td>
-                    <td>{{datosTrabajador.nombresTrabajador}}</td>
-                    <td>{{datosTrabajador.apellidosTrabajador}}</td>
+                    <td style="vertical-align: middle;" ng-if="datosTrabajador.rutTrabajador != null">{{datosTrabajador.rutTrabajador}}-{{datosTrabajador.dv}}</td>
+                    <td style="vertical-align: middle;" ng-if="datosTrabajador.rutTrabajador == null || datosTrabajador.rutTrabajador == 0">{{datosTrabajador.pasaporteTrabajador}}</td>
+                    <td style="vertical-align: middle;">{{datosTrabajador.nombresTrabajador}}</td>
+                    <td style="vertical-align: middle;">{{datosTrabajador.apellidosTrabajador}}</td>
                     <td>
                         <select ng-model="datosTrabajador.naveSelect" ng-options="nav.id as nav.glosa for nav in naves | orderBy:'glosa':false" class="form-control" ng-disabled="datosTrabajador.locacionSelect" ng-required="true">
                             <option value="">{{messages.selectElijaOpcion}}</option>
@@ -62,7 +62,7 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaInicioJornada" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaInicioJornada" is-open="popupInicio[$index].opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true" show-button-bar="false"/>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openDataPickerInicio($index)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>
@@ -79,7 +79,7 @@
                     </td>
                     <td>
                         <div class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaTerminoJornada" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true"/>
+                            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="datosTrabajador.fechaTerminoJornada" is-open="popupTermino[$index].opened" datepicker-options="dateOptions" close-text="Close" alt-input-formats="altInputFormats" placeholder="dd/mm/aaaa" popup-placement="right-top" datepicker-append-to-body="true" show-button-bar="false"/>
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openDataPickerTermino($index)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </span>

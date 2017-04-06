@@ -25,7 +25,10 @@ angular.module('sccnlp.menu', ['sccnlp.session', 'ui.router'])
 	$scope.getPuerto = function(){
 		
 		var userData = sessionService.getUserData();
-		return userData.puerto.glosa;
+		if(userData.puerto.id)
+			return userData.puerto.glosa;
+		
+		return null;
 	}
 }])
 

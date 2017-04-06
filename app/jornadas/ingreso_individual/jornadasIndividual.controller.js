@@ -51,17 +51,17 @@ angular.module('sccnlp.jornadas')
         var timeFormat = 'HH:mm';
         $scope.format = 'dd/MM/yyyy'
 
-        function disabled(data) {
+       /* function disabled(data) {
             var date = data.date,
                 mode = data.mode;
             return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
-        }
+        }*/
 
         $scope.dateOptions = {
-            dateDisabled: disabled,
+            //dateDisabled: disabled,
             formatYear: 'yy',
-            maxDate: new Date(2020, 5, 22),
-            minDate: new Date(),
+            //maxDate: new Date(2020, 5, 22),
+            //minDate: new Date(),
             startingDay: 1
         };
 

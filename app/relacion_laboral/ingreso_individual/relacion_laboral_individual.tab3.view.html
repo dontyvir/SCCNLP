@@ -206,7 +206,7 @@
 		       <small>{{messages.mandatoryFields}}</small> 
 		    </div>
 		    
-		    <div class="col-md-3 form-inline">
+		    <div class="col-md-3 form-inline" uib-tooltip="{{error.msg}}" tooltip-is-open="error.tooltipIsOpen" tooltip-placement="top" tooltip-trigger="none">
 	        	<button class="btn btn-warning" type="button" ng-click="limpiarContrato()">{{messages.BTN_limpiar}}</button>	        
         		<button class="btn btn-danger" type="button" ng-click="ingresoCancelar()">{{messages.BTN_cancelar}}</button>
 	        	<button class="btn btn-primary" type="submit" ng-disabled="formTab3.$invalid" ng-click="ingresoSubmit(formTab3,formTab2)">{{messages.BTN_finalizar}}</button>

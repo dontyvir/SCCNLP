@@ -12,6 +12,10 @@ angular.module('sccnlp.crear_usuario')
                 $scope.tablaUsuarios = [];
                 $scope.confirmEliminar = false;
                 var session_data = sessionService.getUserData();
+                
+                $scope.pageSize = 5;
+                $scope.currentPage = 1;
+                $scope.totalItems = $scope.tablaUsuarios.length;
 
                 /**
                  * Used to validate the form and will activate the SAVE button
@@ -129,6 +133,11 @@ angular.module('sccnlp.crear_usuario')
                     valor = valor.replace('-', '');
                     return valor.slice(0, -1);
                 };
+                var getRutDV = function (param) {
+                    var valor = String(param).replace('.', '');
+                    valor = valor.replace('-', '');
+                    return valor.slice(-1);
+                }
 
                 /**
                  * Function to add to the table the values returned from the Registro Civil Service
@@ -137,26 +146,31 @@ angular.module('sccnlp.crear_usuario')
                 $scope.agregarUsuario = function () {
                     if ($scope.USUARIO_RUT !== '' && validateRut.validate($scope.USUARIO_RUT)) {
 
-                        var nuevo = RestClient.getDatosPersona($scope.USUARIO_RUT, '', function (data) {
-                            var element = {USUARIO_RUT: data.rut + "-" + data.dv,
-                                USUARIO_NOMBRES: data.nombres,
-                                USUARIO_APELLIDOS: data.apellidoPaterno + " " + data.apellidoMaterno,
-                                USUARIO_MODULOS: angular.copy($scope.modulo),
-                                USUARIO_PUERTOS: angular.copy($scope.puerto),
-                                MODULOS_COMPLETADOS: {},
-                                PUERTOS_COMPLETADOS: {},
-                                ID_PERSONA: data.id
-                            };
+                        var nuevo = RestClient.getDatosPersona(getRutBody($scope.USUARIO_RUT), getRutDV($scope.USUARIO_RUT), '', function (data) {
+                            if (data.id === 0) {
+                                var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_PERSONA_NO_ENCONTRADA);
+                            } else {
+                                var element = {USUARIO_RUT: data.rut + "-" + data.dv,
+                                    USUARIO_NOMBRES: data.nombres,
+                                    USUARIO_APELLIDOS: data.apellidoPaterno + " " + data.apellidoMaterno,
+                                    USUARIO_MODULOS: angular.copy($scope.modulo),
+                                    USUARIO_PUERTOS: angular.copy($scope.puerto),
+                                    MODULOS_COMPLETADOS: {color:'',focus:''},
+                                    PUERTOS_COMPLETADOS: {color:'',focus:''},
+                                    ID_PERSONA: data.id                                    
+                                };
 
-                            RestClient.getConsultarUsuarios(session_data.id, getRutBody($scope.USUARIO_RUT), '', '', function (usuario) {
-                                if (usuario.length === 0)
-                                    $scope.tablaUsuarios.push(element);
-                                else
-                                    var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_USUARIO_EXISTENTE);
-                            }, function (usuario) {
-                                var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_REG_CIVIL);
-                            });
-
+                                RestClient.getConsultarUsuarios(session_data.id, getRutBody($scope.USUARIO_RUT), '', '', function (usuario) {
+                                    if (usuario.length === 0){
+                                        $scope.tablaUsuarios.push(element);                                        
+                                        $scope.totalItems = $scope.tablaUsuarios.length;
+                                    }
+                                    else
+                                        var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_USUARIO_EXISTENTE);
+                                }, function (usuario) {
+                                    var modalInstance = modalWindow('warning', $scope.messages.MESSAGE_WARNING_REG_CIVIL);
+                                });
+                            }
 
                         }, function (data) {
 

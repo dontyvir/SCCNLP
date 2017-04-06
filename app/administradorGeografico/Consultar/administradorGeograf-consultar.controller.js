@@ -4,27 +4,33 @@
 var module = angular.module('sccnlp.administradorGeograf-consultar');
 
 
-module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionService', '$state', 'administradorGeografConsultarMessages', '$uibModal',
-    function ($scope, sessionService, $state, administradorGeografMessages, $uibModal) {
+module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionService', '$state', 'administradorGeografConsultarMessages', '$uibModal', 'RestClient',
+    function ($scope, sessionService, $state, administradorGeografMessages, $uibModal, RestClient) {
         $scope.mensajeriaConsulta = administradorGeografMessages; // conexión del servicio messages
+        var session_data = sessionService.getUserData();
+        $scope.coordClass = '';
         $scope.rutEmpresaConsultaData = '';             //  Data rut empresa
         $scope.nombreEmpresaConsultaData = "";          //  Data nombre empresa
         $scope.direccionCasaMatrizConsultaData = "";    //  Data direccion casa matriz
-        $scope.lugarConsultaData = {
-            nombre: [],
-            seleccionado: ''
-        };                  //  Data lugar
+        $scope.lugarConsultaData = "";
         $scope.coordenadasConsultaData = "";            //  Data Coordenadas
         $scope.tablaLocacionConsulta = [];              //  Result table
         $scope.puertoConsulta = {//  Data puerto
             nombre: [],
             seleccionado: ''
         };
-
+        $scope.regex = "/-?[0-9]+.?[0-9]+,{1}-?[0-9]+.?[0-9]+";
+        $scope.puertos = {//  Data puerto
+            nombre: [],
+            seleccionado: ''
+        };
+        $scope.pageSize = 5;
+        $scope.currentPage = 1;
+        $scope.totalItems = $scope.tablaLocacionConsulta.length;
 
         var modalWindow = function (p_type, p_value) {
             return $uibModal.open({
-                templateUrl: 'messageComponentConsulta.html',
+                templateUrl: 'messageComponentConsulta0.html',
                 controller: 'alertMessage',
                 size: 'md',
                 animation: true,
@@ -40,60 +46,37 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
         };
 
 
-        /**
-         * Function to get the values of available places from backend
-         * @returns {Array}
-         */
-        var getLugaresFromBackend = function () {
-            //  TODO: get all elements based on the port
-            var elemento = [{puerto: 'Aeropuerto arturo merino benitez',
-                    lugares: ["anden 1", "anden 2"]},
-                {puerto: 'alvarez de toledo 880, san miguel',
-                    lugares: ["anden 32", "anden 33"]}];
-            return elemento;
-        };
 
-        /**
-         * Function to get all lugar field form to query
-         * @returns {undefined}
-         */
-        var getLugarConsulta = function () {
-            var element = getLugaresFromBackend();
-            var lugar = [];
+        $scope.updateLongitudLatitudIsValid = function () {
+            if ($scope.coordenadasConsultaData.length > 0) {
+                if (/-?[0-9]+.?[0-9]+,{1}-?[0-9]+.?[0-9]+/.test($scope.coordenadasConsultaData)) {
+                    var result = $scope.coordenadasConsultaData.split(",");
+                    $scope.longitud = result[0];
+                    $scope.latitud = result[1];
+                    $scope.coordClass = '';
 
-            for (var item in element) {
-                for (var item2 in element[item].lugares) {
-                    lugar.push(element[item].lugares[item2]);
-                }
-            }
-
-            for (var item in lugar) {
-                $scope.lugarConsultaData.nombre.push(lugar[item]);
-            }
-        };
-
-        /**
-         * Update the place based on the puerto
-         * @returns {undefined}
-         */
-        $scope.updateLugar = function () {
-            var elemento = getLugaresFromBackend();
-            $scope.lugarConsultaData.nombre = [];
-
-            for (var item in elemento) {
-                if ($scope.puertoConsulta.seleccionado === elemento[item].puerto) {
-                    for (var item2 in elemento[item].lugares) {
-                        $scope.lugarConsultaData.nombre.push(elemento[item].lugares[item2]);
-                    }
-                }
-            }
+                } else
+                    $scope.coordClass = true;
+            } else
+                $scope.coordClass = '';
         };
 
 
         var getPortsFromBackend = function () {
-            // :TODO replace the hardcode for the service
-            var elemento = ['Aeropuerto arturo merino benitez', 'alvarez de toledo 880, san miguel'];
-            return elemento;
+            var nuevo = RestClient.getPuertoPorIDEmpresa(session_data.idEmpresa, function (data) {
+                for (var item = 0; item < data.length; item++) {
+                    var elemento = {id: data[item].manT_PUERTO.id, codigo: data[item].manT_PUERTO.codigo, glosa: data[item].manT_PUERTO.glosa};
+                    $scope.puertoConsulta.nombre.push(elemento);
+                }
+//                $scope.puertos.nombre.push("");
+                for (var item in $scope.puertoConsulta.nombre) {
+                    $scope.puertos.nombre.push($scope.puertoConsulta.nombre[item].glosa);
+                }
+                return $scope.puertoConsulta.nombre;
+            }, function (data) {
+                console.log("No se ha podido obtener los puertos");
+                var modalInstance = modalWindow('warning', 'MESSAGE_CON_DIRECTMAR');
+            });
         };
 
         /**
@@ -103,13 +86,7 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
         var getPorts = function () {
             var element = getPortsFromBackend();
 
-            if (element === null || element.length === 0) {
-                var modalInstance = modalWindow('warning', 'MESSAGE_CON_DIRECTMAR');
-            }
 
-            for (var item in element) {
-                $scope.puertoConsulta.nombre.push(element[item]);
-            }
         };
 
         /**
@@ -117,8 +94,8 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
          * @returns {undefined}
          */
         var getRutEmpresa = function () {
-            //:TODO Replace the rut for the backend function to retreive info
-            $scope.rutEmpresaConsultaData = "8.356.666-K";
+
+            $scope.rutEmpresaConsultaData = session_data.rutEmpresa + '-' + session_data.dvEmpresa;
         };
 
         /**
@@ -126,8 +103,18 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
          * @returns {undefined}
          */
         var getNombreEmpresa = function () {
-            //:TODO Replace the nombre for the backend function to retreive info
-            $scope.nombreEmpresaConsultaData = "nueva empresa";
+
+
+            var nuevo = RestClient.getDatosEmpresa(session_data.rutEmpresa, session_data.dvEmpresa, function (data) {
+                if (data.nombreEmpresa === null)
+                    $scope.nombreEmpresaConsultaData = 'Empresa sin nombre';
+                else
+                    $scope.nombreEmpresaConsultaData = data.nombreEmpresa;
+            }, function (error) {
+                console.log("error al obtener Nombre Empresa");
+//                var modalInstance = modalWindow('warning', 'Error Al obtener los datos de la empresa, Campo Nombre');
+            });
+
         };
 
         /**
@@ -135,8 +122,20 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
          * @returns {undefined}
          */
         var getCasaMatriz = function () {
-            //:TODO Replace the direccion for the backend function to retreive info
-            $scope.direccionCasaMatrizConsultaData = "Alameda XYZ";
+
+            var nuevo = RestClient.getDatosEmpresa(session_data.rutEmpresa, session_data.dvEmpresa, function (data) {
+                for (var item in data.direcciones) {
+                    if (data.direcciones[item].esCasaMatriz === true) {
+                        if (data.direcciones[item].direccion === null)
+                            $scope.direccionCasaMatrizConsultaData = 'Empresa sin dirección';
+                        else
+                            $scope.direccionCasaMatrizConsultaData = data.direcciones[item].direccion;
+                    }
+                }
+            }, function (error) {
+                console.log("error al obtener direccion");
+//                var modalInstance = modalWindow('warning', 'Error Al obtener los datos de la empresa, Campo Dirección');
+            });
         };
 
         /**
@@ -148,21 +147,41 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
             getRutEmpresa();
             getNombreEmpresa();
             getCasaMatriz();
-            getLugarConsulta();
+
         };
 
+        var getRutBody = function (RUT) {
+            var valor = String(RUT).replace('.', '');
+            valor = valor.replace('-', '');
+            return valor.slice(0, -1);
+        };
+
+        var getPuertoByNombre = function (nombrePuerto) {
+            for (var item in $scope.puertoConsulta.nombre) {
+                if ($scope.puertoConsulta.nombre[item].glosa === nombrePuerto) {
+                    return $scope.puertoConsulta.nombre[item].id;
+                }
+            }
+            return "";
+        };
+
+
+
         var getSearchElements = function () {
-            //:TODO Search for the real values
-            var elemento = [{rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"},
-                {rutEmpresa: "15.656.115-k", nombreEmpresa: "everis S.A", direccionCasaMatriz: "alameda 1449, santiago", puerto: "alvarez de toledo 880, san miguel", lugar: "Piso 3", posicion: "33.44,12.22"}];
-            return elemento;
+
+            var nuevo = RestClient.getConsultarLocacionFiltro(getRutBody($scope.rutEmpresaConsultaData), getPuertoByNombre($scope.puertos.seleccionado), $scope.lugarConsultaData, $scope.coordenadasConsultaData, function (data) {
+                for (var item = 0; item < data.length; item++) {
+                    var elemento = {lugar: data[item].lugar, posicion: data[item].posicion, puerto: data[item].nombrePuerto, id: data[item].id, idEmpresa: data[item].idEmpresa, puertoId: data[item].idPuerto, rutEmpresa: $scope.rutEmpresaConsultaData, nombreEmpresa: $scope.nombreEmpresaConsultaData, direccionCasaMatriz: $scope.direccionCasaMatrizConsultaData};
+                    $scope.tablaLocacionConsulta.push(angular.copy(elemento));
+
+                }
+                $scope.totalItems = $scope.tablaLocacionConsulta.length;
+
+            }, function (error) {
+                console.log("Error al obtener la consulta", error);
+
+                var modalInstance = modalWindow('warning', 'Error Al obtener Consultar el servicio');
+            });
         };
 
         /**
@@ -174,27 +193,9 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
             $scope.tablaLocacionConsulta = [];
 
             //  Call the function to get the elements
-            var element = getSearchElements();
+            getSearchElements();
             //  Put the elements in the table
 
-            for (var item in element) {
-                $scope.tablaLocacionConsulta.push(element[item]);
-            }
-
-
-            //  Validate if the information retrieved have information 
-            if ($scope.tablaLocacionConsulta.length === 0) {
-                //  Show modal panel with the a message
-                var modalInstanceConsulta = $uibModal.open({
-                    animation: true,
-                    component: 'messageComponentConsulta',
-                    resolve: {
-                        store: function () {
-                            return $scope;
-                        }
-                    }
-                });
-            }
         };
 
         /**
@@ -210,11 +211,14 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
                 resolve: {
                     store: function () {
                         return {
-                            "RUT_EMPRESA": $scope.tablaLocacionConsulta[index].rutEmpresa,
-                            "NOMBRE_EMPRESA": $scope.tablaLocacionConsulta[index].nombreEmpresa,
-                            "CASA_MATRIZ": $scope.tablaLocacionConsulta[index].direccionCasaMatriz,
-                            "PUERTO": $scope.puertoConsulta,
+                            "RUT_EMPRESA": $scope.rutEmpresaConsultaData,
+                            "NOMBRE_EMPRESA": $scope.nombreEmpresaConsultaData,
+                            "CASA_MATRIZ": $scope.direccionCasaMatrizConsultaData,
+                            "PUERTO": $scope.puertos,
                             "PUERTO_SELECCIONADO": $scope.tablaLocacionConsulta[index].puerto,
+                            "ID_EMPRESA": $scope.tablaLocacionConsulta[index].idEmpresa,
+                            "ID_PUERTO": $scope.tablaLocacionConsulta[index].idPuerto,
+                            "ID": $scope.tablaLocacionConsulta[index].id,
                             "LUGAR": $scope.tablaLocacionConsulta[index].lugar,
                             "COORDENADAS": $scope.tablaLocacionConsulta[index].posicion,
                             "TABLA_LOCACION": $scope.tablaLocacionConsulta,
@@ -228,8 +232,32 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
                 $scope.tablaLocacionConsulta[index].puerto = result[0].puertoSeleccionadoModal;
                 $scope.tablaLocacionConsulta[index].lugar = result[0].lugarModal;
                 $scope.tablaLocacionConsulta[index].posicion = result[0].coordenadasModal;
+
+                RestClient.modificarLocaciones($scope.tablaLocacionConsulta[index].id,
+                        $scope.tablaLocacionConsulta[index].idEmpresa,
+                        getPortByName($scope.tablaLocacionConsulta[index].puerto),
+                        $scope.tablaLocacionConsulta[index].puerto,
+                        $scope.tablaLocacionConsulta[index].lugar,
+                        $scope.tablaLocacionConsulta[index].posicion,
+                        true,
+                        function (data) {
+                            console.log('Modificado registro');
+
+                        }, function (error) {
+                    console.log('error al modificar registro');
+                });
+
             });
 
+        };
+
+        var getPortByName = function (puertoNombre) {
+            for (var item in $scope.puertoConsulta.nombre) {
+                if ($scope.puertoConsulta.nombre[item].glosa === puertoNombre) {
+                    return $scope.puertoConsulta.nombre[item].id;
+                }
+            }
+            return null;
         };
 
         /**
@@ -239,10 +267,25 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
          */
         $scope.delete = function (index) {
 
-            var modalInstance = modalWindow('confirm', 'MESSAGE_CONFIRM_DELETE');
+            var modalInstance = modalWindow('confirm', $scope.mensajeriaConsulta.MESSAGE_CONFIRM_DELETE);
 
             modalInstance.result.then(function () {
+
+                RestClient.modificarLocaciones($scope.tablaLocacionConsulta[index].id,
+                        $scope.tablaLocacionConsulta[index].idEmpresa,
+                        getPortByName($scope.tablaLocacionConsulta[index].puerto),
+                        $scope.tablaLocacionConsulta[index].puerto,
+                        $scope.tablaLocacionConsulta[index].lugar,
+                        $scope.tablaLocacionConsulta[index].posicion,
+                        false,
+                        function (data) {
+                            console.log('Modificado registro');
+
+                        }, function (error) {
+                    console.log('error al modificar registro');
+                });
                 $scope.tablaLocacionConsulta.splice(index, 1);
+                $scope.totalItems = $scope.tablaLocacionConsulta.length;
             });
 
         };
@@ -306,6 +349,7 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
             else
                 return false;
         };
+
     }]);
 
 
@@ -314,7 +358,7 @@ module.controller('AdministradorGeografConsultarCtrl', ['$scope', 'sessionServic
  * Modal view to show to user the result of saving
  */
 module.component('messageComponentConsulta', {
-    templateUrl: 'messageComponentConsulta.html',
+    templateUrl: 'messageComponentConsulta0.html',
     bindings: {
         resolve: '<',
         close: '&',
@@ -414,8 +458,13 @@ module.controller('editMapPosition', ['$scope', 'NgMap', '$uibModalInstance', 's
     function ($scope, NgMap, $uibModalInstance, store) {
         $scope.messagesModalConsulta = store.mensajes;  // conexión del servicio messages para Modal    
         var result = store.coordenadas.split(",");
-        var latitud = result[0].replace(/['"]+/g, '');
-        var longitud = result[1].replace(/['"]+/g, '');
+        if ((store.coordenadas !== null || store.coordenadas !== '' || store.coordenadas !== "") && (store.coordenadas.length > 0) && store.coordenadas.toString().includes(',')) {
+            var latitud = result[0].replace(/['"]+/g, '');
+            var longitud = result[1].replace(/['"]+/g, '');
+        } else {
+            var latitud = 0;
+            var longitud = 0;
+        }
 
         var evento = null;
         var mapa = null;
@@ -503,7 +552,8 @@ module.controller('alertMessage', function ($scope, $uibModalInstance, message, 
     }
     if (value === 'MESSAGE_CON_GMAPS') {
         $scope.customMessage = message.MESSAGE_CON_GMAPS;
-    }
+    } else
+        $scope.customMessage = value;
 
     $scope.ok = function () {
         $uibModalInstance.close();
@@ -514,3 +564,4 @@ module.controller('alertMessage', function ($scope, $uibModalInstance, message, 
     };
 
 });
+

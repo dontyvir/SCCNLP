@@ -4,9 +4,10 @@
 var module = angular.module('sccnlp.administradorGeograf-crear');
 
 
-module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', '$state', 'administradorGeografCrearMessages', '$uibModal',
-    function ($scope, sessionService, $state, administradorGeografMessages, $uibModal) {
+module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', '$state', 'administradorGeografCrearMessages', '$uibModal', 'RestClient',
+    function ($scope, sessionService, $state, administradorGeografMessages, $uibModal, RestClient) {
         $scope.messages = administradorGeografMessages; // conexión del servicio messages
+        var session_data = sessionService.getUserData();
         $scope.rutEmpresaData = '';             //  Data rut empresa
         $scope.nombreEmpresaData = "";          //  Data nombre empresa
         $scope.direccionCasaMatrizData = "";    //  Data direccion casa matriz
@@ -18,8 +19,14 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
             nombre: [],
             seleccionado: ''
         };
+        $scope.puertoConsulta = {//  Data puerto
+            nombre: [],
+            seleccionado: ''
+        };
         $scope.tablaLocacion = [];              //  Data of table
-
+        $scope.pageSize = 5;
+        $scope.currentPage = 1;
+        $scope.totalItems = $scope.tablaLocacion.length;
         /**@deprecated If the place field is entered by the user, this funciton will be available
          * Update the Map depending on the data entered in the lugar field
          * @returns {undefined}
@@ -75,6 +82,7 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
             var element = {rutEmpresa: $scope.rutEmpresaData, nombreEmpresa: $scope.nombreEmpresaData, direccionCasaMatriz: $scope.direccionCasaMatrizData
                 , puerto: $scope.puerto.seleccionado, lugar: $scope.lugarData, posicion: $scope.coordenadas};
             $scope.tablaLocacion.push(element);
+            $scope.totalItems = $scope.tablaLocacion.length;
         };
 
         /**
@@ -84,6 +92,7 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
          */
         $scope.removeLocation = function (index) {
             $scope.tablaLocacion.splice(index, 1);
+            $scope.totalItems = $scope.tablaLocacion.length;
         };
 
         /**
@@ -91,16 +100,40 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
          * @returns {undefined}
          */
         $scope.save = function () {
-            alert("Guardado pendiente");
+            var listaAGuardar = [];
 
-            var modalInstance = $uibModal.open({
-                animation: true,
-                component: 'modalComponent',
-                resolve: {
-                    store: function () {
-                        return $scope;
-                    }
-                }
+            for (var item in $scope.tablaLocacion) {
+                var elemento = {id: 0,
+                    idEmpresa: session_data.idEmpresa,
+                    idPuerto: getPuertoIdByNombre($scope.tablaLocacion[item].puerto),
+                    nombrePuerto: $scope.tablaLocacion[item].puerto,
+                    lugar: $scope.tablaLocacion[item].lugar,
+                    posicion: $scope.tablaLocacion[item].posicion,
+                    activo: true};
+                listaAGuardar.push(elemento);
+            }
+
+            RestClient.guardarLocaciones(listaAGuardar,
+                    function (data) {
+                        var errores = "";
+                        if (data[data.length - 1].idUsuario === 0) {                            
+                            for (var item = 0; item < data.length; item++) {
+                                if (data[item].idUsuario === 0 && item + 1 < data.length) {
+                                    errores = errores + " " + data[item].error;
+                                }
+                            }
+                        }
+                        if (errores === "") {
+                            console.log('Modificado registro');
+                            var modalInstance = modalWindow('warning', 'CONFIRM_SAVE');
+                        } else {
+                            
+                            var modalInstance = modalWindow('warning', "No se ha guardado debido a los siguientes errores: " + errores );
+                        }
+
+                    }, function (error) {
+                console.log('error al modificar registro');
+                var modalInstance = modalWindow('warning', 'MESSAGE_CON_DIRECTMAR');
             });
 
         };
@@ -126,20 +159,38 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
          * @returns {undefined}
          */
         var getPorts = function () {
-            //:TODO Replace the element = [] for the backend function to retreive info
-            var element = ['Aeropuerto arturo merino benitez', 'alvarez de toledo 880, san miguel'];
-            for (var item in element) {
-                $scope.puerto.nombre.push(element[item]);
-            }
+
+            var nuevo = RestClient.getPuertoPorIDEmpresa(session_data.idEmpresa, function (data) {
+                for (var item = 0; item < data.length; item++) {
+                    var elemento = {id: data[item].manT_PUERTO.id, codigo: data[item].manT_PUERTO.codigo, glosa: data[item].manT_PUERTO.glosa};
+                    $scope.puertoConsulta.nombre.push(elemento);
+                }
+
+                for (var item in $scope.puertoConsulta.nombre) {
+                    $scope.puerto.nombre.push($scope.puertoConsulta.nombre[item].glosa);
+                }
+                return $scope.puertoConsulta.nombre;
+            }, function (data) {
+                console.log("No se ha podido obtener los puertos");
+                var modalInstance = modalWindow('warning', 'MESSAGE_CON_DIRECTMAR');
+            });
+
         };
 
+        var getPuertoIdByNombre = function (puertoNombre) {
+            for (var item in $scope.puertoConsulta.nombre) {
+                if ($scope.puertoConsulta.nombre[item].glosa === puertoNombre)
+                    return $scope.puertoConsulta.nombre[item].id;
+            }
+            return null;
+        };
         /**
          * Function to fill the RUT EMPRESA field
          * @returns {undefined}
          */
         var getRutEmpresa = function () {
-            //:TODO Replace the rut for the backend function to retreive info
-            $scope.rutEmpresaData = "8.356.666-K";
+
+            $scope.rutEmpresaData = session_data.rutEmpresa + '-' + session_data.dvEmpresa;
         };
 
         /**
@@ -147,8 +198,15 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
          * @returns {undefined}
          */
         var getNombreEmpresa = function () {
-            //:TODO Replace the nombre for the backend function to retreive info
-            $scope.nombreEmpresaData = "nueva empresa";
+            var nuevo = RestClient.getDatosEmpresa(session_data.rutEmpresa, session_data.dvEmpresa, function (data) {
+                if (data.nombreEmpresa === null)
+                    $scope.nombreEmpresaData = 'Empresa sin nombre';
+                else
+                    $scope.nombreEmpresaData = data.nombreEmpresa;
+            }, function (error) {
+                console.log("error al obtener Nombre Empresa");
+            });
+
         };
 
         /**
@@ -156,8 +214,20 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
          * @returns {undefined}
          */
         var getCasaMatriz = function () {
-            //:TODO Replace the direccion for the backend function to retreive info
-            $scope.direccionCasaMatrizData = "Alameda XYZ";
+
+            var nuevo = RestClient.getDatosEmpresa(session_data.rutEmpresa, session_data.dvEmpresa, function (data) {
+                for (var item in data.direcciones) {
+                    if (data.direcciones[item].esCasaMatriz === true) {
+                        if (data.direcciones[item].direccion === null)
+                            $scope.direccionCasaMatrizData = 'Empresa sin dirección';
+                        else
+                            $scope.direccionCasaMatrizData = data.direcciones[item].direccion;
+                    }
+                }
+            }, function (error) {
+                console.log("error al obtener direccion");
+//                var modalInstance = modalWindow('warning', 'Error Al obtener los datos de la empresa, Campo Dirección');
+            });
         };
 
         /**
@@ -201,6 +271,24 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
             }
         };
 
+        var modalWindow = function (p_type, p_value) {
+            return $uibModal.open({
+                templateUrl: 'messageComponentConsulta2.html',
+                controller: 'alertMessageCrear',
+                size: 'md',
+                animation: true,
+                resolve: {message: function () {
+                        return $scope.messages;
+                    }, type: function () {
+                        return p_type;
+                    }, value: function () {
+                        return p_value;
+                    }
+                }
+            });
+        };
+
+
     }]);
 
 
@@ -212,7 +300,7 @@ module.controller('AdministradorGeografCrearCtrl', ['$scope', 'sessionService', 
 module.controller('ModalShowMap', ['$scope', 'NgMap', '$uibModalInstance', 'store',
     function ($scope, NgMap, $uibModalInstance, store) {
 
-        console.log("entre");
+
         $scope.messagesModal = store.mensajes;  // conexión del servicio messages para Modal
         $scope.view = store.from;       // Store the information if is from select map or see map
         var address = store.puerto;             //  Puert to seek in google
@@ -243,6 +331,9 @@ module.controller('ModalShowMap', ['$scope', 'NgMap', '$uibModalInstance', 'stor
         if (geocoder && $scope.view === 'search') {
             geocoder.geocode({
                 'address': address
+//                , componentRestrictions: {
+//                    country: 'CL'
+//                }
             }, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     latitude = results[0].geometry.location.lat();
@@ -329,24 +420,31 @@ module.controller('ModalShowMap', ['$scope', 'NgMap', '$uibModalInstance', 'stor
         };
     }]);
 
+
 /**
  * Modal view to show to user the result of saving
  */
-module.component('modalComponent', {
-    templateUrl: 'myModalContent.html',
-    bindings: {
-        resolve: '<',
-        close: '&',
-        dismiss: '&'
-    },
-    controller: function () {
-        var $ctrl = this;
-        $ctrl.message = {CONFIRM_SAVE: "Se ha guardado de forma correcta la informacion indicada de locaciones",
-            ACEPTAR_BTN: "Aceptar"};
+module.controller('alertMessageCrear', function ($scope, $uibModalInstance, message, type, value) {
 
-        $ctrl.ok = function () {
-            $ctrl.close();
-        };
+    $scope.type = type;
+    $scope.alertMessages = message;
+    if (value === 'MESSAGE_CONFIRM_DELETE') {
+        $scope.customMessage = message.MESSAGE_CONFIRM_DELETE;
+    } else if (value === 'MESSAGE_CON_DIRECTMAR') {
+        $scope.customMessage = message.MESSAGE_CON_DIRECTMAR;
+    } else if (value === 'MESSAGE_CON_GMAPS') {
+        $scope.customMessage = message.MESSAGE_CON_GMAPS;
+    } else if (value === 'CONFIRM_SAVE') {
+        $scope.customMessage = message.CONFIRM_SAVE;
+    } else
+        $scope.customMessage = value;
 
-    }
+    $scope.ok = function () {
+        $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    };
+
 });

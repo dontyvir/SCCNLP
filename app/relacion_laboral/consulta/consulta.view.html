@@ -4,6 +4,8 @@
 
 <uib-tabset active="tabsActive">
 
+<!-- tabs edición de relación laboral -->
+
 <uib-tab index="0" heading="{{messages.tabHeaderOne}}" disable="tabs[0].disable">
 		<div class="panel panel-default">
 				<div class="panel-body"
@@ -12,7 +14,7 @@
 		</div>	
 </uib-tab>
 
-<uib-tab index="1" heading="{{messages.tabHeaderTwo}}" disable="tabs[1].disable" select="googlemapsInit()">
+<uib-tab index="1" heading="{{messages.tabHeaderTwo}}" disable="tabs[1].disable" select="tabs[2].disable = true" ng-show="modificarRL">
 		<div class="panel panel-default">
 				<div class="panel-body"
 				ng-include="'relacion_laboral/consulta/consulta.tab.datos.trabajador.view.html'">
@@ -20,7 +22,7 @@
 		</div>
 </uib-tab>
 
-<uib-tab index="2" heading="{{messages.tabHeaderThree}}" disable="tabs[2].disable">
+<uib-tab index="2" heading="{{messages.tabHeaderThree}}" disable="tabs[2].disable" ng-show="modificarRL">
 		<div class="panel panel-default">
 				<div class="panel-body"
 				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab3.view.html'">
@@ -28,7 +30,25 @@
 		</div>
 </uib-tab>
 
-<uib-tab index="3" heading="{{messages.tabHeaderFour}}" disable="tabs[3].disable">
+<uib-tab index="3" heading="{{messages.tabHeaderFour}}" disable="tabs[3].disable" ng-show="modificarRL">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab4.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+<!-- tabs finalización relación laboral -->
+
+<uib-tab index="4" heading="{{messages.tabHeaderFinRL1}}" disable="tabs[4].disable" ng-show="finalizarRL">
+		<div class="panel panel-default">
+				<div class="panel-body"
+				ng-include="'relacion_laboral/consulta/consulta.tab.finalizar.relacion.laboral.view.html'">
+				</div>
+		</div>
+</uib-tab>
+
+<uib-tab index="5" heading="{{messages.tabHeaderFour}}" disable="tabs[5].disable" ng-show="finalizarRL">
 		<div class="panel panel-default">
 				<div class="panel-body"
 				ng-include="'relacion_laboral/ingreso_individual/relacion_laboral_individual.tab4.view.html'">

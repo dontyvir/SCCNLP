@@ -53,7 +53,7 @@ angular.module('sccnlp.comiteParitario')
         tipo: null,
         cargo: null,
         posicion: null,
-        aforado: false
+        aforado: null
     }
 
 
@@ -140,11 +140,17 @@ angular.module('sccnlp.comiteParitario')
             return;
         }
 
-        if (!tab || tab < 1 || tab > 2)
-            return;
+        if ($scope.representantesEmpresa.length < 6 && tab == 2) {
+            alert("Los registros tienen que ser igual a 6");
+            return
+        } else {
+            if (!tab || tab < 1 || tab > 2)
+                return;
+            $scope.tabs[tab].disable = false;
+            $scope.tabsActive = tab;
+        }
 
-        $scope.tabs[tab].disable = false;
-        $scope.tabsActive = tab;
+
 
     };
 
@@ -198,9 +204,11 @@ angular.module('sccnlp.comiteParitario')
 
         if (tipo == 'empresa') {
             var rut = $scope.empresa.rut
+            $scope.empresaLoading = true;
         }
         if (tipo == 'trabajador') {
             var rut = $scope.trabajador.rut
+            $scope.trabajadorLoading = true;
         }
 
         if (!rut || rut == null)
@@ -232,10 +240,10 @@ angular.module('sccnlp.comiteParitario')
 
         if ($scope.empresa.tipo != null && $scope.empresa.cargo != null && $scope.empresa.nombres != null && $scope.empresa.apellidoPaterno != null && $scope.empresa.apellidoMaterno != null) {
 
-            if ($scope.representantesEmpresa.length < 7) {
+            if ($scope.representantesEmpresa.length <= 5) {
 
                 $scope.representantesEmpresa.push({
-                    idEmpleado: $scope.idEmpleado,
+                    idPersona: $scope.idEmpleado,
                     rut: $scope.empresa.rut,
                     apellidoMaterno: $scope.empresa.apellidoMaterno,
                     apellidoPaterno: $scope.empresa.apellidoPaterno,
@@ -251,19 +259,19 @@ angular.module('sccnlp.comiteParitario')
             $scope.viewTableEmpresa = true;
             $scope.limpiarEmpresa();
         } else {
-            alert("Debe completar los campos obligarotios")
+            alert("Debe completar los campos obligatorios")
         }
 
     }
 
     $scope.anadirRepresentanteTrabajadores = function() {
 
-        if ($scope.trabajador.tipo != null && $scope.trabajador.cargo != null && $scope.trabajador.nombres != null && $scope.trabajador.apellidoPaterno != null && $scope.trabajador.apellidoMaterno != null && $scope.trabajador.posicion != null && $scope.trabajador.aforado) {
+        if ($scope.trabajador.tipo != null && $scope.trabajador.cargo != null && $scope.trabajador.nombres != null && $scope.trabajador.apellidoPaterno != null && $scope.trabajador.apellidoMaterno != null && $scope.trabajador.posicion != null && $scope.trabajador.aforado != null) {
 
-            if ($scope.representantesTrabajadores.length <= 7) {
+            if ($scope.representantesTrabajadores.length <= 5) {
 
                 $scope.representantesTrabajadores.push({
-                    idEmpleado: $scope.idEmpleado,
+                    idPersona: $scope.idEmpleado,
                     rut: $scope.trabajador.rut,
                     posicion: $scope.trabajador.posicion,
                     aforado: $scope.trabajador.aforado,
@@ -281,7 +289,7 @@ angular.module('sccnlp.comiteParitario')
             $scope.viewTableTrabajador = true;
             $scope.limpiarTrabajador();
         } else {
-            alert("Debe completar los campos obligarotios")
+            alert("Debe completar los campos obligatorios")
         }
     }
 
@@ -312,7 +320,7 @@ angular.module('sccnlp.comiteParitario')
         $scope.trabajador.tipo = null;
         $scope.trabajador.cargo = null;
         $scope.trabajador.posicion = null;
-        $scope.trabajador.aforado = false;
+        $scope.trabajador.aforado = null;
     }
     $scope.ingresoLimpiar = function() {
 
@@ -329,34 +337,48 @@ angular.module('sccnlp.comiteParitario')
 
     $scope.registrarComite = function() {
 
-        $scope.data = {
+        if ($scope.representantesTrabajadores.length < 6) {
+            alert("Los registros tienen que ser igual a 6");
+            return
+        } else {
+            $scope.data = {
 
-            idEmpresa: parseInt($scope.session_data.idEmpresa),
-            idDireccion: 1, //dato en duro
-            idRegion: $scope.comite.region,
-            idComuna: $scope.comite.comuna,
-            fechaActoEleccion: $filter('date')($scope.comite.fechaActoEleccionario, format),
-            idTipoComite: parseInt($scope.comite.tipoComite),
-            cantidadTrabajador: $scope.comite.cantidadTrabajadores,
-            funcionesFaena: $scope.comite.asumeFuncion,
-            empresaPari: $scope.representantesEmpresa,
-            empleadoPari: $scope.representantesTrabajadores,
-            idComite: $scope.comite.idComite
-        }
+                idEmpresa: parseInt($scope.session_data.idEmpresa),
+                idDireccion: 1, //dato en duro
+                idRegion: $scope.comite.region,
+                idComuna: $scope.comite.comuna,
+                fechaActoEleccion: $filter('date')($scope.comite.fechaActoEleccionario, format),
+                idTipoComite: parseInt($scope.comite.tipoComite),
+                cantidadTrabajador: $scope.comite.cantidadTrabajadores,
+                funcionesFaena: $scope.comite.asumeFuncion,
+                empresaPari: $scope.representantesEmpresa,
+                empleadoPari: $scope.representantesTrabajadores,
+                idComite: $scope.comite.idComite
+            }
 
-        RestClientComiteParitarioModificar.ModificarComite($scope.data, function(data) {
-            $scope.urlCompleta = "";
-            angular.forEach(data, function(url, i) {
-                $scope.urlCompleta = $scope.urlCompleta + url
+            RestClientComiteParitarioModificar.ModificarComite($scope.data, function(data) {
+
+                if (data.error == "") {
+                    alert(data.error);
+                    return
+                } else {
+                    $scope.descargaArchivo = data.nombreArchivo;
+                    $scope.mostrarFormulario = false;
+                }
+
+                /*$scope.urlCompleta = "";
+                angular.forEach(data, function(url, i) {
+                    $scope.urlCompleta = $scope.urlCompleta + url
+                })
+                $scope.url = $scope.urlCompleta.split("[")[0];
+
+                $scope.descargaArchivo = $scope.url;
+                $scope.mostrarFormulario = false;*/
+
+            }, function(error) {
+                console.log(error)
             })
-            $scope.url = $scope.urlCompleta.split("[")[0];
-
-            $scope.descargaArchivo = $scope.url;
-            $scope.mostrarFormulario = false;
-
-        }, function(error) {
-            console.log(error)
-        })
+        }
 
     }
 

@@ -1,0 +1,34 @@
+<div ng-show="relLab.ingresoError">
+
+<h4>{{relLab.errorTitle}}</h4>
+<hr/>
+<div class="alert alert-danger" role="alert">
+<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+<span class="sr-only">Error:</span>
+{{relLab.errorMSG}}</div>
+
+<br/>
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
+       	<button class="btn btn-primary" type="submit" ng-click="tryAgain()">Volver Atrás</button>
+       	        	        
+    </div>
+</div>
+</div>
+
+<div ng-show="relLab.ingresada">
+
+<h4>{{messages.datosIngresadosOK}}</h4>
+<hr/>
+
+<p>A continuación, puede descargar el resultado del registro de la nómina de trabajadores y sus condiciones de
+contrato</p>
+
+<br/>
+<div class="row">
+    <div class="col-md-3 form-inline">     
+      	<a href ui-sref="main.composite" class="btn btn-primary" role="button">Finalizar</a>       	        	        
+    </div>
+</div>
+</div>

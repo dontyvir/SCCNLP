@@ -1,4 +1,4 @@
-angular.module('sccnlp.buscar_usuario', [ 'ui.router', 'sccnlp.session' ])
+angular.module('sccnlp.buscar_usuario', [ 'ui.router', 'sccnlp.session','ui.bootstrap.pagination' ])
 
 
 .config([ '$stateProvider', function($stateProvider) {

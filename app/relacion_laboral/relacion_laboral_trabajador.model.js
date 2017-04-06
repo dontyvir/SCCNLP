@@ -10,14 +10,11 @@ angular.module('sccnlp.relacionLaboral')
 
 		 	if(_fecNac && typeof _fecNac == 'string')
 		 		_fecNac = Date.parse(_fecNac);
-		 
-		 	if(!_domicilio)
-		 		_domicilio = new Domicilio();
 		 		
 	    	this.sexo = null;
 			this.AFP = null;
 			this.ISAPRE = null;
-			this.domicilio = _domicilio;
+			this.domicilio = angular.merge(new Domicilio(),_domicilio);
 			this.email = _email;
 			this.nombres = _nombres;
 			this.apellidoPaterno = _apPat;

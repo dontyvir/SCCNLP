@@ -6,10 +6,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	                              'RestClientRelacionLaboral', 'sessionService','RegistrarContrato',
 	                              'loadAcuerdoDescanso', 'loadAcuerdoJornadaLaboral','Trabajador',
 	                              'Contrato','Empleador','Labor','GoogleMapsAutoComplete','ModalEsperaCarga',
+	                              'LoadDataEmpleador','RecordatorioLegal',
 	
 	function($scope, ingIndivMessages, $uibModal, RestClient, RestClientRelacionLaboral,
 			 sessionService, RegistrarContrato,loadAcuerdoDescanso,loadAcuerdoJornadaLaboral,
-			 Trabajador, Contrato, Empleador, Labor,GoogleMapsAutoComplete,ModalEsperaCarga) {
+			 Trabajador, Contrato, Empleador, Labor,GoogleMapsAutoComplete,ModalEsperaCarga,
+			 LoadDataEmpleador,RecordatorioLegal) {
 	
 	$scope.messages = ingIndivMessages;
 	
@@ -29,7 +31,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    {disable : true}, // tab datos del contrato
 	    {disable : true}  // tab finalización del proceso
 	]
-	
+	$scope.error = {
+		msg : null,
+		tooltipIsOpen : false
+	}	
 	// Model Ingreso Relación Laboral
 	$scope.relLab = {
 		
@@ -66,7 +71,8 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.tiposJornada = [];
     $scope.lugares = [];
     $scope.nacionalidades = [];
-    
+	$scope.ingresoMinimo = null;
+	
     /**
      * Métodos
      */
@@ -223,7 +229,17 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     $scope.ingresoSubmit = function(form) {
     	
     	if(form && form.$invalid){
-    		return;
+    		return; //TODO: visualizar errores en pantalla
+    	}
+    	
+    	//Validación ingreso mínimo eventual con CPPT
+    	if($scope.contrato.idTipoContrato == 3){
+    		if($scope.contrato.total > $scope.ingresoMinimo){
+    		
+    			$scope.error.msg = "Los ingresos totales del trabajador no pueden ser menores en un ingreso mínimo mensual";
+    			$scope.error.tooltipIsOpen = true;
+    			return; //TODO: visualizar error en pantalla
+    		}
     	}
     	
     	if(!$scope.validateFechaTerminoContrato)
@@ -232,14 +248,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
     	if(!$scope.validateHorariosAcuerdos())
     		return;
 
-	    var modalInstance = $uibModal.open({
-
-		      ariaLabelledBy: 'modal-title',
-		      ariaDescribedBy: 'modal-body',
-		      templateUrl: 'relacion_laboral/confirmacion_guardado/recordatorio_legal.modal.view.html',
-		      controller: 'ConfirmacionGuardadoCtrl',
-		      controllerAs: '$ctrl'
-		    });
+	    var modalInstance = RecordatorioLegal();
 
 		    modalInstance.result.then(function () {
 		    
@@ -365,37 +374,6 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    	 });
 	    };
 	    
-	    $scope.loadDataEmpresa = function(_rut, _dv){
-	    	
-	        var dat = RestClient.getDatosEmpresa(_rut,_dv, function(){
-	        	
-		        $scope.empleador.rut = dat.rutEmpresa
-		        $scope.empleador.dv = dat.dvEmpresa;
-		        $scope.empleador.nombreEmpresa = dat.razonSocial;
-		        $scope.empleador.tipoEmpresa = dat.actividades[dat.idActividadPrincipal].glosaActividad;
-		        		        
-		        for(var i=0;i<dat.direcciones.length;i++){
-		        	if(dat.direcciones[i].esCasaMatriz)
-		    	        $scope.empleador.domicilio = dat.direcciones[i].calle+" "+dat.direcciones[i].numero;
-		        }
-		        
-		        // si ninguna dirección es casa matriz
-		        if(!$scope.empleador.domicilio && dat.direcciones.length > 0)
-		        	$scope.empleador.domicilio = dat.direcciones[0].calle+" "+dat.direcciones[0].numero;
-		        
-		        
-		        $scope.empleador.rutRepresentanteLegal = dat.representante.rut+"-"+dat.representante.dv;
-		        $scope.empleador.nombreCompletoRepresentanteLegal = dat.representante.glosa;
-		        $scope.empleador.emailRepresentanteLegal = dat.representante.email;
-
-		        
-		        $scope.empresaLoading = false;
-	        });
-	    	
-	        $scope.empleador.terminoDeVigencia = null;
-
-	    }
-	    
 	    $scope.init = function() {
 	    	
 	    	$scope.estadoCivil = RestClient.getEstadoCivil();
@@ -408,6 +386,7 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	        $scope.modalidadDePago = RestClientRelacionLaboral.getModalidadPago();
 	        $scope.nacionalidades = RestClient.getNacionalidad();
 	    	$scope.regiones = RestClient.getRegion();
+	    	$scope.ingresoMinimo = RestClient.getIngresoMinimoMensual();
 
 	        /**
 	         * traemos los datos de sesión
@@ -423,9 +402,10 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	         */
 	        var session_data = sessionService.getUserData();
 
-	        $scope.loadDataEmpresa(session_data.rutEmpresa,session_data.dvEmpresa);
+	        $scope.empleador = LoadDataEmpleador(function(){
+	        	$scope.empresaLoading = false;
+	        });
 	        $scope.lugares = RestClient.getLocacion(session_data.rutEmpresa);
-	        $scope.loadDataUsuario(session_data.id);
 	        
 	        // get Término de Vigencia
 	        RestClient.getTerminoVigencia(session_data.idEmpresa,1, function(data){

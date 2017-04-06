@@ -29,8 +29,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="datosUsuario in getTableDatosUsuarios() track by $index">
-                        <td ng-model="id">{{$index + 1}}</td>
+                    <tr ng-repeat="datosUsuario in getTableDatosUsuarios() | limitTo : pageSize : (currentPage - 1) * pageSize " ng-init="count = 0">
+                        <td ng-model="id">{{($index +1 + (currentPage -1) * pageSize ) }}</td>
                         <td>{{datosUsuario.USUARIO_RUT}}</td>
                         <td>{{datosUsuario.USUARIO_NOMBRES}}</td>
                         <td>{{datosUsuario.USUARIO_APELLIDOS}}</td>
@@ -39,28 +39,30 @@
                             <p ng-repeat="modulo in datosUsuario.USUARIO_MODULOS| filter: {selected:true}">{{modulo.glosa}}</p>
                         </td>
                         <td> 
-                            <button class="btn glyphicon  glyphicon-pencil center-block" ng-click="openModule(datosUsuario, $index)"></button>
+                            <button class="btn glyphicon  glyphicon-pencil center-block" ng-click="openModule(datosUsuario, ($index  + (currentPage -1) * pageSize ))"></button>
                         </td>
                         <td ng-style=" {'border-color': datosUsuario.PUERTOS_COMPLETADOS.color, 'border-style': 'double', 'box-shadow':datosUsuario.PUERTOS_COMPLETADOS.focus}"  >
                             <p class="text-center text-muted "  ng-hide="datosUsuario.PUERTOS_COMPLETADOS.color === ''">{{messages.PLACEHOLDER_PUERTOS}}</p>
                             <p  ng-repeat="puerto in datosUsuario.USUARIO_PUERTOS| filter: {selected:true}">{{puerto.glosa}}</p>
                         </td>
-                        <td> <button class="btn glyphicon  glyphicon-pencil center-block" ng-click="openPort(datosUsuario, $index)"></button></td>
+                        <td> <button class="btn glyphicon  glyphicon-pencil center-block" ng-click="openPort(datosUsuario, ($index  + (currentPage -1) * pageSize ))"></button></td>
                         <td>
-                            <button class="btn btn-danger center-block" type="button" ng-really-message={{messages.MESSAGE_WARNING_DELETE}}   ng-really-click="eliminarUsuario($index)">
+                            <button class="btn btn-danger center-block" type="button" ng-really-message={{messages.MESSAGE_WARNING_DELETE}}   ng-really-click="eliminarUsuario(($index  + (currentPage -1) * pageSize ))">
                                 <i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        
+                    <div class="col-md-12">
+                        <ul class="pull-right" ng-show="(getTableDatosUsuarios()).length>0" uib-pagination total-items="totalItems" ng-model="currentPage" items-per-page="pageSize" previous-text="Anterior" next-text="Siguiente"></ul>
+            </div>
 
         <div >{{messages.MANDATORY}}</div>
         <div class="pull-right">
 
             <button type="submit" ui-sref="main.composite"  ng-disabled="(getTableDatosUsuarios()).length <= 0" 
-                    class="btn btn-warning">{{messages.USUARIO_BTN_CANCELAR}}
+                    class="btn btn-danger">{{messages.USUARIO_BTN_CANCELAR}}
             </button>
             <button type="submit"  ng-disabled="(getTableDatosUsuarios()).length <= 0"  ng-click="dataLoading()" 
                     class="btn btn-primary">{{messages.USUARIO_BTN_GUARDAR}}

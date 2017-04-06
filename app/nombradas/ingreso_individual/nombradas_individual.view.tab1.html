@@ -1,11 +1,15 @@
-<div class="container-fluid">
-    <br>
-    <legend class="scheduler-border col-lg-12">{{messages.fechaTurno}}</legend>
+<form name="formTab1">
+    <h4>{{messages.fechaTurno}}
+    <small ng-show="nombradasLoading">
+    <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+    Cargando...
+    </small></h4>
+    <hr/>
     
-    <div class="form-group col-lg-12">
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.fechainicio}}*:</label>
-        <div class="input-group col-lg-4" style="padding-left: 15px; padding-right: 14px;" ng-class="{'has-error' : messageValidateDate}">
-            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="date.value" is-open="popup1.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
+        <div class="input-group col-lg-4" style="padding-left: 15px; padding-right: 14px;">
+            <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="fechaTurno.fecha" is-open="popup1.opened" placeholder="{{formatPlaceholder}}" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats"
             uib-tooltip="{{messageValidateDate}}"
             tooltip-placement="top"
             tooltip-trigger="'mouseenter'"
@@ -15,138 +19,145 @@
             </span>
         </div>
     </div>
-    <div class="form-group col-lg-12">
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.turnoNombrada}}*:</label>
-        <div class="col-lg-4" ng-class="{'has-error' : ValidateTurno}"
-            uib-tooltip="{{messages.messageValidate}}"
+        <div class="col-lg-4"
             tooltip-placement="top"
             tooltip-trigger="'mouseenter'"
             tooltip-enable="ValidateTurno">
-            <select ng-model="nomIctl.TurnSelected" ng-options="turn.id as turn.glosa for turn in tiposTurno" class="form-control form-control-sm">
+            <select ng-model="fechaTurno.TurnSelected" ng-options="turn.id as turn.glosa for turn in tiposTurno | orderBy:'glosa':false" class="form-control form-control-sm" ng-required="true">
                 <option value="">-- Seleccionar --</option>
             </select>
         </div>
     </div>
-</div>
-<div class="container-fluid">
-    <legend class="scheduler-border col-lg-12">{{messages.lugarTrabajo}}</legend>
-    <div class="form-group col-lg-12">
+    <h4>{{messages.lugarTrabajo}}</h4>
+    <hr/>
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.puerto}}:</label>
         <div class="col-lg-4"><h5>Algarrobo</h5></div>
     </div>
-    <div class="form-group col-lg-12">
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.nave}}*:</label>
-        <div class="col-lg-4" ng-class="{'has-error' : ValidateNave}"
-            uib-tooltip="{{messages.messageValidate}}"
+        <div class="col-lg-4"
             tooltip-placement="top"
             tooltip-trigger="'mouseenter'"
             tooltip-enable="ValidateNave">
-            <select ng-model="nomIctl.NaveSelected" ng-options="nav.id as nav.glosa for nav in naves" class="form-control form-control-sm col-lg-12">
-                <option value="">-- Seleccionar --</option>
+            <select ng-model="trabajo.NaveSelected" ng-options="nav.id as nav.glosa for nav in naves | orderBy:'glosa':false" class="form-control form-control-sm col-lg-12" ng-disabled="trabajo.LocationSelected" ng-required="true">
+                <option value="">{{messages.selectElijaOpcion}}</option>
             </select>
         </div>
     </div>
-    <div class="form-group col-lg-12">
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.lugar}}*:</label>
-        <div class="col-lg-4" ng-class="{'has-error' : ValidateLugar}"
-            uib-tooltip="{{messages.messageValidate}}"
+        <div class="col-lg-4"
             tooltip-placement="top"
             tooltip-trigger="'mouseenter'"
             tooltip-enable="ValidateLugar">
-            <select ng-model="nomIctl.LocationSelected" ng-options="lug.id as lug.lugar for lug in lugares" class="form-control form-control-sm col-lg-12">
-                <option value="">-- Seleccionar --</option>
+            <select ng-model="trabajo.LocationSelected" ng-options="lug.id as lug.lugar for lug in lugares | orderBy:'lugar':false" class="form-control form-control-sm col-lg-12" ng-disabled="trabajo.NaveSelected" ng-required="true" ng-change="getLocation(trabajo.LocationSelected)">
+                <option value="" >{{messages.selectElijaOpcion}}</option>
             </select>
         </div>
     </div>
-    <div class="form-group col-lg-12">
+    <div class="form-group row">
         <label class="control-label col-sm-4">{{messages.posicion}}:</label>
         <div class="col-lg-4">
-            <a href="" ng-click="showModal('-33.3935486,-70.79356710000002')"  style="background-color: transparent; border-color: #000\9" class="btn col-md-1 glyphicon glyphicon-map-marker">-33.3935486,-70.79356710000002</a>
+            <a href="" ng-click="showModal('-33.3935486,-70.79356710000002')" style="background-color: transparent; border-color: #000\9" class="btn col-md-1 glyphicon glyphicon-map-marker" ng-show="viewPosicion">{{trabajo.posicion}}</a>
         </div>
     </div>
-</div>
-<br>
-<div class="container-fluid">
-    <legend class="scheduler-border col-lg-12">{{messages.trabajador}}</legend>
-    <div class="col-lg-12">
+    <br>
+    <h4>{{messages.trabajador}}</h4>
+    <hr/>
+    <div class="form-group row">
         <div class="col-lg-4" ng-init ="documentoIdentificador = 'rut'" >
             <input type="radio"  name="identificadorTrabajador" ng-click="documentoIdentificador = 'rut'" ng-checked="true"/> {{messages.rut}}
             <input type="radio" style="margin-left: 30px;" ng-click="documentoIdentificador = 'pasaporte'" name="identificadorTrabajador" ng-checked='false'/> {{messages.pasaporte}} :
             *
         </div>
         <div class="col-lg-4" >
-            <input type="text" class="form-control" ng-style="{'border-color' : (messagevalidateRut == true) ? 'red' : ''}" placeholder="Ingrese Rut, ej: 11111111-1" aria-describedby="sizing-addon1" id="txt_rut" ng-keyup="$event.keyCode == 13 && validateRut(documentoIdentificador)" ng-model="rutTrabajador">
+            <input type="text" class="form-control" ng-style="{'border-color' : (messagevalidateRut == true) ? 'red' : ''}" placeholder="{{documentoIdentificador == 'rut' ? 'Ingrese Rut, ej: 11111111-1' : 'Ingrese Pasaporte'}}" aria-describedby="sizing-addon1" ng-model="trabajador.rutTrabajador">
             <p style="color: red" ng-show="messagevalidateRut">{{messagerut}}</p>
         </div>
         <div class="col-lg-2">
-            <button class="btn btn-warning" ng-click="agregarTrabajador(rutTrabajador,documentoIdentificador)" ng-disabled="!validadoRut">{{messages.BTN_AnadirTrabajador}}</button>
+            <button type="button" class="btn btn-primary" ng-click="agregarTrabajador(trabajador.rutTrabajador,documentoIdentificador)" ng-disable="validadoRut">
+            
+            <span ng-show="!validadoRut">
+                <span class="glyphicon glyphicon-search"></span>
+                {{messages.BTN_AnadirTrabajador}}
+            </span>
+            
+            <span ng-show="validadoRut">
+                <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                Cargando...
+            </span>
+            
+            </button>
         </div>
     </div>
-    <div class="container-fluid" style="overflow: auto;" ng-show="showTableTrabajadores">
+    <div class="row" style="overflow: auto;" ng-show="showTableTrabajadores">
         <br>
-        
-        <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0"  ng-enabled="verTablaTrabajador">
-            <thead>
-                <tr style="background-color: #D3D3D3">
-                    <th><small>Rut o Pasaporte</small></th>
-                    <th><small>Nombres</small></th>
-                    <th><small>Apellidos</small></th>
-                    <th><small>Labor</small></th>
-                    <th><small>Función</small></th>
-                    <th><small>Tipo de contrato</small></th>
-                    <th><small>Tipo de jornada</small></th>
-                    <th><small>Total horas semanales</small></th>
-                    <th><small>Remuneración Bruta (CLP)</small></th>
-                    <th><small>Eliminar</small></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat='datosTrabajador in tableDatosTrabajadores'>
-                    <td>{{datosTrabajador.rutPasaporteTrabajador}}-{{datosTrabajador.dv}}</td>
-                    <td>{{datosTrabajador.nombresTrabajador}}</td>
-                    <td>{{datosTrabajador.apellidosTrabajador}}</td>
-                    <td>
-                        <select ng-model="datosTrabajador.laborSelect[$index]" ng-options="lab.id as lab.glosa for lab in labores" class="form-control">
-                            <option value="">-- Seleccionar --</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select ng-model="datosTrabajador.funcionSelect[$index]" ng-options="fun.id as fun.glosa for fun in funciones" class="form-control">
-                            <option value="">-- Seleccionar --</option>
-                        </select>
-                    </td>
-                    <td>{{datosTrabajador.tipoContratoTrabajador}}</td>
-                    <td>
-                        <select ng-model="datosTrabajador.jornadaSelect[$index]" ng-options="jor.id as jor.glosa for jor in jornadas" class="form-control">
-                            <option value="">-- Seleccionar --</option>
-                        </select>
-                    </td>
-                    
-                    <td>{{datosTrabajador.totalHorasSemanales}}</td>
-                    <td>{{datosTrabajador.remuneracionBrutaTrabajador}}</td>
-                    <td>
-                        <button class="btn btn-danger" type="button" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarTrabajador(datosTrabajador.idTrabajador)"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- <div class="btn-group pull-right">
-            <button type='button' class='btn btn-default' ng-disabled='currentPage == 0' ng-click='currentPage = currentPage - 1'>&laquo;</button>
-            <button type='button' class='btn btn-default' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
-            <button type='button' class='btn btn-default' ng-disabled='currentPage >= tableDatosTrabajadores.length/pageSize - 1' , ng-click='currentPage = currentPage + 1'>&raquo;</button>
-        </div> -->
-    </div>
-</div>
-<br>
-<br>
-<br>
-<div class="container-fluid col-lg-6  pull-left">
-    <label class="control-label">{{messages.camposObligatorios}}</label>
-</div>
-<div class="container-fluid col-lg-6  pull-right">
-    <div class="pull-right">
-        <button class="btn btn-default " type="button" ng-click="cleanForm()">{{messages.BTN_limpiar}}</button>
-        <button class="btn btn-warning" ui-sref="main.composite" type="submit">{{messages.BTN_cancelar}}</button>
-        <button href="#" class="btn btn-primary" ng-click="changeTabByButton(1)" data-toggle="tab">{{messages.BTN_continuar}}</button>
-    </div>
-</div>
+        <div class="col-md-12">
+            
+            <table class="table table-bordered table-striped table-hover table-condensed customTable scroll" style="white-space: nowrap, width: 1200px" cellspacing="0"  ng-enabled="verTablaTrabajador">
+                <thead>
+                    <tr style="background-color: #D3D3D3">
+                        <th><small>Rut o Pasaporte</small></th>
+                        <th><small>Nombres</small></th>
+                        <th><small>Apellidos</small></th>
+                        <th><small>Labor</small></th>
+                        <th><small>Función</small></th>
+                        <th><small>Tipo de contrato</small></th>
+                        <th><small>Tipo de jornada</small></th>
+                        <th><small>Total horas semanales</small></th>
+                        <th><small>Remuneración Bruta (CLP)</small></th>
+                        <th><small>Eliminar</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='datosTrabajador in tableDatosTrabajadores'>
+                        <td ng-if="datosTrabajador.rutTrabajador != null">{{datosTrabajador.rutTrabajador}}-{{datosTrabajador.dv}}</td>
+                        <td ng-if="datosTrabajador.rutTrabajador == null || datosTrabajador.rutTrabajador == 0">{{datosTrabajador.pasaporte}}</td>
+                            
+                            <td>{{datosTrabajador.nombresTrabajador}}</td>
+                            <td>{{datosTrabajador.apellidosTrabajador}}</td>
+                            <td>
+                                <select ng-model="datosTrabajador.laborSelect[$index]" ng-options="lab.id as lab.glosa for lab in labores | orderBy:'glosa':false" class="form-control">
+                                    <option value="">-- Seleccionar --</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select ng-model="datosTrabajador.funcionSelect[$index]" ng-options="fun.id as fun.glosa for fun in funciones | orderBy:'glosa':false" class="form-control">
+                                    <option value="">-- Seleccionar --</option>
+                                </select>
+                            </td>
+                            <td>{{datosTrabajador.tipoContratoTrabajador}}</td>
+                            <td>
+                                <select ng-model="datosTrabajador.jornadaSelect[$index]" ng-options="jor.id as jor.glosa for jor in jornadas | orderBy:'glosa':false" class="form-control">
+                                    <option value="">-- Seleccionar --</option>
+                                </select>
+                            </td>
+                            
+                            <td>{{datosTrabajador.totalHorasSemanales}}</td>
+                            <td>{{datosTrabajador.remuneracionBrutaTrabajador}}</td>
+                            <td>
+                                <button class="btn btn-danger" type="button" ng-really-message="¿Está seguro eliminar el registro?" ng-really-click="eliminarTrabajador(datosTrabajador.idTrabajador)"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <hr/>
+        <div class="form-group row">
+            <div class="col-lg-6  pull-left">
+                <label class="control-label">{{messages.camposObligatorios}}</label>
+            </div>
+            <div class="col-lg-6  pull-right">
+                <div class="pull-right" style="padding-right: 14px;">
+                    <button class="btn btn-default " type="button" ng-click="cleanForm()" ng-disabled="blockButtons">{{messages.BTN_limpiar}}</button>
+                    <button class="btn btn-warning" ui-sref="main.composite" type="button" ng-disabled="blockButtons">{{messages.BTN_cancelar}}</button>
+                    <button href="#" class="btn btn-primary" type="submit" ng-click="changeTabByButton(1)" data-toggle="tab" ng-disabled="blockButtons">{{messages.BTN_continuar}}</button>
+                </div>
+            </div>
+        </div>
+    </form>

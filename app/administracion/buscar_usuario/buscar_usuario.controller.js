@@ -20,6 +20,10 @@ angular.module('sccnlp.buscar_usuario')
                 $scope.usuarioSeleccionado = {};
                 var session_data = sessionService.getUserData();
 
+                $scope.pageSize = 5;
+                $scope.currentPage = 2;
+                $scope.totalItems = $scope.tablaUsuarios.length;
+
                 $scope.confirmEliminar = false;
 
                 $scope.cancel = function () {
@@ -92,11 +96,13 @@ angular.module('sccnlp.buscar_usuario')
                                             ID_USUARIO: data[item].idUsuario,
                                             ID_EMPLEADO: data[item].idEmpleado,
                                             ID_EMPRESA: data[item].idEmpresa,
-                                            ID_PERSONA: data[item].idPersona
+                                            ID_PERSONA: data[item].idPersona,
+                                            INDEX_ELEMENT: item
                                         };
 
                                         $scope.tablaUsuarios.push(element);
                                     }
+                                    $scope.totalItems = $scope.tablaUsuarios.length;
                                 }
                             }, function (data) {
 
@@ -153,10 +159,13 @@ angular.module('sccnlp.buscar_usuario')
                                         ID_EMPLEADO: data[item].idEmpleado,
                                         ID_EMPRESA: data[item].idEmpresa,
                                         ID_PERSONA: data[item].idPersona
+                                        ,
+                                            INDEX_ELEMENT: item
                                     };
 
                                     $scope.tablaUsuarios.push(element);
                                 }
+                                $scope.totalItems = $scope.tablaUsuarios.length;
                             }
                         }, function (data) {
 
@@ -173,7 +182,7 @@ angular.module('sccnlp.buscar_usuario')
 
                 var getListToUpdate = function (param) {
                     var table = [];
-                    for (var item in param) {
+                    for (var item = 0; item < param.length; item++) {
 
                         //  get Modulos
                         var newModulos = [];
@@ -201,7 +210,8 @@ angular.module('sccnlp.buscar_usuario')
                             nombres: null,
                             modulos: newModulos,
                             puertos: newPuertos,
-                            activo: param[item].VIGENCIA
+                            activo: param[item].VIGENCIA,
+                            index_element: item        
                         };
                         table.push(element);
                     }
@@ -210,7 +220,7 @@ angular.module('sccnlp.buscar_usuario')
 
 
                 $scope.save = function (index, lugar) {
-                    console.log($scope.tablaUsuarios);
+
                     var element = $scope.tablaUsuarios[index];
                     var table = [];
                     table.push(element);
@@ -256,8 +266,8 @@ angular.module('sccnlp.buscar_usuario')
                         for (var item in result.USUARIO_MODULOS) {
                             $scope.tablaUsuarios[p_index].USUARIO_MODULOS[item].selected = result.USUARIO_MODULOS[item].selected;
                         }
-                        
-                        $scope.save(p_index,'modulo')
+
+                        $scope.save(p_index, 'modulo')
 
                     });
                 };
@@ -284,7 +294,7 @@ angular.module('sccnlp.buscar_usuario')
                         for (var item in result.USUARIO_PUERTOS) {
                             $scope.tablaUsuarios[p_index].USUARIO_PUERTOS[item].selected = result.USUARIO_PUERTOS[item].selected;
                         }
-                        $scope.save(p_index,'puerto');
+                        $scope.save(p_index, 'puerto');
                     });
                 };
                 /**
@@ -344,9 +354,9 @@ angular.module('sccnlp.buscar_usuario')
                     });
                 };
 
-                $scope.changeVigencia = function (element,index) {
+                $scope.changeVigencia = function (element, index) {
                     element.VIGENCIA = !element.VIGENCIA;
-                    $scope.save(index,'vigencia');
+                    $scope.save(index, 'vigencia');
                 };
 
                 /**
@@ -434,18 +444,19 @@ angular.module('sccnlp.buscar_usuario').controller('modalShowModulos', ['$scope'
          * Accept the new values 
          * @returns {undefined}
          */
-        
-        $scope.getActiveModules = function(){
+
+        $scope.getActiveModules = function () {
             $scope.hasMinimun = false;
             for (var item in  $scope.elemento.USUARIO_MODULOS) {
                 if ($scope.elemento.USUARIO_MODULOS[item].selected === true) {
                     $scope.hasMinimun = true;
                 }
-            }return $scope.hasMinimun;
+            }
+            return $scope.hasMinimun;
         };
-        
+
         $scope.ok = function () {
-            $uibModalInstance.close($scope.elemento); 
+            $uibModalInstance.close($scope.elemento);
         };
     }]);
 angular.module('sccnlp.buscar_usuario').controller('modalShowPuertos', ['$scope', '$uibModalInstance', 'store',
@@ -467,8 +478,8 @@ angular.module('sccnlp.buscar_usuario').controller('modalShowPuertos', ['$scope'
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
         };
-        
-        $scope.getActivePorts = function(){
+
+        $scope.getActivePorts = function () {
             $scope.hasMinimun = false;
             for (var item in  $scope.elemento.USUARIO_PUERTOS) {
                 if ($scope.elemento.USUARIO_PUERTOS[item].selected === true) {
@@ -477,13 +488,13 @@ angular.module('sccnlp.buscar_usuario').controller('modalShowPuertos', ['$scope'
             }
             return  $scope.hasMinimun;
         };
-        
+
         /**
          * Accept the new values 
          * @returns {undefined}
          */
-        $scope.ok = function () {            
-                $uibModalInstance.close($scope.elemento);            
+        $scope.ok = function () {
+            $uibModalInstance.close($scope.elemento);
         };
     }]);
 

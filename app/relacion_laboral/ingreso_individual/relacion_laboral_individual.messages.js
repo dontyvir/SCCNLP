@@ -29,12 +29,12 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 	    nombreCompleto : 'Nombre Completo',
 	    usuarioQueRegistra : 'Usuario que registra',
 	    rutUsuario : 'Rut Usuario',
-	    nombreCompletoUsuario : 'Nombre Completo Usuario',
+	    nombreCompletoUsuario : 'Nombre Usuario',
 	    cargoEnLaEmpresa : 'Cargo en la Empresa',
 
 	    //  Labels Tab 2
 	    tabHeaderTwo : 'Paso 2 de 3: Datos del Trabajador',
-	    informacionDelTrabajador : 'Información del Trabajador',
+	    informacionDelTrabajador : 'Datos del Trabajador',
 	    pasaporteTrabajador : 'Pasaporte',
 	    nombresTrabajador : 'Nombres',
 	    apellidosTrabajador : 'Apellidos',

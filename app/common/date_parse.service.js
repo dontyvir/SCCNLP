@@ -6,7 +6,7 @@ angular.module('sccnlp.common')
 	
 	var wrapper = {};
 	
-	wrapper.regexTime = /^([01]\d|2[0-3]):?([0-5]\d?)(:([0-5]\d?))?$/;
+	var regexTime = /^([01]\d|2[0-3]):?([0-5]\d?)(:([0-5]\d?))?$/;
 	
 	wrapper.timeToDate = function(time){
 		
@@ -16,7 +16,7 @@ angular.module('sccnlp.common')
 		if(time.match(regexTime)){
 			var split = time.split(":");
 			var date = new Date();
-			date.setMinutes(parseInt(split[0]),parseInt(split[1]),0,0);
+			date.setHours(parseInt(split[0]),parseInt(split[1]),0,0,0);
 			return date;
 		}
 		

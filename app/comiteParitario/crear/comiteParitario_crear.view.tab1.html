@@ -1,5 +1,9 @@
 <form name="formTab1">
 	<h4>{{messages.datosComite}}</h4>
+	<small ng-show="loading">
+	<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+	Cargando...
+	</small>
 	<hr/>
 	<div class="form-group row">
 		<label for="direccionGoogleMaps" class="col-md-3 col-form-label">{{messages.direccionFaena}} *</label>
@@ -34,7 +38,7 @@
 		<label class="control-label col-md-3">{{messages.fechaActoEleccionario}} *</label>
 		<div class="col-md-4">
 			<p class="input-group">
-				<input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="comite.fechaActoEleccionario" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="{{formatPlaceholder}}" />
+				<input type="text" class="form-control" uib-datepicker-popup="{{dateFormat}}" ng-model="comite.fechaActoEleccionario" is-open="popup2.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" placeholder="{{formatPlaceholder}}" show-button-bar="false"/>
 				<span class="input-group-btn">
 					<button type="button" class="btn btn-default" ng-click="open2()"><i class="glyphicon glyphicon-calendar"></i></button>
 				</span>
@@ -85,9 +89,9 @@
 	    
 	    <div class="col-md-3 form-inline" style="text-align: right;">
 	    
-        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()">{{messages.BTN_limpiar}}</button>
-        	<button class="btn btn-danger" type="button" ng-click="btnSalir()">{{messages.BTN_cancelar}}</button>
-        	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(1, formTab1)">{{messages.BTN_continuar}}</button>
+        	<button class="btn btn-warning" type="reset" ng-click="ingresoLimpiar()" ng-disabled="blockButtons">{{messages.BTN_limpiar}}</button>
+        	<button class="btn btn-danger" type="button" ng-click="btnSalir()" ng-disabled="blockButtons">{{messages.BTN_cancelar}}</button>
+        	<button class="btn btn-primary" type="submit" ng-click="ingresoContinue(1, formTab1)" ng-disabled="blockButtons">{{messages.BTN_continuar}}</button>
         	        	        
         </div>
 	</div>

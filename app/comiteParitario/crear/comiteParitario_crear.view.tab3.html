@@ -42,9 +42,14 @@
     </div>
     <div class="form-group row">
         <label class="control-label col-xs-3">{{messages.aforado}} *</label>
-        <div class="col-xs-4">
-            <label class="checkbox-inline">
-                <input type="checkbox" value="true" ng-model="trabajador.aforado">
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="asumeFuncion" value="true" ng-model="trabajador.aforado" ng-required="true"> SI
+            </label>
+        </div>
+        <div class="col-xs-2">
+            <label class="radio-inline">
+                <input type="radio" name="asumeFuncion" value="false" ng-model="trabajador.aforado" ng-required="true"> NO
             </label>
         </div>
     </div>

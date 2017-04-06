@@ -52,58 +52,6 @@ angular.module('sccnlp.common')
     				_callback_error);
         }
 
-    	wrapper.getDetalleRelacionLaboral = function(_id, _callback_fn,_callback_error) {
-
-    		var _contrato = {
-    				
-    				idContrato : _id,
-    				idUsuario           : 1,
-    				rutEmpresa          : "1",
-    				dvEmpresa           : "2",
-    				trabajador			: {
-    					rut             : 2222222,
-    					dv              : "k",
-    					pasaporte       : "A222222",
-    					nombres         : "Nombre Nombre",
-    					apellidoPaterno : "Apellido",
-    					apellidoMaterno : "Apellido",
-    					idNacionalidad  : 44,
-    					fechaNacimiento : '1905/01/21',
-    					idEstadoCivil   : 1,
-    					idSexo          : 1,
-    					domicilio       : {idRegion : 1, idComuna : 1, calle: "Calle", numero: 12345, depto: "234", block: "34", longitud:"-45.3445656",latitud:"-20.4242424"},
-    					email           : "user@domain.name",
-    					idIsapre        : 1,
-    					idAFP           : 1
-    				},
-    				fechaCelebContrato  : new Date(),
-    				idTipoContrato      : 1,
-    				fechaInicioContrato : new Date(),
-    				fechaTerminoContrato: new Date(),
-    				idModalidadPago      : 1,
-    	            
-    	            labores: []
-    	        }
-    			
-    			for(var i=0;i<2;i++){
-    								
-    				_contrato.labores.push( {
-
-    					idLabor          : i+1,
-    					idFuncion        : i+1,
-    					idLugar          : 2,
-    					idJornada        : 1,
-    					horario          : [{dia: i, horaDesde: new Date(), horaHasta: new Date()}],
-    					acuerdoDescanso  : {idSindicato: "1232456", horaDesde: new Date(), horaHasta: new Date()},
-    					remuneracionBruta: 999
-    					
-    				});		
-    			}
-
-    		_callback_fn(_contrato);
-    		return _contrato;
-    	}
-    	
        wrapper.consultarRelacionLaboral = function(_rut_empresa, _rut_trabajador, _pasaporte, _fecha_ini_contrato,
     		                               _fecha_fin_contrato, _estado_contrato, _callback_fn, _callback_error){
         	
@@ -124,9 +72,15 @@ angular.module('sccnlp.common')
         	return RestClient.baseResource.save_Array_JSON(
         			{serviceName : 'Relacionlab/guardarRelacionLaboral'}, data, _callback_fn, _callback_error);
         }
+        
         wrapper.actualizarRelacionLaboral = function(data, _callback_fn, _callback_error){
         	return RestClient.baseResource.save_Array_JSON(
         			{serviceName : 'Relacionlab/actualizarRelacionLaboral'}, data, _callback_fn, _callback_error);        	
+        }
+
+        wrapper.finalizarRelacionLaboral = function(data, _callback_fn, _callback_error){
+        	return RestClient.baseResource.save_Array_JSON(
+        			{serviceName : 'RelacionLab/finalizarRelacionLaboral'}, data, _callback_fn, _callback_error);        	
         }
         
     	wrapper.getTurno = function(_callback_fn,_callback_error){

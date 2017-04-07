@@ -3,16 +3,18 @@
 angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 
 .controller('RelMasivoCtrl', ['$scope', 'ingMasMessages','ingIndivMessages', 'RestClient', 'sessionService',
-							'Empleador','LoadDataEmpleador','RecordatorioLegal','ModalEsperaCarga','FileUploader',
-							'Contrato','procesarCSV',
+							'Empleador','LoadDataEmpleador','RecordatorioLegal','ModalEsperaCarga',
+							'Contrato','procesarCSV','RegistrarContrato',
 	
 	function($scope, ingMasMessages, ingIndivMessages, RestClient, sessionService,Empleador,
-			 LoadDataEmpleador,RecordatorioLegal,ModalEsperaCarga,FileUploader,
-			 Contrato,procesarCSV) {
+			 LoadDataEmpleador,RecordatorioLegal,ModalEsperaCarga,
+			 Contrato,procesarCSV,RegistrarContrato) {
 	
 	$scope.messages = ingMasMessages;
 	angular.merge($scope.messages, ingIndivMessages);
     
+	$scope.CSVfilename = null;
+	
 	//tabs
 	$scope.empresaLoading = true;
 	$scope.tabsActive = 0;
@@ -34,9 +36,7 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 			errorMsg : null,
 			data : null
 	};
-	
-	$scope.fileUploader = new FileUploader();
-	$scope.results = {contratos: null, validaciones: null};
+	$scope.results = {contratos: null, validaciones: null, valid : false};
 	// Datos del empleador Model
 	
 	$scope.empleador = new Empleador();
@@ -62,7 +62,8 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 	    	var user_data = sessionService.getUserData();
 	    
 	    	// registro del contrato
-	    	var _result = RegistrarContrato.registrar(user_data.id, $scope.empleador.rut,$scope.empleador.dv, $scope.trabajador, $scope.contrato,
+	    	var _result = RegistrarContrato.masivo(user_data.id, $scope.empleador.rut, $scope.empleador.dv,
+	    			                               $scope.results.contratos,
 	    		function(response){
 	    		
 	    		$scope.relLab.loading = false;
@@ -94,12 +95,26 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 		if(!fileItem)
 			return;
 		
-		var file = document.getElementById('csvMasivo').files[0];
+		var file = fileItem.files[0];
+		$scope.CSVfilename = file.name;
 
-		var data = Papa.parse(file,{delimiter:";",complete: function(results) {
+		var data = Papa.parse(file,{delimiter:";",newline:'\n',complete: function(results) {
 
-			$scope.results = procesarCSV(results.data);
+			$scope.results = procesarCSV(results.data);			
+			$scope.$apply();
 		}});
+	}
+	
+	$scope.unsetFile = function(){
+		$scope.CSVfilename = null;
+		$scope.results = {contratos:null,validaciones:null,valid:false};
+	}
+	
+	$scope.tryAgain = function(){
+	    $scope.tabs[0].disable = false;
+	    $scope.tabs[1].disable = false;
+	    $scope.tabs[2].disable = true;
+    	$scope.tabsActive = 1;		
 	}
 	
     function init(){
@@ -108,8 +123,6 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
         $scope.empleador = LoadDataEmpleador(function(){
         	$scope.empresaLoading = false;
         });
-        
-
     };
 
     init();

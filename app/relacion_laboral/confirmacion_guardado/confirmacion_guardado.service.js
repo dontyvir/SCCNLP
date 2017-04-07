@@ -36,6 +36,10 @@ angular.module('sccnlp.relacionLaboral')
 		      controller: 'ConfirmacionGuardadoCtrl',
 		      controllerAs: '$ctrl',
 		      backdrop : 'static',
+		      resolve : {
+		    	  title   : function(){return null;},
+		    	  message : function(){return null;}
+		      }
 		    });
 	}
 	

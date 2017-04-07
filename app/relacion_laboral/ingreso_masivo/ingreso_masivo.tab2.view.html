@@ -1,56 +1,89 @@
 <h4>{{messages.cargaRelLab}}</h4>
 
-<hr/>
-
-<p>Estimado empleador, usted puede realizar el ingreso de las relaciones laborales de sus trabajadores de forma masiva.</p>
-<br/>
-<p>Para realizar esta acción debe subir al sistema el archivo con el formato exactamente igual al ejemplo:</p>
-
-
-<br/>
+<hr />
 
 <div class="row">
-    <div class="col-md-9">
+	<div class="col-md-4">
 
 		<form name="cargaCSV">
-		
-		  <div class="form-group">
-		    <label for="csvMasivo">Ingrese su nómina de trabajadores mediante la selección de un archivo: </label>
-		    
-		    <input type="file" class="form-control-file" id="csvMasivo" aria-describedby="csvLabel" nv-file-select uploader="fileUploader">
-		    
-		    <small id="csvLabel" class="form-text text-muted">Cargue aquí el archivo en formato csv con las relaciones laborales.</small>
-		  
-		    <ul>
-            <li ng-repeat="item in fileUploader.queue">
-                Name: <span ng-bind="item.file.name"></span><br/>
-                <button ng-click="fileProcess(item)">upload</button>
-            </li>
-        	</ul>
 
-			<h4>Validaciones</h4>
-		    <ul>
-            <li ng-repeat="item in results.validaciones">
-            	<div class="alert alert-danger" role="alert">fila : {{item.i}}, columna: {{item.j}}, error: {{item.errorMSG}}</div>
-            </li>
-        	</ul>
-		  
-		  </div>
-		
+			<div class="form-group">
+			Ingrese su nómina de trabajadores mediante la selección de un archivo: 
+			</div>
+
+			<div class="form-group">
+
+				<label for="upload-masivo" class="btn btn-primary btn-lg" ng-show="!CSVfilename">
+				<i class="glyphicon glyphicon-upload"></i> Cargar archivo
+				</label>
+				
+				<button class="btn btn-primary btn-lg" ng-show="CSVfilename" ng-disabled="true">
+				<i class="glyphicon glyphicon-upload"></i> Cargar archivo</button>
+
+			    <input id="upload-masivo" name="upload-masivo" type="file" 
+			           onchange="angular.element(this).scope().fileProcess(this)" ng-show="false" />
+			</div>
+			
+			<div class="form-group">
+			
+				<div class="alert alert-success" role="alert" ng-show="CSVfilename && results.valid">
+				<i class="glyphicon glyphicon-ok"></i> {{CSVfilename}}
+				<button ng-click="unsetFile()" class="close glyphicon glyphicon-trash"></button>
+				</div>
+
+				<div class="alert alert-danger" role="alert" ng-show="CSVfilename && !results.valid">
+				<i class="glyphicon glyphicon-remove"></i> {{CSVfilename}}
+				<button ng-click="unsetFile()" class="close glyphicon glyphicon-trash"></button>
+				</div>
+			</div>
+
+			<hr/>
+			<div class="form-group">
+	
+			<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
+			
+			<button class="btn btn-success" type="submit" ng-click="masivoSubmit()"
+			        ng-disabled="!CSVfilename || !results.valid">Enviar Nómina</button>
+	
+			</div>
+			
 		</form>
+	</div>
+	<div class="col-md-8">
+
+		<div class="row">
+			<div class="col-md-12">
+				<p>Estimado empleador, usted puede realizar el ingreso de las
+					relaciones laborales de sus trabajadores de forma masiva.</p>
+				<p>Para realizar esta acción debe subir al sistema el archivo
+					con el formato exactamente igual al ejemplo:</p>
+					
+				<div class="form-group">
+					<button class="btn btn-default">
+					<i class="glyphicon glyphicon-download"></i>
+					Descargar archivo de ejemplo</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" ng-show="results.validaciones">
+			<div class="col-md-12">
+			
+				<h4>Validaciones</h4>
+				
+				<ul ng-show="!results.valid">
+					<li ng-repeat="item in results.validaciones">
+						<div class="alert alert-danger" role="alert">fila :
+							{{item.i}}, columna: {{item.j}}, error: {{item.errorMSG}}</div>
+					</li>
+				</ul>
+
+				<ul ng-show="results.valid">
+					<li>El archivo cargado tiene un formato válido</li>
+				</ul>
+
+			</div>
+		</div>
 
 	</div>
-</div>
-
-<div class="row">
-    <div class="col-md-9">
-       <small>{{messages.mandatoryFields}}</small>                 
-    </div>
-    
-    <div class="col-md-3 form-inline">
-
-       	<a href ui-sref="main.composite" class="btn btn-danger" role="button">{{messages.BTN_cancelar}}</a>
-       	<button class="btn btn-primary" type="submit" ng-click="masivoSubmit()">{{messages.BTN_continuar}}</button>
-       	        	        
-       </div>
 </div>

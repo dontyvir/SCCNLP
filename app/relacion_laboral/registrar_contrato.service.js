@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('sccnlp.relacionLaboral.ingresoIndividual')
+angular.module('sccnlp.relacionLaboral')
 
 .factory('RegistrarContrato', ['$resource', '$filter', 'RestClientRelacionLaboral',
 	
@@ -58,14 +58,27 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 			
 			var labor = _contrato.labores[i];
 			
+			var _h_out = [];
+			var _ad_out = {idSindicato : labor.acuerdoDescanso.idSindicato,
+					       horaDesde   : $filter('date')(labor.acuerdoDescanso.horaDesde,timeFormat),
+					       horaHasta   : $filter('date')(labor.acuerdoDescanso.horaHasta,timeFormat)}
+
+			for(var j=0;j<labor.horario.length;j++){
+				
+				_h_out.push({dia: labor.horario[j].dia,
+					         horaDesde: $filter('date')(labor.horario[j].horaDesde,timeFormat),
+					         horaHasta: $filter('date')(labor.horario[j].horaHasta,timeFormat)
+					        });
+			}
+
 			contrato_out.labores.push( {
 				idDetalle        : labor.id,
 				idLabor          : labor.idLabor,
 				idFuncion        : labor.idFuncion,
 				idLocacion       : labor.idLugar,
 				idJornada        : labor.idJornada,
-				horario          : labor.horario,
-				acuerdoDescanso  : labor.acuerdoDescanso,
+				horario          : _h_out,
+				acuerdoDescanso  : _ad_out,
 				remuneracionBruta: labor.remuneracionBruta
 			});		
 		}
@@ -91,6 +104,21 @@ angular.module('sccnlp.relacionLaboral.ingresoIndividual')
 		return RestClientRelacionLaboral.registrarRelacionLaboral(outFormat, _callback_fn, function(error){
 			console.log(error);
 		});
+	}
+	
+	wrapper.masivo = function (userId,rut_empleador,dv_empleador,contratos,_callback_fn){
+		
+		var out_list = [];
+		for(var i=0;i<contratos.length;i++){
+			out_list.push(
+				wrapper.prepararDatos(userId,rut_empleador,dv_empleador,contratos[i].trabajador, contratos[i])
+			);
+		}
+		
+		return RestClientRelacionLaboral.registrarRelacionLaboral(out_list, _callback_fn, function(error){
+			console.log(error);
+		});
+		
 	}
 
 	return wrapper;

@@ -32,7 +32,8 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 			noDocId    : 'no se proporciona rut ni pasaporte para el trabajador',
 			dvMalo    : 'dígito verificador o rut inválido',
 			faltaHorario : 'no se encontró un horario válido para la labor',
-			contratoErrores : 'contrato con errores, descartando labor'
+			contratoErrores : 'contrato con errores, descartando labor',
+			filaMalformada : 'la fila no contiene la cantidad de columnas requeridas'
 	};
 	
 	/** objeto con la metadata de la validación **/
@@ -181,6 +182,13 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 			
 			var c = d[i];
 			
+			if(c.length <= 1){ // fila vacía
+				continue;
+			} else if(c.length < 47){ // fila con menos campos
+				registrarError(i, 0, validacionMSG.filaMalformada, v);
+				continue;
+			}
+			
 			var rutTrab        = c[0];
 			var dvTrab         = c[1];
 			var pasaporte      = c[2];
@@ -310,6 +318,11 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 					
 			//Trabajador(_rut, _dv, _pasaporte, _nombres, _apPat, _apMat, idSexo, _fecNac, _email, _domicilio)
 			var trabajador = new Trabajador(rutTrab,dvTrab,pasaporte,nombres,apPat,apMat,idSexo,fecNac,email,domicilio)
+			trabajador.nacionalidad = {id:idNacionalidad, glosa:null};
+			trabajador.AFP = {id:idAFP, glosa:null};
+			trabajador.ISAPRE = {id:idISAPRE, glosa:null};
+			trabajador.estadoCivil = {id:idEstadoCivil, glosa:null};
+			
 			
 			/**
 			 * 
@@ -326,7 +339,13 @@ angular.module('sccnlp.relacionLaboral.ingresoMasivo')
 			contratos.push(contrato);
 		}
 		
-		return {contratos: contratos, validaciones : validaciones};
+		var results = {contratos: contratos, validaciones : validaciones, valid : null};
+		
+		if(validaciones.length == 0)
+			 results.valid = true;
+		else results.valid = false;
+		
+		return results;
 	}
 	return procesarCSV;
 }])
